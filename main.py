@@ -4,6 +4,8 @@ import gradio as gr
 import os
 from dotenv import load_dotenv
 from openai import OpenAI
+from tools.get_sections import get_sections, get_sections_tool
+from tools.get_section import get_section, get_section_tool
 
 load_dotenv()
 
@@ -15,20 +17,37 @@ history = [
 ]
 
 
+def handle_function_call(name, args):
+    tools_map = {
+        "get_sections": get_sections,
+        "get_section": get_section,
+    }
+
+    func = tools_map[name]
+    result = func(**args)
+    # client.responses.
+
+
 def submit_message(msg):
     history.append({"role": "user", "content": msg})
     yield "", history, gr.Textbox(interactive=False)
 
     history.append({"role": "assistant", "content": ""})
 
-    with client.responses.stream(model="gpt-4.1-nano", input=history) as stream:
+    with client.responses.stream(
+        model="gpt-4.1-nano", tools=[get_section_tool, get_sections_tool], input=history
+    ) as stream:
         for event in stream:
+            print(event.model_dump_json(indent=2))
+            print("#####")
             if event.type == "response.output_text.delta":
                 history[-1]["content"] += event.delta
-                yield "", history, gr.Textbox(interactive=False)
-
             elif event.type == "response.completed":
-                print(event.model_dump_json(indent=2))
+                for output in event.response.output:
+                    if output.type == "function_call":
+                        handle_function_call(output.name, output.arguments)
+                else:
+                    print(event.model_dump_json(indent=2))
                 yield "", history, gr.Textbox(interactive=True)
 
 
