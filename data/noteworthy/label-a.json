@@ -1,6 +1,15 @@
 {
-  "name": "Label A",
-  "start_date": "September 2008",
-  "end_date": "January 2009",
-  "description": "Designed websites and digital media using ColdFusion and Flash/ActionScript."
+  "id": "project_labela_2008",
+  "document": "Label A (September 2008 - January 2009). Designed websites and digital media using ColdFusion and Flash/ActionScript. Creative digital design and interactive media development.",
+  "metadata": {
+    "type": "project",
+    "category": "noteworthy",
+    "name": "Label A",
+    "start_date": "September 2008",
+    "end_date": "January 2009",
+    "duration_months": 5,
+    "description": "Designed websites and digital media using ColdFusion and Flash/ActionScript",
+    "technologies": "ColdFusion, Flash, ActionScript, web design",
+    "keywords": "coldfusion, flash, actionscript, design, web"
+  }
 }

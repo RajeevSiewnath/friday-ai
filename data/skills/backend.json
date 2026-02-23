@@ -1,34 +1,13 @@
-[
-  {
-    "skill": "Node",
-    "years_of_experience": "+10 years",
-    "frameworks": ["Express", "Nest.js"]
-  },
-  {
-    "skill": "Java",
-    "years_of_experience": "+10 years",
-    "frameworks": ["Spring Boot"]
-  },
-  {
-    "skill": "PHP",
-    "years_of_experience": "+10 years",
-    "frameworks": ["Laravel", "Lumen", "Zend"]
-  },
-  {
-    "skill": "Python",
-    "years_of_experience": "+5 years",
-    "frameworks": ["FastAPI", "Django", "Flask"]
-  },
-  {
-    "skill": "SQL",
-    "years_of_experience": "+5 years",
-    "frameworks": ["Postgres", "MySQL"]
-  },
-  {
-    "skill": "NoSQL",
-    "years_of_experience": "+5 years",
-    "frameworks": ["MongoDB"]
-  },
-  { "skill": "REST", "years_of_experience": "+5 years" },
-  { "skill": "GraphQL", "years_of_experience": "+2 years" }
-]
+{
+  "id": "skills_backend",
+  "document": "Backend skills with over 10 years experience in Node.js using Express and Nest.js frameworks. Extensive experience with Java (10+ years) with Spring Boot, PHP (10+ years) with Laravel, Lumen, and Zend. Python expertise (5+ years) with FastAPI, Django, and Flask. Database experience with SQL (Postgres, MySQL) and NoSQL (MongoDB), both 5+ years. REST and GraphQL API development with 5+ years and 2+ years respectively.",
+  "metadata": {
+    "type": "skills",
+    "category": "backend",
+    "years_experience": "10+",
+    "skills": "Node, Java, PHP, Python, SQL, NoSQL, REST, GraphQL",
+    "skills_with_experience": "Node (+10 years), Java (+10 years), PHP (+10 years), Python (+5 years), SQL (+5 years), NoSQL (+5 years), REST (+5 years), GraphQL (+2 years)",
+    "frameworks": "Express, Nest.js, Spring Boot, Laravel, Lumen, Zend, FastAPI, Django, Flask, Postgres, MySQL, MongoDB",
+    "keywords": "backend, node, java, php, python, sql, nosql, rest, graphql, api"
+  }
+}

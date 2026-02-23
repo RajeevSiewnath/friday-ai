@@ -1,13 +1,17 @@
 {
-  "company": "WorldSkills",
-  "title": "Senior Fullstack Developer",
-  "start_date": "March 2020",
-  "end_date": "November 2020",
-  "location": "Helsinki, Finland",
-  "description": "WorldSkills organizes global vocational skills competitions.",
-  "responsibilities": [
-    "Built and modernized Angular 9 applications, migrating legacy AngularJS apps.",
-    "Integrated with Java-based backends to ensure smooth data flow.",
-    "Delivered responsive, user-friendly frontends for global competition tools."
-  ]
+  "id": "work_worldskills_2020",
+  "document": "Senior Fullstack Developer at WorldSkills (March 2020 - November 2020). WorldSkills organizes global vocational skills competitions. Built and modernized Angular 9 applications, migrating legacy AngularJS apps. Integrated with Java-based backends to ensure smooth data flow. Delivered responsive, user-friendly frontends for global competition tools.",
+  "metadata": {
+    "type": "employment",
+    "company": "WorldSkills",
+    "title": "Senior Fullstack Developer",
+    "start_date": "March 2020",
+    "end_date": "November 2020",
+    "location": "Helsinki, Finland",
+    "duration_months": 9,
+    "description": "WorldSkills organizes global vocational skills competitions.",
+    "technologies": "Angular, AngularJS, Java, frontend development",
+    "responsibilities": "Angular modernization, AngularJS migration, Java backend integration, responsive frontend design",
+    "keywords": "angular, fullstack, frontend, java, developer, modernization"
+  }
 }

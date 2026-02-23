@@ -1,14 +1,17 @@
 {
-  "company": "Collaplan",
-  "title": "Founder / CTO",
-  "start_date": "January 2014",
-  "end_date": "January 2024",
-  "location": "Helsinki, Finland",
-  "description": "Collaplan is a collaborative urban planning platform connecting officials, companies, and residents.",
-  "responsibilities": [
-    "Built Laravel Lumen backend APIs and React web clients.",
-    "Managed MySQL databases and integrated Google Maps for geospatial features.",
-    "Contributed to visualization tools with Unity 3D and C#.",
-    "Used Docker for development and deployment workflows."
-  ]
+  "id": "work_collaplan_2014",
+  "document": "Founder and CTO at Collaplan (January 2014 - January 2024). Collaplan is a collaborative urban planning platform connecting officials, companies, and residents. Built Laravel Lumen backend APIs and React web clients. Managed MySQL databases and integrated Google Maps for geospatial features. Contributed to visualization tools with Unity 3D and C#. Used Docker for development and deployment workflows.",
+  "metadata": {
+    "type": "employment",
+    "company": "Collaplan",
+    "title": "Founder / CTO",
+    "start_date": "January 2014",
+    "end_date": "January 2024",
+    "location": "Helsinki, Finland",
+    "duration_years": 10,
+    "description": "Collaborative urban planning platform connecting officials, companies, and residents",
+    "technologies": "Laravel, Lumen, React, MySQL, Google Maps, Unity 3D, C#, Docker, geospatial",
+    "responsibilities": "Full stack development, CTO duties, backend API design, frontend development, geospatial features, DevOps",
+    "keywords": "founder, cto, laravel, react, urban planning, geospatial, startup, docker"
+  }
 }

@@ -17,3 +17,6 @@ wheels/
 
 # MCP
 .playwright-mcp/
+
+# Chroma db
+chroma/

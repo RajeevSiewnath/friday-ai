@@ -1,10 +1,13 @@
-[
-  { "skill": "JavaScript", "years_of_experience": "+10 years" },
-  { "skill": "TypeScript", "years_of_experience": "+10 years" },
-  { "skill": "React", "years_of_experience": "+10 years" },
-  { "skill": "React Native", "years_of_experience": "+5 years" },
-  { "skill": "Vue.js", "years_of_experience": "+5 years" },
-  { "skill": "Nuxt.js", "years_of_experience": "+5 years" },
-  { "skill": "Angular", "years_of_experience": "+2 years" },
-  { "skill": "Next.js", "years_of_experience": "+2 years" }
-]
+{
+  "id": "skills_frontend",
+  "document": "Frontend skills with over 10 years experience in JavaScript and TypeScript. Extensive experience with React (10+ years), React Native (5+ years), and Vue.js (5+ years) frameworks. Experience with Nuxt.js (5+ years), Angular (2+ years), and Next.js (2+ years) for modern web development.",
+  "metadata": {
+    "type": "skills",
+    "category": "frontend",
+    "years_experience": "10+",
+    "skills": "JavaScript, TypeScript, React, React Native, Vue.js, Nuxt.js, Angular, Next.js",
+    "skills_with_experience": "JavaScript (+10 years), TypeScript (+10 years), React (+10 years), React Native (+5 years), Vue.js (+5 years), Nuxt.js (+5 years), Angular (+2 years), Next.js (+2 years)",
+    "frameworks": "React, React Native, Vue.js, Nuxt.js, Angular, Next.js",
+    "keywords": "javascript, typescript, react, vue, angular, frontend, web"
+  }
+}

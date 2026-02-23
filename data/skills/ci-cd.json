@@ -1,7 +1,12 @@
-[
-  { "skill": "AWS", "years_of_experience": "+10 years" },
-  { "skill": "Docker", "years_of_experience": "+5 years" },
-  { "skill": "Github Actions", "years_of_experience": "+5 years" },
-  { "skill": "Kubernetes", "years_of_experience": "+2 years" },
-  { "skill": "Bitbucket pipelines", "years_of_experience": "+2 years" }
-]
+{
+  "id": "skills_cicd",
+  "document": "CI/CD and DevOps skills with over 10 years experience in AWS cloud infrastructure. Docker containerization experience of 5+ years. GitHub Actions and CI/CD pipelines with 5+ years experience. Kubernetes orchestration and Bitbucket pipelines with 2+ years experience each.",
+  "metadata": {
+    "type": "skills",
+    "category": "ci_cd",
+    "years_experience": "10+",
+    "skills": "AWS, Docker, Github Actions, Kubernetes, Bitbucket pipelines",
+    "skills_with_experience": "AWS (+10 years), Docker (+5 years), Github Actions (+5 years), Kubernetes (+2 years), Bitbucket pipelines (+2 years)",
+    "keywords": "aws, docker, kubernetes, ci-cd, devops, github, bitbucket"
+  }
+}

@@ -1,6 +1,15 @@
 {
-  "name": "HVMP",
-  "start_date": "May 2011",
-  "end_date": "May 2012",
-  "description": "Built web apps, portals, and backend systems using PHP and CMS Made Simple for SEO-focused clients."
+  "id": "project_hvmp_2011",
+  "document": "HVMP (May 2011 - May 2012). Built web apps, portals, and backend systems using PHP and CMS Made Simple for SEO-focused clients. Custom web development and CMS integration.",
+  "metadata": {
+    "type": "project",
+    "category": "noteworthy",
+    "name": "HVMP",
+    "start_date": "May 2011",
+    "end_date": "May 2012",
+    "duration_years": 1,
+    "description": "Built web apps, portals, and backend systems using PHP and CMS Made Simple for SEO-focused clients",
+    "technologies": "PHP, CMS Made Simple, web development, SEO",
+    "keywords": "php, cms, web development, seo, portal"
+  }
 }

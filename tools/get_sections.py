@@ -14,7 +14,7 @@ get_sections_tool = {
     "type": "function",
     "name": "get_sections",
     "description": "Returns a list of available CV sections.",
-    "parameters": {"type": "object", "properties": {}, "required": []},  # no inputs
+    "parameters": {"type": "object", "properties": {}, "required": []},
     "returns": {
         "type": "object",
         "properties": {

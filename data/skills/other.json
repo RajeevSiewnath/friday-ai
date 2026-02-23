@@ -1,7 +1,12 @@
-[
-  { "skill": "Unity 3D", "years_of_experience": "+10 years" },
-  { "skill": "Keycloak", "years_of_experience": "+5 years" },
-  { "skill": "RabbitMQ", "years_of_experience": "+5 years" },
-  { "skill": "Prometheus", "years_of_experience": "+2 years" },
-  { "skill": "Grafana", "years_of_experience": "+2 years" }
-]
+{
+  "id": "skills_other",
+  "document": "Additional technical skills including Unity 3D game development (10+ years), Keycloak identity and access management (5+ years), RabbitMQ message queuing (5+ years), Prometheus monitoring and metrics (2+ years), and Grafana data visualization and dashboarding (2+ years).",
+  "metadata": {
+    "type": "skills",
+    "category": "other",
+    "years_experience": "10+",
+    "skills": "Unity 3D, Keycloak, RabbitMQ, Prometheus, Grafana",
+    "skills_with_experience": "Unity 3D (+10 years), Keycloak (+5 years), RabbitMQ (+5 years), Prometheus (+2 years), Grafana (+2 years)",
+    "keywords": "unity, keycloak, rabbitmq, prometheus, grafana, game, monitoring"
+  }
+}

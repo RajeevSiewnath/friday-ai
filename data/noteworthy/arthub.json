@@ -1,6 +1,15 @@
 {
-  "name": "ArtHub",
-  "start_date": "February 2014",
-  "end_date": "October 2016",
-  "description": "Virtual 3D museum gallery using Unity 3D and web deployment via Unity Player."
+  "id": "project_arthub_2014",
+  "document": "ArtHub (February 2014 - October 2016). Virtual 3D museum gallery using Unity 3D and web deployment via Unity Player. Interactive 3D experience for museum collections.",
+  "metadata": {
+    "type": "project",
+    "category": "noteworthy",
+    "name": "ArtHub",
+    "start_date": "February 2014",
+    "end_date": "October 2016",
+    "duration_years": 2.5,
+    "description": "Virtual 3D museum gallery using Unity 3D and web deployment via Unity Player",
+    "technologies": "Unity 3D, web deployment",
+    "keywords": "unity, 3d, museum, gallery, interactive"
+  }
 }

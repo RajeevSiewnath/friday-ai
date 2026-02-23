@@ -1,14 +1,17 @@
 {
-  "company": "SiteDrive",
-  "title": "Senior Fullstack Developer",
-  "start_date": "August 2017",
-  "end_date": "July 2018",
-  "location": "Helsinki, Finland",
-  "description": "SiteDrive is a construction management platform for site managers and workers.",
-  "responsibilities": [
-    "Built Java/Spring backend with GraphQL middleware.",
-    "Developed React and React Native clients for web and mobile.",
-    "Delivered end-to-end features across backend and frontend.",
-    "Ensured scalable, maintainable, and user-friendly cross-platform solutions."
-  ]
+  "id": "work_sitedrive_2017",
+  "document": "Senior Fullstack Developer at SiteDrive (August 2017 - July 2018). SiteDrive is a construction management platform for site managers and workers. Built Java/Spring backend with GraphQL middleware. Developed React and React Native clients for web and mobile. Delivered end-to-end features across backend and frontend. Ensured scalable, maintainable, and user-friendly cross-platform solutions.",
+  "metadata": {
+    "type": "employment",
+    "company": "SiteDrive",
+    "title": "Senior Fullstack Developer",
+    "start_date": "August 2017",
+    "end_date": "July 2018",
+    "location": "Helsinki, Finland",
+    "duration_months": 12,
+    "description": "Construction management platform for site managers and workers",
+    "technologies": "Java, Spring, GraphQL, React, React Native, fullstack",
+    "responsibilities": "Backend development with GraphQL, mobile and web client development, end-to-end feature delivery",
+    "keywords": "java, spring, graphql, react, fullstack, construction, platform"
+  }
 }

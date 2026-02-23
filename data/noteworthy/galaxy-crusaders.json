@@ -1,6 +1,15 @@
 {
-  "name": "Galaxy Crusader",
-  "start_date": "January 2016",
-  "end_date": "January 2017",
-  "description": "2D multiplayer space exploration game; developed asset management service in Unity 3D."
+  "id": "project_galaxycrusader_2016",
+  "document": "Galaxy Crusader (January 2016 - January 2017). 2D multiplayer space exploration game with asset management service developed in Unity 3D. Multiplayer gameplay and game asset handling.",
+  "metadata": {
+    "type": "project",
+    "category": "noteworthy",
+    "name": "Galaxy Crusader",
+    "start_date": "January 2016",
+    "end_date": "January 2017",
+    "duration_years": 1,
+    "description": "2D multiplayer space exploration game; developed asset management service in Unity 3D",
+    "technologies": "Unity 3D, 2D game development, multiplayer",
+    "keywords": "unity, game, 2d, multiplayer, space, asset management"
+  }
 }

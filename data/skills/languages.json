@@ -1,6 +1,11 @@
-[
-  { "skill": "Dutch", "proficiency": "Native" },
-  { "skill": "English", "proficiency": "Fluent, IELTS 8" },
-  { "skill": "Swedish", "proficiency": "Basic" },
-  { "skill": "Finnish", "proficiency": "Basic" }
-]
+{
+  "id": "skills_languages",
+  "document": "Languages: Dutch at native speaker level. English fluent with IELTS 8 certification. Basic proficiency in Swedish and Finnish.",
+  "metadata": {
+    "type": "skills",
+    "category": "languages",
+    "skills": "Dutch, English, Swedish, Finnish",
+    "skills_with_proficiency": "Dutch (Native), English (Fluent, IELTS 8), Swedish (Basic), Finnish (Basic)",
+    "keywords": "dutch, english, swedish, finnish, languages, communication"
+  }
+}

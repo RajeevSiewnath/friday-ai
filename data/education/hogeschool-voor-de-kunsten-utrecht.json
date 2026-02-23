@@ -1,18 +1,17 @@
 {
-  "school": "Hogeschool voor de Kunsten Utrecht",
-  "location": "Hilversum, Netherlands",
-  "start_year": 2006,
-  "end_year": 2010,
-  "programme": "Interaction Design",
-  "degree": "Bachelor of Arts & Technology",
-  "focus_areas": [
-    "audiovisual design",
-    "animation",
-    "game programming",
-    "software development",
-    "electronics & robotics",
-    "usability & user testing",
-    "graphic design"
-  ],
-  "thesis": "Product development journey — research and design models for user-centered products."
+  "id": "edu_hvk_2006",
+  "document": "Bachelor of Arts & Technology in Interaction Design at Hogeschool voor de Kunsten Utrecht (2006-2010). Studied audiovisual design, animation, game programming, software development, electronics and robotics, usability and user testing, and graphic design. Thesis: Product development journey — research and design models for user-centered products.",
+  "metadata": {
+    "type": "education",
+    "degree": "Bachelor of Arts & Technology",
+    "school": "Hogeschool voor de Kunsten Utrecht",
+    "programme": "Interaction Design",
+    "location": "Hilversum, Netherlands",
+    "start_year": 2006,
+    "end_year": 2010,
+    "duration_years": 4,
+    "focus_areas": "audiovisual design, animation, game programming, software development, electronics, robotics, usability testing, graphic design",
+    "thesis": "Product development journey — research and design models for user-centered products.",
+    "keywords": "bachelor degree, interaction design, game programming, software, user-centered design"
+  }
 }

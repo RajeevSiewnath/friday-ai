@@ -1,6 +1,15 @@
 {
-  "name": "Treasure Tribes",
-  "start_date": "May 2015",
-  "end_date": "May 2016",
-  "description": "3D runner game; handled full technical implementation, asset management, level builder, distribution, and marketing (Unity 3D)."
+  "id": "project_treasuretr_2015",
+  "document": "Treasure Tribes (May 2015 - May 2016). 3D runner game with full technical implementation including asset management, level builder, distribution, and marketing. End-to-end game development using Unity 3D.",
+  "metadata": {
+    "type": "project",
+    "category": "noteworthy",
+    "name": "Treasure Tribes",
+    "start_date": "May 2015",
+    "end_date": "May 2016",
+    "duration_years": 1,
+    "description": "3D runner game; handled full technical implementation, asset management, level builder, distribution, and marketing (Unity 3D)",
+    "technologies": "Unity 3D, game development, 3D modeling",
+    "keywords": "unity, 3d, game, runner, asset management, marketing"
+  }
 }

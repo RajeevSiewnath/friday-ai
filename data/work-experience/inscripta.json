@@ -1,14 +1,17 @@
 {
-  "company": "Inscripta",
-  "title": "Senior Fullstack Developer",
-  "start_date": "May 2019",
-  "end_date": "December 2021",
-  "location": "Helsinki, Finland",
-  "description": "Inscripta provides high-performance dictation and transcription solutions.",
-  "responsibilities": [
-    "Developed Java/Spring Boot backend and React frontends for transcription tools.",
-    "Built Electron and React Native clients for desktop and mobile.",
-    "Implemented WebRTC for real-time audio input/output in Node.js and web.",
-    "Used DraftJS to create dynamic, interactive text editing experiences."
-  ]
+  "id": "work_inscripta_2019",
+  "document": "Senior Fullstack Developer at Inscripta (May 2019 - December 2021). Inscripta provides high-performance dictation and transcription solutions. Developed Java/Spring Boot backend and React frontends for transcription tools. Built Electron and React Native clients for desktop and mobile. Implemented WebRTC for real-time audio input/output in Node.js and web. Used DraftJS to create dynamic, interactive text editing experiences.",
+  "metadata": {
+    "type": "employment",
+    "company": "Inscripta",
+    "title": "Senior Fullstack Developer",
+    "start_date": "May 2019",
+    "end_date": "December 2021",
+    "location": "Helsinki, Finland",
+    "duration_years": 2.5,
+    "description": "High-performance dictation and transcription solutions",
+    "technologies": "Java, Spring Boot, React, Electron, React Native, WebRTC, Node.js, DraftJS, audio processing",
+    "responsibilities": "Backend development, frontend development, real-time audio, cross-platform clients, text editing",
+    "keywords": "java, react, transcription, webrtc, audio, electron, fullstack"
+  }
 }

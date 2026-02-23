@@ -1,6 +1,15 @@
 {
-  "name": "OGD",
-  "start_date": "September 2010",
-  "end_date": "March 2011",
-  "description": "Provided technical support, CMS management, web design, localization; worked with JIRA, TOPDesk and SharePoint."
+  "id": "project_ogd_2010",
+  "document": "OGD (September 2010 - March 2011). Provided technical support, CMS management, web design, and localization services. Worked with JIRA, TOPDesk and SharePoint for collaboration and support.",
+  "metadata": {
+    "type": "project",
+    "category": "noteworthy",
+    "name": "OGD",
+    "start_date": "September 2010",
+    "end_date": "March 2011",
+    "duration_months": 7,
+    "description": "Provided technical support, CMS management, web design, localization; worked with JIRA, TOPDesk and SharePoint",
+    "technologies": "JIRA, TOPDesk, SharePoint, CMS, web design",
+    "keywords": "support, cms, jira, topdesk, sharepoint, localization"
+  }
 }

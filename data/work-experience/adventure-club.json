@@ -1,14 +1,17 @@
 {
-  "company": "Adventure Club",
-  "title": "Senior Fullstack Developer",
-  "start_date": "August 2018",
-  "end_date": "May 2019",
-  "location": "Helsinki, Finland",
-  "description": "Adventure Club delivers digital projects via human-centered design.",
-  "responsibilities": [
-    "Developed React and React Native clients with JavaScript/TypeScript.",
-    "Integrated Contentful, Flamelink, and WordPress CMS platforms.",
-    "Delivered projects ranging from small independent initiatives to large collaborative platforms.",
-    "Ensured scalable and maintainable cross-platform solutions."
-  ]
+  "id": "work_adventureclub_2018",
+  "document": "Senior Fullstack Developer at Adventure Club (August 2018 - May 2019). Adventure Club delivers digital projects via human-centered design. Developed React and React Native clients with JavaScript/TypeScript. Integrated Contentful, Flamelink, and WordPress CMS platforms. Delivered projects ranging from small independent initiatives to large collaborative platforms. Ensured scalable and maintainable cross-platform solutions.",
+  "metadata": {
+    "type": "employment",
+    "company": "Adventure Club",
+    "title": "Senior Fullstack Developer",
+    "start_date": "August 2018",
+    "end_date": "May 2019",
+    "location": "Helsinki, Finland",
+    "duration_months": 10,
+    "description": "Digital projects delivered via human-centered design",
+    "technologies": "React, React Native, JavaScript, TypeScript, Contentful, Flamelink, WordPress, CMS",
+    "responsibilities": "Frontend development, CMS integration, cross-platform development, project delivery",
+    "keywords": "react, javascript, typescript, cms, contentful, wordpress, human-centered design"
+  }
 }

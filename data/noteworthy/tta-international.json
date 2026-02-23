@@ -1,6 +1,15 @@
 {
-  "name": "TTA International",
-  "start_date": "May 2012",
-  "end_date": "August 2012",
-  "description": "Created rich media e-learning content on Flash/ActionScript 3 platform."
+  "id": "project_ttainter_2012",
+  "document": "TTA International (May 2012 - August 2012). Created rich media e-learning content on Flash/ActionScript 3 platform. Interactive educational content development.",
+  "metadata": {
+    "type": "project",
+    "category": "noteworthy",
+    "name": "TTA International",
+    "start_date": "May 2012",
+    "end_date": "August 2012",
+    "duration_months": 4,
+    "description": "Created rich media e-learning content on Flash/ActionScript 3 platform",
+    "technologies": "Flash, ActionScript 3, e-learning, rich media",
+    "keywords": "flash, actionscript, elearning, education, multimedia"
+  }
 }

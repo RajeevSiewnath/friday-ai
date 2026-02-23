@@ -1,9 +1,10 @@
-[
-  { "skill": "Github" },
-  { "skill": "Slack" },
-  { "skill": "VSCode" },
-  { "skill": "ChatGPT" },
-  { "skill": "Claude" },
-  { "skill": "Google Drive" },
-  { "skill": "Terminal" }
-]
+{
+  "id": "skills_tools",
+  "document": "Development and productivity tools: Github for version control and collaboration, Slack for team communication, VSCode as primary code editor, ChatGPT and Claude for AI-assisted development, Google Drive for file management and collaboration, and Terminal for command-line development.",
+  "metadata": {
+    "type": "skills",
+    "category": "tools",
+    "skills": "Github, Slack, VSCode, ChatGPT, Claude, Google Drive, Terminal",
+    "keywords": "github, slack, vscode, tools, collaboration, productivity"
+  }
+}
