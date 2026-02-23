@@ -1,0 +1,14 @@
+{
+  "company": "Enevo",
+  "title": "Fullstack Developer",
+  "start_date": "April 2013",
+  "end_date": "July 2017",
+  "location": "Helsinki, Finland",
+  "description": "Enevo provides IoT-based waste management solutions.",
+  "responsibilities": [
+    "Developed backend APIs in Python and PHP within a microservices architecture.",
+    "Built React, React Native, and AngularJS clients for web and mobile.",
+    "Managed MySQL and MongoDB databases for scalable solutions.",
+    "Delivered small-scale projects and feature enhancements alongside main product."
+  ]
+}

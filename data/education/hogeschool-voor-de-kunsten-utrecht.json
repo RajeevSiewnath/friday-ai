@@ -1,0 +1,18 @@
+{
+  "school": "Hogeschool voor de Kunsten Utrecht",
+  "location": "Hilversum, Netherlands",
+  "start_year": 2006,
+  "end_year": 2010,
+  "programme": "Interaction Design",
+  "degree": "Bachelor of Arts & Technology",
+  "focus_areas": [
+    "audiovisual design",
+    "animation",
+    "game programming",
+    "software development",
+    "electronics & robotics",
+    "usability & user testing",
+    "graphic design"
+  ],
+  "thesis": "Product development journey — research and design models for user-centered products."
+}

@@ -1,0 +1,7 @@
+[
+  { "skill": "AWS", "years_of_experience": "+10 years" },
+  { "skill": "Docker", "years_of_experience": "+5 years" },
+  { "skill": "Github Actions", "years_of_experience": "+5 years" },
+  { "skill": "Kubernetes", "years_of_experience": "+2 years" },
+  { "skill": "Bitbucket pipelines", "years_of_experience": "+2 years" }
+]

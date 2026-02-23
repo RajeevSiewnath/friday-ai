@@ -1,0 +1,20 @@
+{
+  "school": "Aalto University",
+  "location": "Helsinki, Finland",
+  "start_year": 2012,
+  "end_year": 2014,
+  "programme": "New Media",
+  "degree": "Master of Arts",
+  "focus_areas": [
+    "3D modeling & animation",
+    "audiovisual studies",
+    "spatial interaction design",
+    "installations &",
+    "robotics",
+    "electronics & embedded technologies",
+    "sound design",
+    "software studies & game design",
+    "programming"
+  ],
+  "thesis": "Tooling software for software companies — classification of tools for specific purposes."
+}

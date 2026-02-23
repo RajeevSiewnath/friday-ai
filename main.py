@@ -7,6 +7,8 @@ from openai import OpenAI
 from tools.get_sections import get_sections, get_sections_tool
 from tools.get_section import get_section, get_section_tool
 from colorama import Fore, Back, Style, init
+from pathlib import Path
+
 
 init()
 
@@ -124,5 +126,25 @@ def main():
     app.launch()
 
 
+def build_rag_vector_db():
+    folder_path = Path("data")
+    files = []
+
+    for file_path in folder_path.rglob("*"):
+        if file_path.is_file():
+            with open(file_path, "r", encoding="utf-8") as f:
+                content = f.read()
+            files.append(
+                {
+                    "source": str(file_path.relative_to(folder_path)),
+                    "type": str(file_path.parent.relative_to(folder_path)),
+                    "content": json.loads(content),
+                }
+            )
+
+    embeddings = client.embeddings.create(encoding_format="text-embedding-3-small")
+
+
 if __name__ == "__main__":
-    main()
+    print("RUN")
+    build_rag_vector_db()

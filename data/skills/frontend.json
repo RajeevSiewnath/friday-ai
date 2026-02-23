@@ -1,0 +1,10 @@
+[
+  { "skill": "JavaScript", "years_of_experience": "+10 years" },
+  { "skill": "TypeScript", "years_of_experience": "+10 years" },
+  { "skill": "React", "years_of_experience": "+10 years" },
+  { "skill": "React Native", "years_of_experience": "+5 years" },
+  { "skill": "Vue.js", "years_of_experience": "+5 years" },
+  { "skill": "Nuxt.js", "years_of_experience": "+5 years" },
+  { "skill": "Angular", "years_of_experience": "+2 years" },
+  { "skill": "Next.js", "years_of_experience": "+2 years" }
+]

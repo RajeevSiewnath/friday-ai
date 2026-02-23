@@ -1,0 +1,7 @@
+[
+  { "skill": "Unity 3D", "years_of_experience": "+10 years" },
+  { "skill": "Keycloak", "years_of_experience": "+5 years" },
+  { "skill": "RabbitMQ", "years_of_experience": "+5 years" },
+  { "skill": "Prometheus", "years_of_experience": "+2 years" },
+  { "skill": "Grafana", "years_of_experience": "+2 years" }
+]

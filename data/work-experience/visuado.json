@@ -1,0 +1,40 @@
+{
+  "company": "Visuado",
+  "title": "Senior Fullstack Developer",
+  "start_date": "January 2022",
+  "end_date": null,
+  "location": "Helsinki, Finland",
+  "description": "Visuado is a next-generation visualization platform enabling virtual apartment tours, helping buyers decide faster and developers sell more efficiently.",
+  "responsibilities": [
+    "Led Kubernetes and AWS infrastructure for scalable deployments.",
+    "Built a public TypeScript API with automated OpenAPI specs and Keycloak authentication.",
+    "Designed and developed an admin platform in Vue.js to streamline internal operations.",
+    "Established CI/CD pipelines and QA tools for unit testing and automation.",
+    "Maintained observability tools (Grafana, Prometheus) with Slack alerts and Sentry for monitoring.",
+    "Managed organizational NPM libraries and async systems via custom queueing brokers.",
+    "Authored and maintained the company wiki for documentation and onboarding.",
+    "Led integration projects with third-party systems and clients, ensuring smooth interoperability."
+  ],
+  "projects": [
+    "Kubernetes integration and maintenance on AWS EKS",
+    "Added public TypeScript API in Node.js with automated openAPI specs",
+    "Created easy to setup unit tests with fixtures",
+    "Created QA tools for designers to easily replace developer-only responsibilities",
+    "Created and managed a wiki for all internal information",
+    "Created a CI/CD pipeline to automate deployments",
+    "Created and managed a queueing broker to handle async operations",
+    "Maintaining the cloud infrastructure on AWS (EC2, S3, Lambda, IAM, Cloudfront)",
+    "Managed EC2 instances and services",
+    "Wrote admin application from scratch in Vue.js",
+    "Added keycloak for user auth",
+    "Added an iframe script creator and iframe generation page",
+    "Added scalable systems for modular setups",
+    "Maintained monitoring platform Grafana and prometheus",
+    "Added integrations and notifications to slack for all system events",
+    "Created and maintained organizational NPM account and authored several libraries",
+    "Created and maintained Sentry for bug tracking",
+    "Created metrics for users",
+    "Created several tools for developers to work with sensitive data",
+    "Ran some integrations projects (both with 3rd party software and clients)"
+  ]
+}
