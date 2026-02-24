@@ -1,6 +1,6 @@
 .PHONY: dev
 dev:
-	uv run watchfiles "python main.py" data main.py
+	uv run watchfiles "python src/main.py" src
 
 .PHONY: lint
 lint:
