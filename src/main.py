@@ -2,7 +2,7 @@ import json
 import gradio as gr
 import os
 from dotenv import load_dotenv
-from openai import OpenAI
+from openai import OpenAI, embeddings
 from ChatLoop import ChatLoop, Role
 from tools.get_sections import get_sections, get_sections_tool
 from colorama import Fore, Back, Style, init
@@ -10,6 +10,10 @@ from pathlib import Path
 import chromadb
 from chromadb.utils import embedding_functions
 from chromadb.config import Settings
+from sklearn.manifold import TSNE
+import plotly.graph_objects as go
+import plotly.io as pio
+import numpy as np
 
 
 init()
@@ -89,10 +93,11 @@ def main():
                     outputs=[textfield, chatbot, textfield],
                 )
             with gr.Column():
+                gr.Plot(create_scatter_plot())
                 pass
 
     os.system("cls" if os.name == "nt" else "clear")
-    app.launch(share=True)
+    app.launch()
 
 
 def build_rag_vector_db():
@@ -100,15 +105,9 @@ def build_rag_vector_db():
     folder_path = Path("data")
     files = []
 
-    embedding_function = embedding_functions.OpenAIEmbeddingFunction(
-        api_key=os.environ.get("OPENAI_API_KEY"), model_name="text-embedding-3-small"
-    )
+    collection = chroma.get_collection(name="cv-rajeev-siewnath")
 
-    try:
-        collection = chroma.create_collection(
-            name="cv-rajeev-siewnath", embedding_function=embedding_function
-        )
-
+    if not collection:
         for file_path in folder_path.rglob("*"):
             if file_path.is_file():
                 with open(file_path, "r", encoding="utf-8") as f:
@@ -121,8 +120,16 @@ def build_rag_vector_db():
                     }
                 )
 
+        embeddings_result = embeddings.create(
+            model="text-embedding-3-small",
+            input=[file["content"]["document"] for file in files],
+        ).data
+        vectors = [e.embedding for e in embeddings_result]
+
+        collection = chroma.create_collection(name="cv-rajeev-siewnath")
         collection.add(
             ids=[file["content"]["id"] for file in files],
+            embeddings=vectors,
             metadatas=[
                 {
                     **file["content"]["metadata"],
@@ -135,8 +142,7 @@ def build_rag_vector_db():
         )
 
         print("Skills entry ingested into Chroma successfully!")
-    except:
-        collection = chroma.get_collection(name="cv-rajeev-siewnath")
+    else:
         print("Chroma db is probably existing already")
 
 
@@ -151,8 +157,49 @@ def read_from_vector_db(query):
     ]
 
 
+def create_scatter_plot():
+    global collection
+    types = [metadata["type"] for metadata in collection.get()["metadatas"]]
+    colors = [
+        ["blue", "green", "red", "orange", "purple"][
+            ["education", "project", "profile", "skills", "employment"].index(t)
+        ]
+        for t in types
+    ]
+    tsne = TSNE(n_components=2, random_state=42, perplexity=5)
+    reduced_vectors = tsne.fit_transform(
+        np.array(collection.get(include=["embeddings"])["embeddings"])
+    )
+
+    # Create the 2D scatter plot
+    fig = go.Figure(
+        data=[
+            go.Scatter(
+                x=reduced_vectors[:, 0],
+                y=reduced_vectors[:, 1],
+                mode="markers",
+                marker=dict(size=5, color=colors, opacity=0.8),
+                text=[
+                    f"Type: {t}<br>Text: {d[:100]}..."
+                    for t, d in zip(
+                        types, collection.get(include=["documents"])["documents"]
+                    )
+                ],
+                hoverinfo="text",
+            )
+        ]
+    )
+
+    fig.update_layout(
+        title="2D Chroma Vector Store Visualization",
+        scene=dict(xaxis_title="x", yaxis_title="y"),
+        margin=dict(r=20, b=10, l=10, t=40),
+    )
+
+    return fig
+
+
 if __name__ == "__main__":
     print("Running!")
     build_rag_vector_db()
-    print(collection)
     main()
