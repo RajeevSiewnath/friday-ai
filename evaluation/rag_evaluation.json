@@ -1,0 +1,338 @@
+[
+  {
+    "category": "profile",
+    "question": "What is Rajeev's current role and location?",
+    "answer": "Rajeev Viyendra Siewnath is a Senior Fullstack Developer based in Helsinki, Finland.",
+    "keywords": ["fullstack", "developer", "senior", "Helsinki", "Finland"]
+  },
+  {
+    "category": "profile",
+    "question": "How can you contact Rajeev?",
+    "answer": "Rajeev can be contacted via email at info@rajeevsiewnath.com or phone at +358407474993.",
+    "keywords": ["contact", "email", "phone", "info@rajeevsiewnath.com", "+358407474993"]
+  },
+  {
+    "category": "profile",
+    "question": "What is Rajeev's nationality and date of birth?",
+    "answer": "Rajeev has Dutch nationality and was born on 26th of May 1986.",
+    "keywords": ["nationality", "Dutch", "date of birth", "1986"]
+  },
+  {
+    "category": "profile",
+    "question": "Where can you find Rajeev's online profiles?",
+    "answer": "Rajeev's professional profiles include LinkedIn at https://linkedin.com/in/rajeev-siewnath, Github at https://github.com/RajeevSiewnath, and personal website at https://rajeevsiewnath.com.",
+    "keywords": ["LinkedIn", "Github", "website", "online profiles", "social media"]
+  },
+  {
+    "category": "skills",
+    "question": "What backend technologies does Rajeev have experience with?",
+    "answer": "Rajeev has over 10 years experience in Node.js with Express and Nest.js, 10+ years with Java using Spring Boot, 10+ years with PHP using Laravel and Lumen, and 5+ years with Python using FastAPI, Django, and Flask.",
+    "keywords": ["backend", "Node.js", "Java", "PHP", "Python", "Express", "Spring Boot", "Laravel"]
+  },
+  {
+    "category": "skills",
+    "question": "What database technologies has Rajeev worked with?",
+    "answer": "Rajeev has 5+ years experience with both SQL databases (Postgres, MySQL) and NoSQL databases (MongoDB).",
+    "keywords": ["database", "SQL", "NoSQL", "Postgres", "MySQL", "MongoDB"]
+  },
+  {
+    "category": "skills",
+    "question": "What API development experience does Rajeev have?",
+    "answer": "Rajeev has 5+ years experience with REST API development and 2+ years with GraphQL API development.",
+    "keywords": ["API", "REST", "GraphQL", "development", "web services"]
+  },
+  {
+    "category": "skills",
+    "question": "What are Rajeev's frontend skills?",
+    "answer": "Rajeev has over 10 years experience with JavaScript and TypeScript. He has 10+ years with React, 5+ years with React Native and Vue.js, 5+ years with Nuxt.js, and 2+ years with Angular and Next.js.",
+    "keywords": ["frontend", "JavaScript", "TypeScript", "React", "Vue.js", "Angular"]
+  },
+  {
+    "category": "skills",
+    "question": "What languages does Rajeev speak?",
+    "answer": "Rajeev speaks Dutch at native speaker level, English fluently with IELTS 8 certification, and has basic proficiency in Swedish and Finnish.",
+    "keywords": ["languages", "Dutch", "English", "Swedish", "Finnish", "IELTS 8"]
+  },
+  {
+    "category": "skills",
+    "question": "What CI/CD and DevOps experience does Rajeev have?",
+    "answer": "Rajeev has over 10 years experience with AWS cloud infrastructure, 5+ years with Docker containerization and GitHub Actions CI/CD pipelines, and 2+ years with Kubernetes orchestration and Bitbucket pipelines.",
+    "keywords": ["CI/CD", "DevOps", "AWS", "Docker", "Kubernetes", "GitHub Actions"]
+  },
+  {
+    "category": "employment",
+    "question": "Tell me about Rajeev's role at Collaplan?",
+    "answer": "Rajeev was Founder and CTO at Collaplan from January 2014 to January 2024 (10 years). Collaplan is a collaborative urban planning platform. He built Laravel Lumen backend APIs and React web clients, managed MySQL databases, integrated Google Maps for geospatial features, and used Docker for deployment.",
+    "keywords": ["Collaplan", "founder", "CTO", "urban planning", "Laravel", "React", "geospatial"]
+  },
+  {
+    "category": "employment",
+    "question": "What did Rajeev do at Visuado?",
+    "answer": "Rajeev is Senior Fullstack Developer at Visuado (January 2022 - Present). Visuado is a visualization platform for virtual apartment tours. He led Kubernetes and AWS infrastructure, built a TypeScript API with Keycloak authentication, designed a Vue.js admin platform, established CI/CD pipelines, and maintained monitoring tools including Grafana and Prometheus.",
+    "keywords": ["Visuado", "visualization", "Kubernetes", "AWS", "TypeScript", "Vue.js", "CI/CD"]
+  },
+  {
+    "category": "employment",
+    "question": "Describe Rajeev's work at Inscripta?",
+    "answer": "Rajeev was Senior Fullstack Developer at Inscripta from May 2019 to December 2021. Inscripta provides transcription solutions. He developed Java/Spring Boot backend and React frontends, built Electron and React Native clients, implemented WebRTC for real-time audio, and used DraftJS for text editing.",
+    "keywords": ["Inscripta", "transcription", "Java", "Spring Boot", "React", "WebRTC", "audio"]
+  },
+  {
+    "category": "employment",
+    "question": "What was Rajeev's experience at Enevo?",
+    "answer": "Rajeev was Fullstack Developer at Enevo from April 2013 to July 2017. Enevo provides IoT-based waste management solutions. He developed backend APIs in Python and PHP, built React, React Native, and AngularJS clients, and managed MySQL and MongoDB databases.",
+    "keywords": ["Enevo", "IoT", "waste management", "Python", "PHP", "React", "microservices"]
+  },
+  {
+    "category": "employment",
+    "question": "Tell me about Rajeev's role at SiteDrive?",
+    "answer": "Rajeev was Senior Fullstack Developer at SiteDrive from August 2017 to July 2018. SiteDrive is a construction management platform. He built Java/Spring backend with GraphQL middleware and React/React Native clients for web and mobile platforms.",
+    "keywords": ["SiteDrive", "construction", "management", "Java", "Spring", "GraphQL"]
+  },
+  {
+    "category": "employment",
+    "question": "What did Rajeev do at Adventure Club?",
+    "answer": "Rajeev was Senior Fullstack Developer at Adventure Club from August 2018 to May 2019. The company delivers digital projects via human-centered design. He developed React and React Native clients and integrated CMS platforms including Contentful, Flamelink, and WordPress.",
+    "keywords": ["Adventure Club", "React", "CMS", "Contentful", "WordPress", "human-centered design"]
+  },
+  {
+    "category": "employment",
+    "question": "Describe Rajeev's work at WorldSkills?",
+    "answer": "Rajeev was Senior Fullstack Developer at WorldSkills from March 2020 to November 2020. He built and modernized Angular 9 applications, migrating legacy AngularJS apps and integrating with Java-based backends.",
+    "keywords": ["WorldSkills", "Angular", "AngularJS", "modernization", "migration"]
+  },
+  {
+    "category": "education",
+    "question": "What is Rajeev's educational background?",
+    "answer": "Rajeev has a Bachelor of Arts & Technology in Interaction Design from Hogeschool voor de Kunsten Utrecht (2006-2010) and a Master of Arts in New Media from Aalto University (2012-2014).",
+    "keywords": ["education", "degree", "Interaction Design", "New Media", "Aalto", "Utrecht"]
+  },
+  {
+    "category": "education",
+    "question": "What was Rajeev's Master's thesis about?",
+    "answer": "Rajeev's Master's thesis at Aalto University was titled 'Tooling software for software companies — classification of tools for specific purposes'.",
+    "keywords": ["thesis", "tooling", "software", "companies", "classification"]
+  },
+  {
+    "category": "education",
+    "question": "What were the main focus areas of Rajeev's Master's program?",
+    "answer": "During his Master's in New Media at Aalto, Rajeev studied 3D modeling and animation, audiovisual studies, spatial interaction design, installations, robotics, electronics and embedded technologies, sound design, software studies and game design, and programming.",
+    "keywords": ["3D modeling", "animation", "robotics", "game design", "software studies"]
+  },
+  {
+    "category": "education",
+    "question": "What was Rajeev's Bachelor's thesis about?",
+    "answer": "Rajeev's Bachelor's thesis at Hogeschool voor de Kunsten Utrecht was titled 'Product development journey — research and design models for user-centered products'.",
+    "keywords": ["thesis", "product development", "user-centered", "research", "design"]
+  },
+  {
+    "category": "education",
+    "question": "What focus areas did Rajeev study in his Bachelor's program?",
+    "answer": "During his Bachelor's in Interaction Design, Rajeev studied audiovisual design, animation, game programming, software development, electronics and robotics, usability and user testing, and graphic design.",
+    "keywords": ["interaction design", "game programming", "usability", "graphic design", "electronics"]
+  },
+  {
+    "category": "project",
+    "question": "Tell me about the ArtHub project?",
+    "answer": "ArtHub was a notable project from February 2014 to October 2016. It's a virtual 3D museum gallery using Unity 3D and web deployment via Unity Player, providing interactive 3D experiences for museum collections.",
+    "keywords": ["ArtHub", "Unity 3D", "museum", "gallery", "interactive", "3D"]
+  },
+  {
+    "category": "project",
+    "question": "Describe the Galaxy Crusader project?",
+    "answer": "Galaxy Crusader was a project from January 2016 to January 2017. It's a 2D multiplayer space exploration game developed in Unity 3D with an asset management service.",
+    "keywords": ["Galaxy Crusader", "Unity", "game", "2D", "multiplayer", "space"]
+  },
+  {
+    "category": "project",
+    "question": "What is the Treasure Tribes project?",
+    "answer": "Treasure Tribes was a notable project from May 2015 to May 2016. It's a 3D runner game developed in Unity 3D with full technical implementation including asset management, level builder, distribution, and marketing.",
+    "keywords": ["Treasure Tribes", "Unity", "3D", "game", "runner", "asset management"]
+  },
+  {
+    "category": "project",
+    "question": "Tell me about the HVMP project?",
+    "answer": "HVMP was a project from May 2011 to May 2012 where Rajeev built web apps, portals, and backend systems using PHP and CMS Made Simple for SEO-focused clients.",
+    "keywords": ["HVMP", "PHP", "CMS", "web", "SEO", "portal"]
+  },
+  {
+    "category": "project",
+    "question": "What is the Label A project?",
+    "answer": "Label A was a project from September 2008 to January 2009 where Rajeev designed websites and digital media using ColdFusion and Flash/ActionScript.",
+    "keywords": ["Label A", "ColdFusion", "Flash", "ActionScript", "web design"]
+  },
+  {
+    "category": "project",
+    "question": "Describe the OGD project?",
+    "answer": "OGD was a project from September 2010 to March 2011 where Rajeev provided technical support, CMS management, web design, and localization services. He worked with JIRA, TOPDesk, and SharePoint for collaboration and support.",
+    "keywords": ["OGD", "technical support", "CMS", "JIRA", "TOPDesk", "SharePoint"]
+  },
+  {
+    "category": "project",
+    "question": "What is the TTA International project?",
+    "answer": "TTA International was a project from May 2012 to August 2012 where Rajeev created rich media e-learning content on Flash/ActionScript 3 platform.",
+    "keywords": ["TTA International", "Flash", "ActionScript", "e-learning", "multimedia"]
+  },
+  {
+    "category": "skills",
+    "question": "What development and productivity tools does Rajeev use?",
+    "answer": "Rajeev uses Github for version control and collaboration, Slack for team communication, VSCode as primary code editor, ChatGPT and Claude for AI-assisted development, Google Drive for file management, and Terminal for command-line development.",
+    "keywords": ["tools", "Github", "Slack", "VSCode", "ChatGPT", "Claude"]
+  },
+  {
+    "category": "skills",
+    "question": "What additional technical skills does Rajeev have?",
+    "answer": "Rajeev has 10+ years with Unity 3D game development, 5+ years with Keycloak identity and access management, 5+ years with RabbitMQ message queuing, and 2+ years with Prometheus monitoring and Grafana data visualization.",
+    "keywords": ["Unity 3D", "Keycloak", "RabbitMQ", "Prometheus", "Grafana", "monitoring"]
+  },
+  {
+    "category": "skills",
+    "question": "How many years has Rajeev worked as a fullstack developer?",
+    "answer": "Rajeev has been working as a Senior Fullstack Developer for multiple companies, with significant fullstack experience across React, Node.js, Java, PHP, and Python spanning over 10+ years in various fullstack roles.",
+    "keywords": ["fullstack", "experience", "years", "senior", "developer"]
+  },
+  {
+    "category": "project",
+    "question": "What game development projects has Rajeev worked on?",
+    "answer": "Rajeev has developed three notable game projects: Galaxy Crusader (2D multiplayer space game with asset management), Treasure Tribes (3D runner game with level builder and marketing), and worked with Unity 3D extensively throughout his career.",
+    "keywords": ["game development", "Unity 3D", "Galaxy Crusader", "Treasure Tribes", "3D", "2D"]
+  },
+  {
+    "category": "employment",
+    "question": "Which companies has Rajeev worked as CTO or founder?",
+    "answer": "Rajeev was Founder and CTO at Collaplan, a collaborative urban planning platform, which he led for 10 years from January 2014 to January 2024.",
+    "keywords": ["CTO", "founder", "Collaplan", "leadership", "startup"]
+  },
+  {
+    "category": "skills",
+    "question": "What is Rajeev's experience with infrastructure and DevOps?",
+    "answer": "Rajeev has extensive DevOps experience including 10+ years with AWS, 5+ years with Docker, 5+ years with GitHub Actions, 2+ years with Kubernetes, and has led infrastructure at Visuado on AWS EKS with monitoring via Grafana and Prometheus.",
+    "keywords": ["DevOps", "infrastructure", "AWS", "Docker", "Kubernetes", "EKS"]
+  },
+  {
+    "category": "skills",
+    "question": "What CMS platforms has Rajeev integrated with?",
+    "answer": "Rajeev has integrated multiple CMS platforms including Contentful, Flamelink, WordPress, and CMS Made Simple across various projects.",
+    "keywords": ["CMS", "Contentful", "WordPress", "integration", "Flamelink"]
+  },
+  {
+    "category": "skills",
+    "question": "Has Rajeev worked with real-time technologies? What experience?",
+    "answer": "Yes, Rajeev has implemented WebRTC for real-time audio input/output at Inscripta for their transcription solutions, demonstrating expertise in real-time communication technologies.",
+    "keywords": ["WebRTC", "real-time", "audio", "Inscripta", "communication"]
+  },
+  {
+    "category": "employment",
+    "question": "What industries has Rajeev worked in?",
+    "answer": "Rajeev has worked across diverse industries including waste management (Enevo), construction (SiteDrive), urban planning (Collaplan), transcription/audio (Inscripta), real estate visualization (Visuado), game development, e-learning, and education (WorldSkills).",
+    "keywords": ["industries", "IoT", "construction", "transcription", "real estate", "e-learning"]
+  },
+  {
+    "category": "skills",
+    "question": "What is Rajeev's experience with microservices architecture?",
+    "answer": "Rajeev has developed backend APIs within microservices architecture at Enevo, building scalable Python and PHP APIs for IoT waste management solutions.",
+    "keywords": ["microservices", "architecture", "APIs", "Enevo", "scalable"]
+  },
+  {
+    "category": "skills",
+    "question": "How has Rajeev's technology stack evolved over his career?",
+    "answer": "Rajeev's early career (2008-2011) focused on ColdFusion, Flash, and PHP. He transitioned to modern frameworks like React, Node.js, and Java (2013+). Recently, he's focused on infrastructure with Kubernetes, AWS, TypeScript APIs, and monitoring tools.",
+    "keywords": ["career evolution", "tech stack", "React", "Node.js", "Kubernetes"]
+  },
+  {
+    "category": "skills",
+    "question": "What frameworks has Rajeev used for both frontend and backend?",
+    "answer": "Frontend frameworks: React (10+ years), Vue.js (5+ years), Angular (2+ years), Next.js (2+ years). Backend frameworks: Node.js/Express/Nest.js (10+ years), Spring Boot (10+ years), Laravel/Lumen (10+ years), FastAPI/Django/Flask (5+ years).",
+    "keywords": ["frameworks", "React", "Vue.js", "Express", "Spring Boot", "Laravel"]
+  },
+  {
+    "category": "skills",
+    "question": "What is Rajeev's experience with mobile development?",
+    "answer": "Rajeev has 5+ years with React Native, building cross-platform mobile applications at multiple companies including Enevo, SiteDrive, Inscripta, and Adventure Club.",
+    "keywords": ["React Native", "mobile", "cross-platform", "iOS", "Android"]
+  },
+  {
+    "category": "skills",
+    "question": "What text editing and media technologies has Rajeev worked with?",
+    "answer": "Rajeev has experience with DraftJS for dynamic text editing at Inscripta, along with audiovisual studies and sound design from his academic background at Aalto.",
+    "keywords": ["DraftJS", "text editing", "audiovisual", "media", "Inscripta"]
+  },
+  {
+    "category": "employment",
+    "question": "How long did Rajeev work at Collaplan and what role did he have?",
+    "answer": "Rajeev was at Collaplan for 10 years (January 2014 - January 2024) as Founder and CTO, building a collaborative urban planning platform with geospatial features.",
+    "keywords": ["Collaplan", "10 years", "founder", "CTO", "geospatial", "urban planning"]
+  },
+  {
+    "category": "skills",
+    "question": "What authentication and access management experience does Rajeev have?",
+    "answer": "Rajeev has 5+ years with Keycloak for identity and access management, and implemented Keycloak authentication for the public TypeScript API at Visuado.",
+    "keywords": ["Keycloak", "authentication", "access management", "security", "identity"]
+  },
+  {
+    "category": "skills",
+    "question": "What monitoring and observability tools has Rajeev used?",
+    "answer": "Rajeev has experience with Grafana for dashboarding (2+ years), Prometheus for metrics and monitoring (2+ years), and Sentry for bug tracking, establishing comprehensive observability at Visuado.",
+    "keywords": ["monitoring", "Grafana", "Prometheus", "Sentry", "observability"]
+  },
+  {
+    "category": "employment",
+    "question": "What educational content or documentation has Rajeev created?",
+    "answer": "Rajeev authored and maintained the company wiki at Visuado for documentation and onboarding. He also created rich media e-learning content for TTA International using Flash/ActionScript 3.",
+    "keywords": ["documentation", "wiki", "onboarding", "e-learning", "content"]
+  },
+  {
+    "category": "employment",
+    "question": "Which companies had Rajeev work on only brief contracts?",
+    "answer": "Rajeev worked on shorter contracts at WorldSkills (9 months), SiteDrive (12 months), and Adventure Club (10 months).",
+    "keywords": ["contract", "short-term", "WorldSkills", "SiteDrive", "Adventure Club"]
+  },
+  {
+    "category": "skills",
+    "question": "What geospatial and mapping technologies has Rajeev worked with?",
+    "answer": "Rajeev integrated Google Maps for geospatial features at Collaplan for their collaborative urban planning platform, demonstrating expertise in location-based services.",
+    "keywords": ["geospatial", "Google Maps", "mapping", "location services", "Collaplan"]
+  },
+  {
+    "category": "employment",
+    "question": "Has Rajeev led teams or infrastructure projects?",
+    "answer": "Yes, as CTO at Collaplan and Senior Fullstack Developer at Visuado, Rajeev led infrastructure projects including Kubernetes on AWS EKS, CI/CD pipelines, and established monitoring and observability systems.",
+    "keywords": ["leadership", "infrastructure", "Kubernetes", "AWS EKS", "CI/CD"]
+  },
+  {
+    "category": "skills",
+    "question": "What experience does Rajeev have with graphics or 3D technologies?",
+    "answer": "Rajeev has extensive 3D experience including 10+ years with Unity 3D, formal training in 3D modeling and animation at Aalto, and developed projects like ArtHub (virtual 3D museum) and Treasure Tribes (3D runner game).",
+    "keywords": ["3D", "graphics", "Unity 3D", "animation", "modeling"]
+  },
+  {
+    "category": "skills",
+    "question": "What message queuing experience does Rajeev have?",
+    "answer": "Rajeev has 5+ years experience with RabbitMQ for message queuing and managed async systems via custom queueing brokers at Visuado.",
+    "keywords": ["RabbitMQ", "message queue", "async", "queuing", "messaging"]
+  },
+  {
+    "category": "skills",
+    "question": "How has Rajeev contributed to open source or organizational tools?",
+    "answer": "Rajeev managed organizational NPM libraries at Visuado and used Github extensively for version control and collaboration across all his roles.",
+    "keywords": ["open source", "NPM", "libraries", "Github", "organizational tools"]
+  },
+  {
+    "category": "education",
+    "question": "What is Rajeev's background in interaction and user-centered design?",
+    "answer": "Rajeev studied Interaction Design and has formal training in usability, user testing, and user-centered product development from his Bachelor's at Hogeschool voor de Kunsten Utrecht.",
+    "keywords": ["interaction design", "UX", "user testing", "usability", "user-centered"]
+  },
+  {
+    "category": "employment",
+    "question": "Which companies did Rajeev work at as a Senior Fullstack Developer?",
+    "answer": "Rajeev worked as Senior Fullstack Developer at Inscripta (2019-2021), SiteDrive (2017-2018), Adventure Club (2018-2019), WorldSkills (2020), and is currently at Visuado (2022-Present).",
+    "keywords": ["Senior Fullstack Developer", "Inscripta", "SiteDrive", "WorldSkills", "Visuado"]
+  },
+  {
+    "category": "employment",
+    "question": "What technologies did Rajeev use in his longest role?",
+    "answer": "At Collaplan (10 years), Rajeev used Laravel Lumen for backend APIs, React for frontends, MySQL for databases, Google Maps for geospatial features, Unity 3D for visualization, C# for tools, and Docker for deployment.",
+    "keywords": ["Collaplan", "Laravel", "React", "MySQL", "Docker", "C#"]
+  }
+]

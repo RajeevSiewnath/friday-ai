@@ -8,11 +8,9 @@ from tools.get_sections import get_sections, get_sections_tool
 from colorama import Fore, Back, Style, init
 from pathlib import Path
 import chromadb
-from chromadb.utils import embedding_functions
 from chromadb.config import Settings
 from sklearn.manifold import TSNE
 import plotly.graph_objects as go
-import plotly.io as pio
 import numpy as np
 
 
@@ -148,7 +146,9 @@ def build_rag_vector_db():
 
 def read_from_vector_db(query):
     global collection
-    results = collection.query(query_texts=query, n_results=3)
+    response = client.embeddings.create(model="text-embedding-3-small", input=query)
+    embedding = response.data[0].embedding
+    results = collection.query(query_embeddings=embedding, n_results=3)
     return [
         {"document": result[0], "id": result[1], "metadata": result[2]}
         for result in zip(
