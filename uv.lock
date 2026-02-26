@@ -447,6 +447,7 @@ dependencies = [
     { name = "plotly" },
     { name = "python-dotenv" },
     { name = "scikit-learn" },
+    { name = "tqdm" },
 ]
 
 [package.dev-dependencies]
@@ -464,6 +465,7 @@ requires-dist = [
     { name = "plotly", specifier = ">=6.5.2" },
     { name = "python-dotenv", specifier = ">=1.2.1" },
     { name = "scikit-learn", specifier = ">=1.8.0" },
+    { name = "tqdm", specifier = ">=4.67.3" },
 ]
 
 [package.metadata.requires-dev]

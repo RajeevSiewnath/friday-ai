@@ -1,7 +1,7 @@
 [project]
 name = "friday"
 version = "0.1.0"
-description = "Add your description here"
+description = "LLMagic"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
@@ -13,6 +13,7 @@ dependencies = [
     "plotly>=6.5.2",
     "python-dotenv>=1.2.1",
     "scikit-learn>=1.8.0",
+    "tqdm>=4.67.3",
 ]
 
 [dependency-groups]
