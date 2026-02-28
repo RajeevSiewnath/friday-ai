@@ -16,14 +16,13 @@ class Chunk(BaseModel):
     )
 
     def as_result(self, document: JsonDocument):
-        metadata = {
-            **document.metadata,
-            "source": document.source,
-            "type": document.type,
-        }
         return ChunkResult(
             id=document.id,
-            metadata=metadata,
+            metadata={
+                **document.metadata,
+                "source": document.source,
+                "type": document.type,
+            },
             document=self.headline
             + "\n\n"
             + self.summary

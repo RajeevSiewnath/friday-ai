@@ -1,3 +1,4 @@
+from tqdm import tqdm
 from invocation.document_loader import document_loader
 from invocation.invoke_llm import invoke_llm
 from invocation.JsonDocument import JsonDocument, JsonDocumentCollection
@@ -36,6 +37,13 @@ def process_document(document: JsonDocument) -> list[ChunkResult]:
     response: Chunks = invoke_llm(input=messages, response_format=Chunks)
     chunked_doc = response.chunks
     return [chunk.as_result(document) for chunk in chunked_doc]
+
+
+def process_documents(documents: JsonDocumentCollection) -> list[ChunkResult]:
+    chunks = []
+    for doc in tqdm(documents.json_documents):
+        chunks.extend(process_document(doc))
+    return chunks
 
 
 if __name__ == "__main__":
