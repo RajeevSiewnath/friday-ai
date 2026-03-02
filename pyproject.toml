@@ -3,7 +3,7 @@ name = "friday"
 version = "0.1.0"
 description = "LLMagic"
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.13"
 dependencies = [
     "chromadb>=1.5.1",
     "colorama>=0.4.6",

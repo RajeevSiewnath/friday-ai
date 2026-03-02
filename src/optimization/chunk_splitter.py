@@ -1,6 +1,6 @@
 from tqdm import tqdm
 from invocation.document_loader import document_loader
-from invocation.invoke_llm import invoke_llm
+from invocation.llm import invoke_llm
 from invocation.JsonDocument import JsonDocument, JsonDocumentCollection
 from optimization.Chunk import ChunkResult, Chunks
 

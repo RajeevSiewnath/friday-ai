@@ -1,6 +1,6 @@
 from typing import Any
 
-from invocation.invoke_llm import invoke_llm
+from invocation.llm import invoke_llm
 from optimization.Chunk import ChunkResult
 
 

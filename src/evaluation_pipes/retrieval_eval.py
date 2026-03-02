@@ -1,0 +1,123 @@
+import math
+from chromadb import Collection
+import chromadb
+from pydantic import BaseModel, Field
+from tqdm import tqdm
+from chromadb.config import Settings
+from core.llm import embedding
+from evaluation_pipes.questions_loader import QuestionsLoader
+from pipelines.abstract_pipeline import AbstractPipe
+from pipelines.evaluation_pipeline import EvaluationScore, TestQuestion
+
+
+class RetrievalEvalResult(BaseModel):
+    """Evaluation metrics for retrieval performance."""
+
+    mrr: float = Field(description="Mean Reciprocal Rank - average across all keywords")
+    ndcg: float = Field(
+        description="Normalized Discounted Cumulative Gain (binary relevance)"
+    )
+    keywords_found: int = Field(description="Number of keywords found in top-k results")
+    total_keywords: int = Field(description="Total number of keywords to find")
+    keyword_coverage: float = Field(description="Percentage of keywords found")
+
+
+class RetrievalEval(AbstractPipe[EvaluationScore]):
+    collection: Collection
+    retrieval_k: int
+
+    def __init__(self, collection: Collection, retrieval_k: int = 10):
+        super().__init__()
+        self.collection = collection
+        self.retrieval_k = retrieval_k
+
+    def calculate_mrr(self, keyword: str, retrieved_docs: list[str]):
+        """Calculate reciprocal rank for a single keyword (case-insensitive)."""
+        keyword_lower = keyword.lower()
+        for rank, doc in enumerate(retrieved_docs, start=1):
+            if keyword_lower in doc.lower():
+                return 1.0 / rank
+        return 0.0
+
+    def calculate_dcg(self, relevances: list[int], k: int):
+        """Calculate Discounted Cumulative Gain."""
+        dcg = 0.0
+        for i in range(min(k, len(relevances))):
+            dcg += relevances[i] / math.log2(i + 2)  # i+2 because rank starts at 1
+        return dcg
+
+    def calculate_ndcg(self, keyword: str, retrieved_docs: list[str], k: int = 10):
+        """Calculate nDCG for a single keyword (binary relevance, case-insensitive)."""
+        keyword_lower = keyword.lower()
+
+        # Binary relevance: 1 if keyword found, 0 otherwise
+        relevances = [
+            1 if keyword_lower in doc.lower() else 0 for doc in retrieved_docs[:k]
+        ]
+
+        # DCG
+        dcg = self.calculate_dcg(relevances, k)
+
+        # Ideal DCG (best case: keyword in first position)
+        ideal_relevances = sorted(relevances, reverse=True)
+        idcg = self.calculate_dcg(ideal_relevances, k)
+
+        return dcg / idcg if idcg > 0 else 0.0
+
+    def evaluate_retrieval(self, test: TestQuestion, k: int = 10):
+        """
+        Evaluate retrieval performance for a test question.
+
+        Args:
+            test: TestQuestion object containing question and keywords
+            k: Number of top documents to retrieve (default 10)
+
+        Returns:
+            RetrievalEval object with MRR, nDCG, and keyword coverage metrics
+        """
+        # Retrieve documents using shared answer module
+        query = embedding(test.question)
+        retrieved_docs = self.collection.query(
+            query_embeddings=query, n_results=self.retrieval_k
+        )["documents"][0]
+
+        # Calculate MRR (average across all keywords)
+        mrr_scores = [
+            self.calculate_mrr(keyword, retrieved_docs) for keyword in test.keywords
+        ]
+        avg_mrr = sum(mrr_scores) / len(mrr_scores) if mrr_scores else 0.0
+
+        # Calculate nDCG (average across all keywords)
+        ndcg_scores = [
+            self.calculate_ndcg(keyword, retrieved_docs, k) for keyword in test.keywords
+        ]
+        avg_ndcg = sum(ndcg_scores) / len(ndcg_scores) if ndcg_scores else 0.0
+
+        # Calculate keyword coverage
+        keywords_found = sum(1 for score in mrr_scores if score > 0)
+        total_keywords = len(test.keywords)
+        keyword_coverage = (
+            (keywords_found / total_keywords * 100) if total_keywords > 0 else 0.0
+        )
+
+        return RetrievalEvalResult(
+            mrr=avg_mrr,
+            ndcg=avg_ndcg,
+            keywords_found=keywords_found,
+            total_keywords=total_keywords,
+            keyword_coverage=keyword_coverage,
+        )
+
+    def pipe(self, input):
+        for question in tqdm(input.questions.questions):
+            judge_response = self.evaluate_retrieval(question)
+            input.scores.append(judge_response)
+        return input
+
+
+if __name__ == "__main__":
+    chroma = chromadb.Client(Settings(is_persistent=True))
+    collection: Collection = chroma.get_collection(name="cv-rajeev-siewnath")
+    eval_score = EvaluationScore()
+    eval_score = QuestionsLoader("rag_evaluation.json").pipe(eval_score)
+    print(RetrievalEval(collection).pipe(eval_score))
