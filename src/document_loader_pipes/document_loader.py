@@ -34,7 +34,3 @@ class DocumentLoader(AbstractPipe[DocumentCollection]):
                 }
             )
         return DocumentCollection.from_docs([Document(**file) for file in files])
-
-
-# if __name__ == "__main__":
-#     print(DocumentLoader("data").pipe(DocumentCollection.from_docs([])))

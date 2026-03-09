@@ -10,6 +10,9 @@ from openai import Omit, OpenAI
 import os
 import warnings
 
+from core.llm import LLM
+from core.prompt_context import PromptContext
+
 warnings.filterwarnings("ignore", message="Pydantic serializer warnings")
 load_dotenv()
 
@@ -46,34 +49,19 @@ class ToolDefinition(TypedDict):
 
 
 class ChatLoop:
-    client: OpenAI
-    system_prompt: str
-    history: list[HistoryEntry] = [{"role": Role.SYSTEM, "content": ""}]
-    model: str
+    llm: LLM
+    prompt_context: PromptContext
     tools: Iterable[ToolDefinition] = []
-    log: set[str] = set()
 
     def __init__(
         self,
-        model: str = "gpt-4.1-nano",
-        system_prompt: str = "You are a helpful assistant.",
-        initial_history: list[HistoryEntry] = None,
+        llm: LLM,
+        prompt_context: PromptContext,
         tools: Iterable[ToolDefinition] = [],
     ):
-        self.model = model
-        self.set_system_prompt(system_prompt)
+        self.llm = llm
+        self.prompt_context = prompt_context
         self.register_tools(tools)
-        if initial_history:
-            self.set_initial_history(initial_history)
-        self.client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
-
-    @property
-    def conversation(self):
-        return [
-            entry
-            for entry in self.history
-            if entry.get("type") not in (Type.FUNCTION_CALL, Type.FUNCTION_CALL_OUTPUT)
-        ]
 
     def register_tools(self, tools: Iterable[Any]) -> Self:
         self.tools = tools
@@ -89,37 +77,30 @@ class ChatLoop:
         else:
             raise f"illegal tool name '{name}'"
 
-    def set_system_prompt(self, system_prompt: str) -> Self:
-        self.system_prompt = system_prompt
-        return self
-
-    def set_initial_history(self, initial_history: list[HistoryEntry]) -> Self:
-        self.history = self.history[:1] + initial_history + self.history[1:]
-        return self
-
     def submit_message(self, message: str) -> Self:
-        self.history.append({"role": Role.USER, "content": message})
+        self.prompt_context.push({"role": Role.USER, "content": message})
         return self
 
     def get_item_from_history(self, item_id: str) -> Any | None:
-        return next((entry for entry in self.history if entry.get("id") == item_id))
+        return next(
+            (
+                entry
+                for entry in self.prompt_context.history
+                if entry.get("id") == item_id
+            )
+        )
 
     def reset(self) -> Self:
-        self.history = [{"role": Role.SYSTEM, "content": ""}]
+        self.prompt_context.reset()
         return self
 
     def invoke(self) -> Generator[bool, None, None]:
         try:
-            print(f"stream in")
-            self.history[0]["content"] = self.system_prompt
-            with self.client.responses.stream(
-                model=self.model,
+            with self.llm.stream(
                 tools=[tool["definition"] for tool in self.tools],
-                input=self.history,
+                input=self.prompt_context.history,
             ) as stream:
                 for event in stream:
-                    self.log.add(event.model_dump_json(indent=2))
-                    print(event.type)
                     if event.type == "response.created":
                         pass
                     elif event.type == "response.in_progress":
@@ -129,12 +110,7 @@ class ChatLoop:
                     elif event.type == "response.failed":
                         pass
                     elif event.type == "response.output_item.added":
-                        print(
-                            Fore.GREEN
-                            + event.model_dump_json(indent=2)
-                            + Style.RESET_ALL
-                        )
-                        self.history.append(event.item.model_dump())
+                        self.prompt_context.push(event.item.model_dump())
                         yield False
                     elif event.type == "response.output_item.done":
                         pass
@@ -169,7 +145,7 @@ class ChatLoop:
                                     "args": item["arguments"],
                                 }
                             )
-                            self.history.append(
+                            self.prompt_context.push(
                                 {
                                     "type": Type.FUNCTION_CALL_OUTPUT,
                                     "call_id": item["call_id"],
@@ -194,7 +170,7 @@ class ChatLoop:
                         raise Exception(f"unsupported type {event.type}")
             print(f"stream out")
         except Exception as e:
-            self.history.append(
+            self.prompt_context.push(
                 {"role": Role.ASSISTANT, "content": "Something went wrong, try again"}
             )
             print(e)

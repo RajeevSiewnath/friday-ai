@@ -41,6 +41,11 @@ def document_loader_pipe():
 
 
 @pytest.fixture
+def document_loader_pipe_full():
+    return DocumentLoader("data")
+
+
+@pytest.fixture
 def document_loader_pipeline(document_loader_pipe: DocumentLoader):
     return DocumentLoaderPipeline(document_loader_pipe)
 

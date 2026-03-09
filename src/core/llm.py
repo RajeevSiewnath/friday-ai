@@ -39,6 +39,13 @@ class LLM:
             )
             return response.output_parsed
 
+    def stream(self, input: list[Any], tools: list[Any]):
+        return self.client.responses.stream(
+            model=self.model,
+            tools=tools,
+            input=input,
+        )
+
     def embedding(self, input: str) -> list[float]:
         response = self.client.embeddings.create(
             model=self.embedding_model, input=input

@@ -78,8 +78,3 @@ class ChunkSplitter(AbstractPipe[DocumentCollection]):
         for doc in tqdm(arg.input.documents):
             chunks += self.process_document(doc, arg.llm)
         return chunks
-
-
-if __name__ == "__main__":
-    docs = DocumentLoader("data").pipe(DocumentCollection.from_docs([]))
-    print(ChunkSplitter().pipe(docs))
