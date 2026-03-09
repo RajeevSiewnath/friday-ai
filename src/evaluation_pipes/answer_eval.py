@@ -1,11 +1,11 @@
 from chromadb import Collection
 import chromadb
 from tqdm import tqdm
-from core.llm import embedding, invoke
-from evaluation.test_loader import TestQuestion
+from core.llm import LLM, embedding, invoke
+from core.prompt_context import PromptContext
 from evaluation_pipes.questions_loader import QuestionsLoader
 from pipelines.abstract_pipeline import AbstractPipe
-from pipelines.evaluation_pipeline import EvaluationScore
+from pipelines.evaluation_pipeline import EvalQuestion, EvaluationScore
 from pydantic import BaseModel, Field
 from chromadb.config import Settings
 
@@ -28,8 +28,7 @@ class AnswerEvalResult(BaseModel):
 class AnswerEval(AbstractPipe[EvaluationScore]):
 
     system_prompt = """
-  You are a personal job agent for Rajeev Siewnath. 
-  You provide information about his curriculum vitae to the user.
+  {user_context}
   If relevant, use the given context to answer any question.
   If you don't know the answer, say so.
   Context:
@@ -38,17 +37,23 @@ class AnswerEval(AbstractPipe[EvaluationScore]):
     collection: Collection
     retrieval_k: int
 
-    def __init__(self, collection: Collection, retrieval_k: int = 10):
+    def __init__(
+        self,
+        collection: Collection,
+        retrieval_k: int = 10,
+    ):
         super().__init__()
         self.collection = collection
         self.retrieval_k = retrieval_k
 
-    def combined_question(self, question: str, history: list[dict] = []):
-        prior = "\n".join(m["content"] for m in history if m["role"] == "user")
+    def combined_question(self, question: str, prompt_context: PromptContext):
+        prior = "\n".join(
+            m["content"] for m in prompt_context.history if m["role"] == "user"
+        )
         return prior + "\n" + question
 
-    def answer_question(self, question: str, history: list[dict] = []):
-        combined = self.combined_question(question, history)
+    def answer_question(self, question: str, prompt_context: PromptContext):
+        combined = self.combined_question(question, prompt_context.history)
         query = embedding(combined)
         results = self.collection.query(
             query_embeddings=query, n_results=self.retrieval_k
@@ -56,15 +61,24 @@ class AnswerEval(AbstractPipe[EvaluationScore]):
 
         context = "\n\n".join(doc for doc in results["documents"][0])
         input = (
-            [{"role": "system", "content": self.system_prompt.format(context=context)}]
-            + history
+            [
+                {
+                    "role": "system",
+                    "content": self.system_prompt.format(
+                        context=context, user_context=prompt_context.user_context
+                    ),
+                }
+            ]
+            + prompt_context.history
             + [{"role": "user", "content": question}]
         )
         response = invoke(input)
         return response
 
-    def evaluate_answer(self, test: TestQuestion):
-        generated_answer = self.answer_question(test.question)
+    def evaluate_answer(
+        self, test: EvalQuestion, prompt_context: PromptContext, llm: LLM
+    ):
+        generated_answer = self.answer_question(test.question, prompt_context)
 
         judge_messages = [
             {
@@ -91,15 +105,13 @@ class AnswerEval(AbstractPipe[EvaluationScore]):
             },
         ]
 
-        judge_response: AnswerEvalResult = invoke(
-            input=judge_messages, response_format=AnswerEvalResult
-        )
+        judge_response = llm.invoke(judge_messages, AnswerEvalResult)
 
         return judge_response
 
-    def pipe(self, input):
+    def pipe(self, input, prompt_context, llm):
         for question in tqdm(input.questions.questions):
-            judge_response = self.evaluate_answer(question)
+            judge_response = self.evaluate_answer(question, prompt_context, llm)
             input.scores.append(judge_response)
         return input
 

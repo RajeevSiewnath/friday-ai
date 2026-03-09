@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
-from test_loader import Document, TestQuestion, fetch_context, invoke_llm
+from evaluation.atest_loader import Document, TestQuestion, fetch_context, invoke_llm
 
 
 RETRIEVAL_K = 10

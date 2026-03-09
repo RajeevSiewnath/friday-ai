@@ -1,38 +1,43 @@
 from abc import ABC, abstractmethod
 from copy import deepcopy
-from typing import Self, TypeVar
+from dataclasses import dataclass
+from typing import Self
+from core.llm import LLM
+from core.prompt_context import PromptContext
 
-
-I = TypeVar("I")
-O = TypeVar("O")
+@dataclass
+class PipeArg[I]:
+    input: I
+    prompt_context: PromptContext
+    llm: LLM
 
 
 class AbstractPipe[I, O = I](ABC):
     @abstractmethod
-    def pipe(self, input: I) -> O:
+    def pipe(self, arg: PipeArg[I]) -> O:
         pass
 
 
 class AbstractPipeline[I, O = I](ABC):
-
-    initial: I
     pipes: list[AbstractPipe[I, O]] = []
 
-    def __init__(self, initial: I):
+    def __init__(self, *pipes: AbstractPipe[I, O]):
         super().__init__()
-        self.initial = initial
+        self.add(*pipes)
 
-
-    def add(self, pipe: AbstractPipe[I, O]) -> Self:
-        self.pipes.append(pipe)
+    def add(self, *pipes: AbstractPipe[I, O]) -> Self:
+        for pipe in pipes:
+            self.pipes.append(pipe)
         return self
 
-    def remove(self, pipe: AbstractPipe[I, O]) -> Self:
-        self.pipes.remove(pipe)
+    def remove(self, *pipes: AbstractPipe[I, O]) -> Self:
+        for pipe in pipes:
+            self.pipes.remove(pipe)
         return self
     
-    def run(self, input: I) -> O:
-        output = deepcopy(input)
+    def run(self, arg: PipeArg[I]) -> O:
+        current = deepcopy(arg.input)
         for pipe in self.pipes:
-            output = pipe.pipe(input)
-        return output
+            arg.input = current
+            current = pipe.pipe(arg)
+        return current

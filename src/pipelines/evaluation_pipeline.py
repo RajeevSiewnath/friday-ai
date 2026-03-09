@@ -1,11 +1,11 @@
 from copy import deepcopy
 from typing import Any, Union
 from pydantic import BaseModel, Field
-from evaluation.test_loader import Document
+from evaluation.atest_loader import Document
 from pipelines.abstract_pipeline import AbstractPipeline
 
 
-class TestQuestion(BaseModel):
+class EvalQuestion(BaseModel):
     """A test question with expected keywords and reference answer."""
 
     question: str = Field(description="The question to ask the RAG system")
@@ -17,38 +17,38 @@ class TestQuestion(BaseModel):
     category: str = Field(description="Question category")
 
     def __add__(
-        self, other: Union["TestQuestionCollection", "TestQuestion"]
-    ) -> "TestQuestionCollection":
-        if isinstance(other, TestQuestionCollection):
-            return TestQuestionCollection(
+        self, other: Union["EvalQuestionCollection", "EvalQuestion"]
+    ) -> "EvalQuestionCollection":
+        if isinstance(other, EvalQuestionCollection):
+            return EvalQuestionCollection(
                 questions=[deepcopy(self)] + deepcopy(other.questions)
             )
-        elif isinstance(other, TestQuestion):
-            return TestQuestionCollection(questions=[deepcopy(self), deepcopy(other)])
+        elif isinstance(other, EvalQuestion):
+            return EvalQuestionCollection(questions=[deepcopy(self), deepcopy(other)])
         else:
             raise Exception(f"cannot add {other} to TestQuestionCollection")
 
 
-class TestQuestionCollection(BaseModel):
-    questions: list[TestQuestion] = Field(
+class EvalQuestionCollection(BaseModel):
+    questions: list[EvalQuestion] = Field(
         description="A list of TestQuestion instances", default=[]
     )
 
     @classmethod
-    def from_questions(cls, docs: list[TestQuestion]) -> "TestQuestionCollection":
+    def from_questions(cls, docs: list[EvalQuestion]) -> "EvalQuestionCollection":
         collection = cls()
         collection.questions = docs
         return collection
 
     def __add__(
-        self, other: Union["TestQuestionCollection", TestQuestion]
-    ) -> "TestQuestionCollection":
-        if isinstance(other, TestQuestionCollection):
-            return TestQuestionCollection(
+        self, other: Union["EvalQuestionCollection", EvalQuestion]
+    ) -> "EvalQuestionCollection":
+        if isinstance(other, EvalQuestionCollection):
+            return EvalQuestionCollection(
                 questions=deepcopy(self.questions) + deepcopy(other.questions)
             )
-        elif isinstance(other, TestQuestion):
-            return TestQuestionCollection(
+        elif isinstance(other, EvalQuestion):
+            return EvalQuestionCollection(
                 questions=deepcopy(self.questions) + [deepcopy(other)]
             )
         else:
@@ -56,13 +56,13 @@ class TestQuestionCollection(BaseModel):
 
 
 class EvaluationScore(BaseModel):
-    questions: TestQuestionCollection = Field(
-        description="The list of TestQuestions", default_factory=TestQuestionCollection
+    questions: EvalQuestionCollection = Field(
+        description="The list of TestQuestions", default_factory=EvalQuestionCollection
     )
     scores: list[Any] = Field(
         description="The list for scores to keep", default_factory=list
     )
 
 
-class OptimizationsPipeline(AbstractPipeline[EvaluationScore]):
+class EvaluationPipeline(AbstractPipeline[EvaluationScore]):
     pass

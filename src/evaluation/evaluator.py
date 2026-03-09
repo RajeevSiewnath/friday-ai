@@ -2,7 +2,7 @@ from pathlib import Path
 import sys
 from answer_evaluator import evaluate_answer
 from retrieval_evaluator import evaluate_retrieval
-from test_loader import load_tests
+from evaluation.atest_loader import load_tests
 
 
 def run_cli_evaluation(test_number: int):

@@ -1,6 +1,6 @@
 import math
 from pydantic import BaseModel, Field
-from test_loader import Document, TestQuestion, fetch_context
+from evaluation.atest_loader import Document, TestQuestion, fetch_context
 
 
 class RetrievalEval(BaseModel):

@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 
 from answer_evaluator import evaluate_all_answers
 from retrieval_evaluator import evaluate_all_retrieval
-from test_loader import load_tests
+from evaluation.atest_loader import load_tests
 
 load_dotenv(override=True)
 

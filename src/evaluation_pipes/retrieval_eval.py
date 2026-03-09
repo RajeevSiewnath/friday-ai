@@ -4,10 +4,10 @@ import chromadb
 from pydantic import BaseModel, Field
 from tqdm import tqdm
 from chromadb.config import Settings
-from core.llm import embedding
+from core.llm import LLM
 from evaluation_pipes.questions_loader import QuestionsLoader
 from pipelines.abstract_pipeline import AbstractPipe
-from pipelines.evaluation_pipeline import EvaluationScore, TestQuestion
+from pipelines.evaluation_pipeline import EvaluationScore, EvalQuestion
 
 
 class RetrievalEvalResult(BaseModel):
@@ -39,32 +39,32 @@ class RetrievalEval(AbstractPipe[EvaluationScore]):
                 return 1.0 / rank
         return 0.0
 
-    def calculate_dcg(self, relevances: list[int], k: int):
+    def calculate_dcg(self, relevances: list[int]):
         """Calculate Discounted Cumulative Gain."""
         dcg = 0.0
-        for i in range(min(k, len(relevances))):
+        for i in range(min(10, len(relevances))):
             dcg += relevances[i] / math.log2(i + 2)  # i+2 because rank starts at 1
         return dcg
 
-    def calculate_ndcg(self, keyword: str, retrieved_docs: list[str], k: int = 10):
+    def calculate_ndcg(self, keyword: str, retrieved_docs: list[str]):
         """Calculate nDCG for a single keyword (binary relevance, case-insensitive)."""
         keyword_lower = keyword.lower()
 
         # Binary relevance: 1 if keyword found, 0 otherwise
         relevances = [
-            1 if keyword_lower in doc.lower() else 0 for doc in retrieved_docs[:k]
+            1 if keyword_lower in doc.lower() else 0 for doc in retrieved_docs[:10]
         ]
 
         # DCG
-        dcg = self.calculate_dcg(relevances, k)
+        dcg = self.calculate_dcg(relevances, 10)
 
         # Ideal DCG (best case: keyword in first position)
         ideal_relevances = sorted(relevances, reverse=True)
-        idcg = self.calculate_dcg(ideal_relevances, k)
+        idcg = self.calculate_dcg(ideal_relevances, 10)
 
         return dcg / idcg if idcg > 0 else 0.0
 
-    def evaluate_retrieval(self, test: TestQuestion, k: int = 10):
+    def evaluate_retrieval(self, test: EvalQuestion, llm: LLM):
         """
         Evaluate retrieval performance for a test question.
 
@@ -76,7 +76,7 @@ class RetrievalEval(AbstractPipe[EvaluationScore]):
             RetrievalEval object with MRR, nDCG, and keyword coverage metrics
         """
         # Retrieve documents using shared answer module
-        query = embedding(test.question)
+        query = llm.embedding(test.question)
         retrieved_docs = self.collection.query(
             query_embeddings=query, n_results=self.retrieval_k
         )["documents"][0]
@@ -89,7 +89,7 @@ class RetrievalEval(AbstractPipe[EvaluationScore]):
 
         # Calculate nDCG (average across all keywords)
         ndcg_scores = [
-            self.calculate_ndcg(keyword, retrieved_docs, k) for keyword in test.keywords
+            self.calculate_ndcg(keyword, retrieved_docs) for keyword in test.keywords
         ]
         avg_ndcg = sum(ndcg_scores) / len(ndcg_scores) if ndcg_scores else 0.0
 
@@ -108,9 +108,9 @@ class RetrievalEval(AbstractPipe[EvaluationScore]):
             keyword_coverage=keyword_coverage,
         )
 
-    def pipe(self, input):
+    def pipe(self, input, prompt_context, llm):
         for question in tqdm(input.questions.questions):
-            judge_response = self.evaluate_retrieval(question)
+            judge_response = self.evaluate_retrieval(question, llm)
             input.scores.append(judge_response)
         return input
 
