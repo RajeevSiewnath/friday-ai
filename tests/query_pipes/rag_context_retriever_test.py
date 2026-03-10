@@ -1,8 +1,14 @@
-# if __name__ == "__main__":
-#     chroma = chromadb.Client(Settings(is_persistent=True))
-#     collection: Collection = chroma.get_collection(name="cv-rajeev-siewnath")
-#     query_optimizer: QueryContext = QueryContext(
-#         question_history=["where is javascript used?"],
-#         history=[{"role": "system", "content": "you are a kind agent"}],
-#     )
-#     print(RagContextRetriever(collection).pipe(query_optimizer))
+from models.query_context import QueryContext
+from pipelines.abstract_pipeline import PipeArg
+from pipelines.query_pipeline import QueryPipeline
+from query_pipes.rag_context_retriever import RagContextRetriever
+
+
+def test_rag_context_retriever(
+    query_pipeline: QueryPipeline,
+    query_pipe_arg: PipeArg[QueryContext],
+):
+    query_context: QueryContext = query_pipeline.add(RagContextRetriever()).run(
+        query_pipe_arg
+    )
+    assert len(query_context.context.contexts) > 0

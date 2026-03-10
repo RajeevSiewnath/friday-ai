@@ -1,10 +1,14 @@
-# if __name__ == "__main__":
-#     chroma = chromadb.Client(Settings(is_persistent=True))
-#     collection: Collection = chroma.get_collection(name="cv-rajeev-siewnath")
-#     query_embedding = embedding("javascript")
-#     query_optimizer: QueryContext = QueryContext(
-#         context=collection.query(query_embeddings=query_embedding, n_results=3),
-#         question_history=["where is javascript used?"],
-#         history=[{"role": "system", "content": "you are a kind agent"}],
-#     )
-#     print(QueryRewriter().pipe(query_optimizer))
+from models.query_context import QueryContext
+from pipelines.abstract_pipeline import PipeArg
+from pipelines.query_pipeline import QueryPipeline
+from query_pipes.query_rewriter import QueryRewriter
+
+
+def test_query_rewriter(
+    query_pipeline: QueryPipeline,
+    query_pipe_arg: PipeArg[QueryContext],
+):
+    query_context: QueryContext = query_pipeline.add(QueryRewriter()).run(
+        query_pipe_arg
+    )
+    assert len(query_context.question_history) == 2

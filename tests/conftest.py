@@ -12,7 +12,11 @@ def prompt_context() -> PromptContext:
 
 Context:
 {context}
-"""
+""",
+        user="Rajeev Siewnath",
+        user_context="You're an agent for Rajeev Siewnath",
+        user_context_short="Rajeev Siewnath's agent",
+        context="",
     )
 
 

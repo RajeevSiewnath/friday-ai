@@ -50,6 +50,10 @@ class RagContextCollection(BaseModel):
 
 
 class QueryContext(BaseModel):
+    def __init__(self, question: str, **data):
+        super().__init__(**data)
+        self.question = question
+
     @property
     def question(self):
         return self.question_history[-1]
@@ -63,8 +67,8 @@ class QueryContext(BaseModel):
         default_factory=list,
     )
 
-    history: list[Any] = Field(description="The chat history")
+    history: list[Any] = Field(description="The chat history", default_factory=list)
     context: RagContextCollection = Field(
-        default_factory=RagContextCollection,
         description="The context loaded in by RAG vectorized databases",
+        default_factory=RagContextCollection,
     )

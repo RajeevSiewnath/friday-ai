@@ -9,7 +9,7 @@ from pipelines.query_pipeline import QueryContext, QueryPipeline
 @pytest.fixture
 def query_pipe_arg(llm: LLM, prompt_context: PromptContext, vector_db: VectorDB):
     return PipeArg[QueryContext](
-        input=QueryContext(),
+        input=QueryContext("Who is Rajeev?"),
         llm=llm,
         prompt_context=prompt_context,
         vector_db=vector_db,

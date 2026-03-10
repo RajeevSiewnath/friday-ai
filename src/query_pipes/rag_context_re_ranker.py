@@ -31,7 +31,7 @@ Reply only with the list of ranked chunk ids, nothing else. Include all the chun
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_prompt},
         ]
-        response: RankOrder = arg.llm.invoke(input=messages, response_format=RankOrder)
+        response = arg.llm.invoke(input=messages, response_format=RankOrder)
         arg.input.context.contexts = [
             arg.input.context.contexts[i - 1] for i in response.order
         ]

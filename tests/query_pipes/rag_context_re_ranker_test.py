@@ -1,20 +1,16 @@
-# if __name__ == "__main__":
-#     chroma = chromadb.Client(Settings(is_persistent=True))
-#     collection: Collection = chroma.get_collection(name="cv-rajeev-siewnath")
-#     results = collection.get(limit=10)
-#     rag_context = RagContextCollection.from_contexts(
-#         [
-#             RagContext(content=result[0], id=result[1], metadata=result[2])
-#             for result in zip(
-#                 results["documents"],
-#                 results["ids"],
-#                 results["metadatas"],
-#             )
-#         ]
-#     )
-#     query_optimizer: QueryContext = QueryContext(
-#         question_history=["where is javascript used?"],
-#         history=[{"role": "system", "content": "you are a kind agent"}],
-#         context=rag_context,
-#     )
-#     print(RagContextReRanker().pipe(query_optimizer))
+from models.query_context import QueryContext
+from pipelines.abstract_pipeline import PipeArg
+from pipelines.query_pipeline import QueryPipeline
+from query_pipes.rag_context_re_ranker import RagContextReRanker
+from query_pipes.rag_context_retriever import RagContextRetriever
+
+
+def test_rag_context_re_ranker(
+    query_pipeline: QueryPipeline,
+    query_pipe_arg: PipeArg[QueryContext],
+):
+    query_context: QueryContext = query_pipeline.add(
+        RagContextRetriever(),
+        RagContextReRanker(),
+    ).run(query_pipe_arg)
+    assert len(query_context.context.contexts) > 0
