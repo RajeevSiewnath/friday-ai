@@ -17,7 +17,7 @@ class PromptContext:
 
     @property
     def history(self):
-        h = [{"type": "system", "content": self.system_message}]
+        h = [{"role": "system", "content": self.system_message}]
         h.extend(self._history)
         return h
 
@@ -26,7 +26,7 @@ class PromptContext:
         return [
             entry
             for entry in self.history
-            if entry.get("type") in ("user", "assistant")
+            if entry.get("role") in ("user", "assistant")
         ]
 
     def push(self, entry: Any):

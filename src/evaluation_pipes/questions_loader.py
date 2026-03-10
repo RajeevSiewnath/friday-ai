@@ -1,29 +1,29 @@
 import json
 from pathlib import Path
+from tqdm import tqdm
 from pipelines.abstract_pipeline import AbstractPipe
-from pipelines.evaluation_pipeline import (
-    EvaluationScore,
+from models.evaluation_score import (
     EvalQuestion,
     EvalQuestionCollection,
+    EvaluationScore,
 )
 
 
 class QuestionsLoader(AbstractPipe[EvaluationScore]):
-    path: str
-
-    def __init__(self, path: str):
+    def __init__(self, path: str, max=None):
         super().__init__()
         self.path = path
+        self.max = max
 
-    def pipe(self, input, prompt_context, llm):
+    def pipe(self, arg):
         file_path = Path(self.path)
         tests = []
         with open(file_path, "r", encoding="utf-8") as f:
-            tests = [EvalQuestion(**question) for question in json.loads(f.read())]
-        input.questions = EvalQuestionCollection.from_questions(tests)
-        return input
-
-
-if __name__ == "__main__":
-    eval_score = EvaluationScore()
-    print(QuestionsLoader("rag_evaluation.json").pipe(eval_score))
+            files = (
+                json.loads(f.read())
+                if self.max is None
+                else json.loads(f.read())[: self.max]
+            )
+            tests = [EvalQuestion(**question) for question in tqdm(files)]
+        arg.input.questions = EvalQuestionCollection.from_questions(tests)
+        return arg.input

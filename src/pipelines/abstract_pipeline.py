@@ -4,12 +4,14 @@ from dataclasses import dataclass
 from typing import Self
 from core.llm import LLM
 from core.prompt_context import PromptContext
+from core.vector_db import VectorDB
 
 @dataclass
 class PipeArg[I]:
     input: I
     prompt_context: PromptContext
     llm: LLM
+    vector_db: VectorDB
 
 
 class AbstractPipe[I, O = I](ABC):
@@ -19,10 +21,10 @@ class AbstractPipe[I, O = I](ABC):
 
 
 class AbstractPipeline[I, O = I](ABC):
-    pipes: list[AbstractPipe[I, O]] = []
 
     def __init__(self, *pipes: AbstractPipe[I, O]):
         super().__init__()
+        self.pipes: list[AbstractPipe[I, O]] = [] 
         self.add(*pipes)
 
     def add(self, *pipes: AbstractPipe[I, O]) -> Self:

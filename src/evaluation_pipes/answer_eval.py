@@ -1,13 +1,7 @@
-from chromadb import Collection
-import chromadb
 from tqdm import tqdm
-from core.llm import LLM, embedding, invoke
-from core.prompt_context import PromptContext
-from evaluation_pipes.questions_loader import QuestionsLoader
-from pipelines.abstract_pipeline import AbstractPipe
-from pipelines.evaluation_pipeline import EvalQuestion, EvaluationScore
+from pipelines.abstract_pipeline import AbstractPipe, PipeArg
 from pydantic import BaseModel, Field
-from chromadb.config import Settings
+from models.evaluation_score import EvalQuestion, EvaluationScore
 
 
 class AnswerEvalResult(BaseModel):
@@ -27,58 +21,50 @@ class AnswerEvalResult(BaseModel):
 
 class AnswerEval(AbstractPipe[EvaluationScore]):
 
-    system_prompt = """
+    def __init__(
+        self,
+        retrieval_k: int = 10,
+    ):
+        super().__init__()
+        self.system_prompt = """
   {user_context}
   If relevant, use the given context to answer any question.
   If you don't know the answer, say so.
   Context:
   {context}
   """
-    collection: Collection
-    retrieval_k: int
-
-    def __init__(
-        self,
-        collection: Collection,
-        retrieval_k: int = 10,
-    ):
-        super().__init__()
-        self.collection = collection
         self.retrieval_k = retrieval_k
 
-    def combined_question(self, question: str, prompt_context: PromptContext):
+    def combined_question(self, question: str, arg: PipeArg[EvaluationScore]):
         prior = "\n".join(
-            m["content"] for m in prompt_context.history if m["role"] == "user"
+            m.get("content")
+            for m in arg.prompt_context.history
+            if m.get("role") == "user"
         )
         return prior + "\n" + question
 
-    def answer_question(self, question: str, prompt_context: PromptContext):
-        combined = self.combined_question(question, prompt_context.history)
-        query = embedding(combined)
-        results = self.collection.query(
-            query_embeddings=query, n_results=self.retrieval_k
-        )
+    def answer_question(self, question: str, arg: PipeArg[EvaluationScore]):
+        combined = self.combined_question(question, arg)
+        results = arg.vector_db.query(combined, self.retrieval_k)
 
-        context = "\n\n".join(doc for doc in results["documents"][0])
+        context = "\n\n".join(doc.content for doc in results.documents)
         input = (
             [
                 {
                     "role": "system",
                     "content": self.system_prompt.format(
-                        context=context, user_context=prompt_context.user_context
+                        context=context, user_context=arg.prompt_context.user_context
                     ),
                 }
             ]
-            + prompt_context.history
+            + arg.prompt_context.history
             + [{"role": "user", "content": question}]
         )
-        response = invoke(input)
+        response = arg.llm.invoke(input)
         return response
 
-    def evaluate_answer(
-        self, test: EvalQuestion, prompt_context: PromptContext, llm: LLM
-    ):
-        generated_answer = self.answer_question(test.question, prompt_context)
+    def evaluate_answer(self, test: EvalQuestion, arg: PipeArg[EvaluationScore]):
+        generated_answer = self.answer_question(test.question, arg)
 
         judge_messages = [
             {
@@ -105,20 +91,12 @@ class AnswerEval(AbstractPipe[EvaluationScore]):
             },
         ]
 
-        judge_response = llm.invoke(judge_messages, AnswerEvalResult)
+        judge_response = arg.llm.invoke(judge_messages, AnswerEvalResult)
 
         return judge_response
 
-    def pipe(self, input, prompt_context, llm):
-        for question in tqdm(input.questions.questions):
-            judge_response = self.evaluate_answer(question, prompt_context, llm)
-            input.scores.append(judge_response)
-        return input
-
-
-if __name__ == "__main__":
-    chroma = chromadb.Client(Settings(is_persistent=True))
-    collection: Collection = chroma.get_collection(name="cv-rajeev-siewnath")
-    eval_score = EvaluationScore()
-    eval_score = QuestionsLoader("rag_evaluation.json").pipe(eval_score)
-    print(AnswerEval(collection).pipe(eval_score))
+    def pipe(self, arg):
+        for question in tqdm(arg.input.questions.questions):
+            judge_response = self.evaluate_answer(question, arg)
+            arg.input.scores.append(judge_response)
+        return arg.input

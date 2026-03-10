@@ -3,7 +3,7 @@ import json
 from pathlib import Path
 from tqdm import tqdm
 from pipelines.abstract_pipeline import AbstractPipe
-from pipelines.document_loader_pipeline import Document, DocumentCollection
+from models.document import Document, DocumentCollection
 
 
 class DocumentLoader(AbstractPipe[DocumentCollection]):

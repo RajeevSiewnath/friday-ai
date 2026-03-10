@@ -1,15 +1,10 @@
-import os
 from typing import Any
 from dotenv import load_dotenv
-from openai import OpenAI
 import json
 from typing import Callable, Generator, Iterable, Self, TypedDict, Any
 from enum import Enum
-from colorama import Fore, Style
-from openai import Omit, OpenAI
-import os
+from openai import Omit
 import warnings
-
 from core.llm import LLM
 from core.prompt_context import PromptContext
 
@@ -49,10 +44,6 @@ class ToolDefinition(TypedDict):
 
 
 class ChatLoop:
-    llm: LLM
-    prompt_context: PromptContext
-    tools: Iterable[ToolDefinition] = []
-
     def __init__(
         self,
         llm: LLM,

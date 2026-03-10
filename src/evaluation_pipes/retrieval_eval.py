@@ -1,13 +1,9 @@
 import math
-from chromadb import Collection
-import chromadb
 from pydantic import BaseModel, Field
 from tqdm import tqdm
-from chromadb.config import Settings
-from core.llm import LLM
-from evaluation_pipes.questions_loader import QuestionsLoader
-from pipelines.abstract_pipeline import AbstractPipe
-from pipelines.evaluation_pipeline import EvaluationScore, EvalQuestion
+from pipelines.abstract_pipeline import AbstractPipe, PipeArg
+from models.document import DocumentCollection
+from models.evaluation_score import EvalQuestion, EvaluationScore
 
 
 class RetrievalEvalResult(BaseModel):
@@ -23,36 +19,34 @@ class RetrievalEvalResult(BaseModel):
 
 
 class RetrievalEval(AbstractPipe[EvaluationScore]):
-    collection: Collection
-    retrieval_k: int
 
-    def __init__(self, collection: Collection, retrieval_k: int = 10):
+    def __init__(self, retrieval_k: int = 10):
         super().__init__()
-        self.collection = collection
         self.retrieval_k = retrieval_k
 
-    def calculate_mrr(self, keyword: str, retrieved_docs: list[str]):
+    def calculate_mrr(self, keyword: str, retrieved_docs: DocumentCollection):
         """Calculate reciprocal rank for a single keyword (case-insensitive)."""
         keyword_lower = keyword.lower()
-        for rank, doc in enumerate(retrieved_docs, start=1):
-            if keyword_lower in doc.lower():
+        for rank, doc in enumerate(retrieved_docs.documents, start=1):
+            if keyword_lower in doc.content.lower():
                 return 1.0 / rank
         return 0.0
 
-    def calculate_dcg(self, relevances: list[int]):
+    def calculate_dcg(self, relevances: list[int], k: int):
         """Calculate Discounted Cumulative Gain."""
         dcg = 0.0
-        for i in range(min(10, len(relevances))):
+        for i in range(min(k, len(relevances))):
             dcg += relevances[i] / math.log2(i + 2)  # i+2 because rank starts at 1
         return dcg
 
-    def calculate_ndcg(self, keyword: str, retrieved_docs: list[str]):
+    def calculate_ndcg(self, keyword: str, retrieved_docs: DocumentCollection):
         """Calculate nDCG for a single keyword (binary relevance, case-insensitive)."""
         keyword_lower = keyword.lower()
 
         # Binary relevance: 1 if keyword found, 0 otherwise
         relevances = [
-            1 if keyword_lower in doc.lower() else 0 for doc in retrieved_docs[:10]
+            1 if keyword_lower in doc.content.lower() else 0
+            for doc in retrieved_docs.documents[:10]
         ]
 
         # DCG
@@ -64,7 +58,7 @@ class RetrievalEval(AbstractPipe[EvaluationScore]):
 
         return dcg / idcg if idcg > 0 else 0.0
 
-    def evaluate_retrieval(self, test: EvalQuestion, llm: LLM):
+    def evaluate_retrieval(self, test: EvalQuestion, arg: PipeArg[EvaluationScore]):
         """
         Evaluate retrieval performance for a test question.
 
@@ -76,10 +70,7 @@ class RetrievalEval(AbstractPipe[EvaluationScore]):
             RetrievalEval object with MRR, nDCG, and keyword coverage metrics
         """
         # Retrieve documents using shared answer module
-        query = llm.embedding(test.question)
-        retrieved_docs = self.collection.query(
-            query_embeddings=query, n_results=self.retrieval_k
-        )["documents"][0]
+        retrieved_docs = arg.vector_db.query(test.question)
 
         # Calculate MRR (average across all keywords)
         mrr_scores = [
@@ -108,16 +99,8 @@ class RetrievalEval(AbstractPipe[EvaluationScore]):
             keyword_coverage=keyword_coverage,
         )
 
-    def pipe(self, input, prompt_context, llm):
-        for question in tqdm(input.questions.questions):
-            judge_response = self.evaluate_retrieval(question, llm)
-            input.scores.append(judge_response)
-        return input
-
-
-if __name__ == "__main__":
-    chroma = chromadb.Client(Settings(is_persistent=True))
-    collection: Collection = chroma.get_collection(name="cv-rajeev-siewnath")
-    eval_score = EvaluationScore()
-    eval_score = QuestionsLoader("rag_evaluation.json").pipe(eval_score)
-    print(RetrievalEval(collection).pipe(eval_score))
+    def pipe(self, arg):
+        for question in tqdm(arg.input.questions.questions):
+            judge_response = self.evaluate_retrieval(question, arg)
+            arg.input.scores.append(judge_response)
+        return arg.input

@@ -11,10 +11,6 @@ T = TypeVar("T")
 
 
 class LLM:
-    client: OpenAI
-    model: str
-    embedding_model: str
-
     def __init__(
         self,
         openai_api_key=None,
@@ -51,3 +47,9 @@ class LLM:
             model=self.embedding_model, input=input
         )
         return response.data[0].embedding
+
+    def embeddings(self, input: list[str]) -> list[list[float]]:
+        response = self.client.embeddings.create(
+            model=self.embedding_model, input=input
+        )
+        return [e.embedding for e in response.data]

@@ -2,9 +2,8 @@ from copy import deepcopy
 from pydantic import BaseModel, Field
 from tqdm import tqdm
 from core.llm import LLM
-from document_loader_pipes.document_loader import DocumentLoader
 from pipelines.abstract_pipeline import AbstractPipe
-from pipelines.document_loader_pipeline import Document, DocumentCollection
+from models.document import Document, DocumentCollection
 
 
 class Chunk(BaseModel):
