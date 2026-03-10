@@ -159,23 +159,9 @@ class ChatLoop:
                         raise Exception(f"an unexpected error occurred")
                     else:
                         raise Exception(f"unsupported type {event.type}")
-            print(f"stream out")
         except Exception as e:
             self.prompt_context.push(
                 {"role": Role.ASSISTANT, "content": "Something went wrong, try again"}
             )
             print(e)
             yield True
-            # if stream_id == None:
-            #     print(Fore.BLUE + json.dumps(self.history, indent=2) + Style.RESET_ALL)
-            #     for log in self.log:
-            #         print(Fore.YELLOW + log + Style.RESET_ALL)
-            #         print(
-            #             Fore.GREEN
-            #             + "---------------------------------------------------------"
-            #             + Style.RESET_ALL
-            #         )
-            # raise e
-
-
-# response.code_interpreter_call.* (various code/tool events)

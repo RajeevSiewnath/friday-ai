@@ -14,11 +14,25 @@ class VectorDB:
         self.chroma = Client(Settings(is_persistent=True))
         self.collection: Collection = self.chroma.get_or_create_collection(name=name)
 
-    def populate(self, document_collection: DocumentCollection, force=False):
+    def __enter__(self):
+        return self
+
+    def __exit__(self, _exc_type, _exc_val, _exc_tb):
+        if self.collection is not None:
+            self.delete()
+        return False
+
+    def populate(
+        self, document_collection: DocumentCollection, force=False, clear=False
+    ):
         if len(self.collection.get()["ids"]) == 0 or force:
+            if clear:
+                name = self.collection.name
+                self.chroma.delete_collection(name)
+                self.collection = self.chroma.create_collection(name)
             docs = document_collection.documents
             vectors = self.llm.embeddings([doc.content for doc in docs])
-            self.collection.add(
+            self.collection.upsert(
                 ids=[doc.id for doc in docs],
                 embeddings=vectors,
                 metadatas=[
@@ -50,3 +64,7 @@ class VectorDB:
                 )
             ]
         )
+
+    def delete(self):
+        self.chroma.delete_collection(self.collection.name)
+        self.collection = None
