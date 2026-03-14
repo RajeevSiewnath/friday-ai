@@ -12,21 +12,10 @@ warnings.filterwarnings("ignore", message="Pydantic serializer warnings")
 load_dotenv()
 
 
-class Role(str, Enum):
-    SYSTEM = "system"
-    USER = "user"
-    ASSISTANT = "assistant"
-
-
-class Type(str, Enum):
-    FUNCTION_CALL = "function_call"
-    FUNCTION_CALL_OUTPUT = "function_call_output"
-
-
 class HistoryEntry(TypedDict):
-    role: Omit | Role
+    role: Omit | str
     content: Omit | str
-    type: Omit | Type
+    type: Omit | str
     call_id: Omit | str
     output: str
 
@@ -53,6 +42,11 @@ class ChatLoop:
         self.llm = llm
         self.prompt_context = prompt_context
         self.register_tools(tools)
+        self._is_looping = False
+
+    @property
+    def is_looping(self):
+        return self._is_looping
 
     def register_tools(self, tools: Iterable[Any]) -> Self:
         self.tools = tools
@@ -69,7 +63,7 @@ class ChatLoop:
             raise f"illegal tool name '{name}'"
 
     def submit_message(self, message: str) -> Self:
-        self.prompt_context.push({"role": Role.USER, "content": message})
+        self.prompt_context.push({"role": "user", "content": message})
         return self
 
     def get_item_from_history(self, item_id: str) -> Any | None:
@@ -86,6 +80,11 @@ class ChatLoop:
         return self
 
     def invoke(self) -> Generator[bool, None, None]:
+        self._is_looping = True
+        yield from self._invoke()
+        self._is_looping = False
+
+    def _invoke(self) -> Generator[bool, None, None]:
         try:
             with self.llm.stream(
                 tools=[tool["definition"] for tool in self.tools],
@@ -138,12 +137,12 @@ class ChatLoop:
                             )
                             self.prompt_context.push(
                                 {
-                                    "type": Type.FUNCTION_CALL_OUTPUT,
+                                    "type": "function_call_output",
                                     "call_id": item["call_id"],
                                     "output": str(result),
                                 }
                             )
-                            for done in self.invoke():
+                            for done in self._invoke():
                                 yield done
                     elif event.type == "response.refusal.delta":
                         pass
@@ -161,7 +160,7 @@ class ChatLoop:
                         raise Exception(f"unsupported type {event.type}")
         except Exception as e:
             self.prompt_context.push(
-                {"role": Role.ASSISTANT, "content": "Something went wrong, try again"}
+                {"role": "assistant", "content": "Something went wrong, try again"}
             )
             print(e)
             yield True

@@ -1,7 +1,6 @@
 from copy import deepcopy
 from pydantic import BaseModel, Field
 from tqdm import tqdm
-from core.llm import LLM
 from pipelines.abstract_pipeline import AbstractPipe
 from models.document import Document, DocumentCollection
 
@@ -57,9 +56,9 @@ class ChunkSplitter(AbstractPipe[DocumentCollection]):
     Respond with the chunks.
     """
 
-    def process_document(self, document: Document, llm: LLM) -> DocumentCollection:
+    def process_document(self, document: Document) -> DocumentCollection:
         messages = [{"role": "user", "content": self.make_prompt(document)}]
-        chunks: Chunks = llm.invoke(input=messages, response_format=Chunks)
+        chunks: Chunks = self.llm.invoke(input=messages, response_format=Chunks)
         doc_copy = deepcopy(document)
         return DocumentCollection.from_docs(
             [
@@ -72,8 +71,8 @@ class ChunkSplitter(AbstractPipe[DocumentCollection]):
             ]
         )
 
-    def pipe(self, arg):
+    def pipe(self, input):
         chunks: DocumentCollection = DocumentCollection.from_docs([])
-        for doc in tqdm(arg.input.documents):
-            chunks += self.process_document(doc, arg.llm)
+        for doc in tqdm(input.documents):
+            chunks += self.process_document(doc)
         return chunks

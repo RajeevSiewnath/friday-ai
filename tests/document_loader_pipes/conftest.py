@@ -3,7 +3,6 @@ from core.llm import LLM
 from core.prompt_context import PromptContext
 from core.vector_db import VectorDB
 from document_loader_pipes.document_loader import DocumentLoader
-from pipelines.abstract_pipeline import PipeArg
 from pipelines.document_loader_pipeline import (
     DocumentCollection,
     DocumentLoaderPipeline,
@@ -21,17 +20,16 @@ def document_loader_pipe_full():
 
 
 @pytest.fixture
-def document_loader_pipe_arg(
+def document_loader_pipe_arg():
+    return DocumentCollection()
+
+
+@pytest.fixture(scope="function")
+def document_loader_pipeline(
     llm: LLM, prompt_context: PromptContext, vector_db: VectorDB
 ):
-    return PipeArg[DocumentCollection](
-        input=DocumentCollection(),
+    return DocumentLoaderPipeline(
         llm=llm,
         prompt_context=prompt_context,
         vector_db=vector_db,
     )
-
-
-@pytest.fixture(scope="function")
-def document_loader_pipeline():
-    return DocumentLoaderPipeline()

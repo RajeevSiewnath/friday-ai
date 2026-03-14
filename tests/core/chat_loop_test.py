@@ -1,4 +1,4 @@
-from core.chat_loop import ChatLoop, Role
+from core.chat_loop import ChatLoop
 
 
 def test_invoke_with_message(llm, prompt_context):
@@ -11,7 +11,7 @@ def test_invoke_with_message(llm, prompt_context):
     # History should include system message + user message
     assert len(prompt_context.history) == 2
     assert prompt_context.history[0]["role"] == "system"
-    assert prompt_context.history[1]["role"] == Role.USER
+    assert prompt_context.history[1]["role"] == "user"
     assert prompt_context.history[1]["content"] == "Hello, what's on my CV?"
 
     # Invoke and collect results
@@ -25,7 +25,7 @@ def test_invoke_with_message(llm, prompt_context):
 
     # History should be updated with assistant response
     assert len(prompt_context.history) > 2
-    assert prompt_context.history[-1]["role"] == Role.ASSISTANT
+    assert prompt_context.history[-1]["role"] == "assistant"
 
 
 def test_reset_clears_history(llm, prompt_context):

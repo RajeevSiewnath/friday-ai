@@ -15,7 +15,7 @@ class QuestionsLoader(AbstractPipe[EvaluationScore]):
         self.path = path
         self.max = max
 
-    def pipe(self, arg):
+    def pipe(self, input):
         file_path = Path(self.path)
         tests = []
         with open(file_path, "r", encoding="utf-8") as f:
@@ -25,5 +25,5 @@ class QuestionsLoader(AbstractPipe[EvaluationScore]):
                 else json.loads(f.read())[: self.max]
             )
             tests = [EvalQuestion(**question) for question in tqdm(files)]
-        arg.input.questions = EvalQuestionCollection.from_questions(tests)
-        return arg.input
+        input.questions = EvalQuestionCollection.from_questions(tests)
+        return input

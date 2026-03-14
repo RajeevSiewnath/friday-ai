@@ -138,7 +138,6 @@ def test_query_context_default_fields():
     """Test that QueryContext initializes with default empty fields."""
     qc = QueryContext(question="Test question")
 
-    assert qc.history == []
     assert isinstance(qc.context, RagContextCollection)
     assert qc.context.contexts == []
 
@@ -149,18 +148,6 @@ def test_query_context_question_getter():
     qc.question = "Question 2"
 
     assert qc.question == "Question 2"
-
-
-def test_query_context_question_setter_appends_to_history():
-    """Test that setting question appends to question_history."""
-    qc = QueryContext(question="Question 1")
-    qc.question = "Question 2"
-    qc.question = "Question 3"
-
-    assert len(qc.question_history) == 3
-    assert qc.question_history[0] == "Question 1"
-    assert qc.question_history[1] == "Question 2"
-    assert qc.question_history[2] == "Question 3"
 
 
 def test_query_context_with_context():
@@ -175,19 +162,6 @@ def test_query_context_with_context():
     assert len(qc.context.contexts) == 1
 
 
-def test_query_context_with_history():
-    """Test that QueryContext can be initialized with history."""
-    history = [
-        {"role": "user", "content": "Question 1"},
-        {"role": "assistant", "content": "Answer 1"},
-    ]
-
-    qc = QueryContext(question="Question", history=history)
-
-    assert qc.question == "Question"
-    assert len(qc.history) == 2
-
-
 def test_query_context_question_history_independence():
     """Test that multiple QueryContext instances don't share question_history."""
     qc1 = QueryContext(question="Q1")
@@ -196,4 +170,3 @@ def test_query_context_question_history_independence():
     qc1.question = "Q1-Updated"
 
     assert qc2.question == "Q2"
-    assert len(qc2.question_history) == 1

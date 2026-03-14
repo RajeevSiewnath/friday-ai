@@ -11,6 +11,8 @@ class AbstractVisualization:
     def draw(self):
         pass
 
-    def get(self) -> go.Figure:
-        self.draw()
+    def get(self, redraw=True) -> go.Figure:
+        if redraw:
+            self.fig.data = tuple()
+            self.draw()
         return self.fig

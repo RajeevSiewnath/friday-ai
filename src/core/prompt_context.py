@@ -4,7 +4,12 @@ from typing import Any
 
 @dataclass
 class PromptContext:
-    message: str = ""
+    message: str = """
+{user_context}
+
+Context:
+{context}
+"""
     user_context: str = ""
     user_context_short: str = ""
     user: str = ""
@@ -29,8 +34,8 @@ class PromptContext:
             if entry.get("role") in ("user", "assistant")
         ]
 
-    def push(self, entry: Any):
-        self._history.append(entry)
+    def push(self, *entry: dict):
+        self._history.extend(entry)
         return self
 
     def reset(self):

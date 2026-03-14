@@ -1,5 +1,5 @@
 from tqdm import tqdm
-from pipelines.abstract_pipeline import AbstractPipe, PipeArg
+from pipelines.abstract_pipeline import AbstractPipe
 from pydantic import BaseModel, Field
 from models.evaluation_score import EvalQuestion, EvaluationScore
 
@@ -49,17 +49,17 @@ class AnswerEval(AbstractPipe[EvaluationScore]):
   """
         self.retrieval_k = retrieval_k
 
-    def combined_question(self, question: str, arg: PipeArg[EvaluationScore]):
+    def combined_question(self, question: str):
         prior = "\n".join(
             m.get("content")
-            for m in arg.prompt_context.history
+            for m in self.prompt_context.history
             if m.get("role") == "user"
         )
         return prior + "\n" + question
 
-    def answer_question(self, question: str, arg: PipeArg[EvaluationScore]):
-        combined = self.combined_question(question, arg)
-        results = arg.vector_db.query(combined, self.retrieval_k)
+    def answer_question(self, question: str):
+        combined = self.combined_question(question)
+        results = self.vector_db.query(combined, self.retrieval_k)
 
         context = "\n\n".join(doc.content for doc in results.documents)
         input = (
@@ -67,18 +67,18 @@ class AnswerEval(AbstractPipe[EvaluationScore]):
                 {
                     "role": "system",
                     "content": self.system_prompt.format(
-                        context=context, user_context=arg.prompt_context.user_context
+                        context=context, user_context=self.prompt_context.user_context
                     ),
                 }
             ]
-            + arg.prompt_context.history
+            + self.prompt_context.history
             + [{"role": "user", "content": question}]
         )
-        response = arg.llm.invoke(input)
+        response = self.llm.invoke(input)
         return response
 
-    def evaluate_answer(self, test: EvalQuestion, arg: PipeArg[EvaluationScore]):
-        generated_answer = self.answer_question(test.question, arg)
+    def evaluate_answer(self, test: EvalQuestion):
+        generated_answer = self.answer_question(test.question)
 
         judge_messages = [
             {
@@ -105,14 +105,14 @@ class AnswerEval(AbstractPipe[EvaluationScore]):
             },
         ]
 
-        judge_response = arg.llm.invoke(judge_messages, AnswerEvalResult)
+        judge_response = self.llm.invoke(judge_messages, AnswerEvalResult)
 
         return judge_response
 
-    def pipe(self, arg):
-        for question in tqdm(arg.input.questions.questions):
-            judge_response = self.evaluate_answer(question, arg)
-            if self.key not in arg.input.scores:
-                arg.input.scores[self.key] = []
-            arg.input.scores[self.key].append(judge_response)
-        return arg.input
+    def pipe(self, input):
+        for question in tqdm(input.questions.questions):
+            judge_response = self.evaluate_answer(question)
+            if self.key not in input.scores:
+                input.scores[self.key] = []
+            input.scores[self.key].append(judge_response)
+        return input

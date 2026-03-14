@@ -1,7 +1,7 @@
 import math
 from pydantic import BaseModel, Field
 from tqdm import tqdm
-from pipelines.abstract_pipeline import AbstractPipe, PipeArg
+from pipelines.abstract_pipeline import AbstractPipe
 from models.document import DocumentCollection
 from models.evaluation_score import EvalQuestion, EvaluationScore
 
@@ -59,7 +59,7 @@ class RetrievalEval(AbstractPipe[EvaluationScore]):
 
         return dcg / idcg if idcg > 0 else 0.0
 
-    def evaluate_retrieval(self, test: EvalQuestion, arg: PipeArg[EvaluationScore]):
+    def evaluate_retrieval(self, test: EvalQuestion):
         """
         Evaluate retrieval performance for a test question.
 
@@ -71,7 +71,7 @@ class RetrievalEval(AbstractPipe[EvaluationScore]):
             RetrievalEval object with MRR, nDCG, and keyword coverage metrics
         """
         # Retrieve documents using shared answer module
-        retrieved_docs = arg.vector_db.query(test.question)
+        retrieved_docs = self.vector_db.query(test.question)
 
         # Calculate MRR (average across all keywords)
         mrr_scores = [
@@ -100,10 +100,10 @@ class RetrievalEval(AbstractPipe[EvaluationScore]):
             keyword_coverage=keyword_coverage,
         )
 
-    def pipe(self, arg):
-        for question in tqdm(arg.input.questions.questions):
-            judge_response = self.evaluate_retrieval(question, arg)
-            if self.key not in arg.input.scores:
-                arg.input.scores[self.key] = []
-            arg.input.scores[self.key].append(judge_response)
-        return arg.input
+    def pipe(self, input):
+        for question in tqdm(input.questions.questions):
+            judge_response = self.evaluate_retrieval(question)
+            if self.key not in input.scores:
+                input.scores[self.key] = []
+            input.scores[self.key].append(judge_response)
+        return input
