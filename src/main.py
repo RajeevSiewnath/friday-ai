@@ -3,7 +3,6 @@ import gradio as gr
 import os
 from dotenv import load_dotenv
 from openai import OpenAI, embeddings
-from ChatLoop import ChatLoop, Role
 from tools.get_sections import get_sections, get_sections_tool
 from colorama import Fore, Back, Style, init
 from pathlib import Path

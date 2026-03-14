@@ -145,7 +145,7 @@ def test_evaluation_score_creation():
 
     assert isinstance(eval_score.questions, EvalQuestionCollection)
     assert eval_score.questions.questions == []
-    assert eval_score.scores == []
+    assert eval_score.scores == {}
 
 
 def test_evaluation_score_with_questions():
@@ -164,11 +164,11 @@ def test_evaluation_score_with_questions():
 
 def test_evaluation_score_with_scores():
     """Test that EvaluationScore can be initialized with scores."""
-    scores = [0.9, 0.85, 0.95]
+    scores = {"test": [0.9, 0.85, 0.95]}
 
     eval_score = EvaluationScore(scores=scores)
 
-    assert eval_score.scores == [0.9, 0.85, 0.95]
+    assert eval_score.scores == {"test": [0.9, 0.85, 0.95]}
 
 
 def test_evaluation_score_with_questions_and_scores():
@@ -178,12 +178,12 @@ def test_evaluation_score_with_questions_and_scores():
             EvalQuestion(question="Q1?", answer="A1", category="cat1"),
         ]
     )
-    scores = [0.9]
+    scores = {"test": [0.9]}
 
     eval_score = EvaluationScore(questions=questions, scores=scores)
 
     assert len(eval_score.questions.questions) == 1
-    assert eval_score.scores == [0.9]
+    assert eval_score.scores == {"test": [0.9]}
 
 
 def test_evaluation_score_complex_data():
@@ -199,12 +199,14 @@ def test_evaluation_score_complex_data():
         ]
     )
 
-    scores = [
-        {"retrieval_score": 0.9, "relevance_score": 0.85},
-        {"retrieval_score": 0.8, "relevance_score": 0.88},
-    ]
+    scores = {
+        "test": [
+            {"retrieval_score": 0.9, "relevance_score": 0.85},
+            {"retrieval_score": 0.8, "relevance_score": 0.88},
+        ]
+    }
 
     eval_score = EvaluationScore(questions=questions, scores=scores)
 
-    assert len(eval_score.scores) == 2
-    assert eval_score.scores[0]["retrieval_score"] == 0.9
+    assert len(eval_score.scores["test"]) == 2
+    assert eval_score.scores["test"][0]["retrieval_score"] == 0.9

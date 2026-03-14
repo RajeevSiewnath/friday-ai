@@ -14,7 +14,7 @@ def test_answer_eval(
 ):
     evaluation_score: EvaluationScore = evaluation_pipeline.add(
         evaluation_loader_pipe,
-        RetrievalEval(),
+        RetrievalEval("test"),
     ).run(evaluation_pipe_arg)
     assert len(evaluation_score.questions.questions) > 0
-    assert len(evaluation_score.scores) > 0
+    assert len(evaluation_score.scores["test"]) > 0

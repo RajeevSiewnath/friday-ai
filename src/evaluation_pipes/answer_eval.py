@@ -18,14 +18,28 @@ class AnswerEvalResult(BaseModel):
         description="How relevant is the answer to the specific question asked? 1 (very poor - off-topic) to 5 (ideal - directly addresses question and gives no additional information). Only answer 5 if the answer is completely relevant to the question and gives no additional information."
     )
 
+    @property
+    def accuracy_percentage(self):
+        return (self.accuracy - 1) / 4
+
+    @property
+    def completeness_percentage(self):
+        return (self.completeness - 1) / 4
+
+    @property
+    def relevance_percentage(self):
+        return (self.relevance - 1) / 4
+
 
 class AnswerEval(AbstractPipe[EvaluationScore]):
 
     def __init__(
         self,
+        key: str,
         retrieval_k: int = 10,
     ):
         super().__init__()
+        self.key = key
         self.system_prompt = """
   {user_context}
   If relevant, use the given context to answer any question.
@@ -98,5 +112,7 @@ class AnswerEval(AbstractPipe[EvaluationScore]):
     def pipe(self, arg):
         for question in tqdm(arg.input.questions.questions):
             judge_response = self.evaluate_answer(question, arg)
-            arg.input.scores.append(judge_response)
+            if self.key not in arg.input.scores:
+                arg.input.scores[self.key] = []
+            arg.input.scores[self.key].append(judge_response)
         return arg.input

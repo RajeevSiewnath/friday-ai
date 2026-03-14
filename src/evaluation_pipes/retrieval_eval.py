@@ -20,8 +20,9 @@ class RetrievalEvalResult(BaseModel):
 
 class RetrievalEval(AbstractPipe[EvaluationScore]):
 
-    def __init__(self, retrieval_k: int = 10):
+    def __init__(self, key: str, retrieval_k: int = 10):
         super().__init__()
+        self.key = key
         self.retrieval_k = retrieval_k
 
     def calculate_mrr(self, keyword: str, retrieved_docs: DocumentCollection):
@@ -102,5 +103,7 @@ class RetrievalEval(AbstractPipe[EvaluationScore]):
     def pipe(self, arg):
         for question in tqdm(arg.input.questions.questions):
             judge_response = self.evaluate_retrieval(question, arg)
-            arg.input.scores.append(judge_response)
+            if self.key not in arg.input.scores:
+                arg.input.scores[self.key] = []
+            arg.input.scores[self.key].append(judge_response)
         return arg.input
