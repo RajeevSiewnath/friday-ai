@@ -1,7 +1,9 @@
+import asyncio
 import os
 from typing import Any, Type, TypeVar
 from dotenv import load_dotenv
 from openai import OpenAI
+from openai.types.file_object import FileObject
 
 
 load_dotenv()
@@ -53,3 +55,39 @@ class LLM:
             model=self.embedding_model, input=input
         )
         return [e.embedding for e in response.data]
+
+    def upload_file(self, file: Any, purpose: str):
+        file_object = self.client.files.create(file=file, purpose=purpose)
+        file_object = self.client.files.wait_for_processing(file_object.id)
+        return file_object
+
+    def fine_tune(
+        self,
+        train_file_object: FileObject,
+        validate_file_object: FileObject,
+        suffix=None,
+        model: str = None,
+        n_epochs: int = 1,
+        batch_size: int = 1,
+        learning_rate_multiplier: float = 0.1,
+    ):
+        local_modal = model if model is not None else self.model
+        job = self.client.fine_tuning.jobs.create(
+            training_file=train_file_object.id,
+            validation_file=validate_file_object.id,
+            model=local_modal,
+            hyperparameters={
+                "n_epochs": n_epochs,
+                "batch_size": batch_size,
+                "learning_rate_multiplier": learning_rate_multiplier,
+            },
+            suffix=suffix,
+        )
+        return job
+
+    async def wait_for_fine_tune(self, job_id: str, poll_time: int = 5):
+        while True:
+            job = self.client.fine_tuning.jobs.retrieve(job_id)
+            if job.finished_at is not None:
+                return job
+            await asyncio.sleep(poll_time)

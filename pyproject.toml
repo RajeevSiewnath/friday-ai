@@ -12,6 +12,7 @@ dependencies = [
     "openai>=2.23.0",
     "plotly>=6.5.2",
     "python-dotenv>=1.2.1",
+    "rapidfuzz>=3.14.3",
     "scikit-learn>=1.8.0",
     "tqdm>=4.67.3",
 ]

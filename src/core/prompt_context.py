@@ -6,8 +6,6 @@ from typing import Any
 class PromptContext:
     message: str = """
 {user_context}
-
-Context:
 {context}
 """
     user_context: str = ""

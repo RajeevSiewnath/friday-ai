@@ -55,7 +55,7 @@ class EvalQuestionCollection(BaseModel):
 
 class EvaluationScore(BaseModel):
     questions: EvalQuestionCollection = Field(
-        description="The list of TestQuestions", default_factory=EvalQuestionCollection
+        description="The list of test questions", default_factory=EvalQuestionCollection
     )
     scores: dict[str, list[Any]] = Field(
         description="The dictionary with lists for scores to keep", default_factory=dict
