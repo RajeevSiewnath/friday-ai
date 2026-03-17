@@ -17,4 +17,4 @@ lint:
 .PHONY: test
 test:
 	@echo "Running pytest with extra args: $(ARGS)"
-	PYTHONPATH=src uv run pytest $(ARGS)
+	PYTHONPATH=src uv run pytest tests $(ARGS)

@@ -1,7 +1,7 @@
 import math
 from pydantic import BaseModel, Field
 from tqdm import tqdm
-from pipelines.abstract_pipeline import AbstractPipe
+from pipelines.pipeline import Pipe
 from models.document import DocumentCollection
 from models.evaluation_score import EvalQuestion, EvaluationScore
 
@@ -18,7 +18,7 @@ class RetrievalEvalResult(BaseModel):
     keyword_coverage: float = Field(description="Percentage of keywords found")
 
 
-class RetrievalEval(AbstractPipe[EvaluationScore]):
+class RetrievalEval(Pipe[EvaluationScore]):
 
     def __init__(self, key: str, retrieval_k: int = 10):
         super().__init__()
@@ -100,7 +100,7 @@ class RetrievalEval(AbstractPipe[EvaluationScore]):
             keyword_coverage=keyword_coverage,
         )
 
-    def pipe(self, input):
+    def run(self, input):
         for question in tqdm(input.questions.questions):
             judge_response = self.evaluate_retrieval(question)
             if self.key not in input.scores:

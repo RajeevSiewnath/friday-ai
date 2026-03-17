@@ -1,17 +1,15 @@
 from evaluation_pipes.answer_eval import AnswerEval
 from evaluation_pipes.questions_loader import QuestionsLoader
-from pipelines.evaluation_pipeline import (
-    EvaluationPipeline,
-    EvaluationScore,
-)
+from models.evaluation_score import EvaluationScore
+from pipelines.pipeline_factory import PipelineFactory
 
 
 def test_answer_eval(
-    evaluation_pipeline: EvaluationPipeline,
+    pipeline_factory: PipelineFactory,
     evaluation_loader_pipe: QuestionsLoader,
     evaluation_pipe_arg: EvaluationScore,
 ):
-    evaluation_score: EvaluationScore = evaluation_pipeline.add(
+    evaluation_score = pipeline_factory.make(
         evaluation_loader_pipe,
         AnswerEval("test"),
     ).run(evaluation_pipe_arg)

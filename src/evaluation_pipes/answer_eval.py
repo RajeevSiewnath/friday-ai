@@ -1,5 +1,5 @@
 from tqdm import tqdm
-from pipelines.abstract_pipeline import AbstractPipe
+from pipelines.pipeline import Pipe
 from pydantic import BaseModel, Field
 from models.evaluation_score import EvalQuestion, EvaluationScore
 
@@ -31,7 +31,7 @@ class AnswerEvalResult(BaseModel):
         return (self.relevance - 1) / 4
 
 
-class AnswerEval(AbstractPipe[EvaluationScore]):
+class AnswerEval(Pipe[EvaluationScore]):
 
     def __init__(
         self,
@@ -109,7 +109,7 @@ class AnswerEval(AbstractPipe[EvaluationScore]):
 
         return judge_response
 
-    def pipe(self, input):
+    def run(self, input):
         for question in tqdm(input.questions.questions):
             judge_response = self.evaluate_answer(question)
             if self.key not in input.scores:

@@ -1,8 +1,8 @@
-from pipelines.abstract_pipeline import AbstractPipe
-from pipelines.query_pipeline import QueryContext
+from pipelines.pipeline import Pipe
+from models.query_context import QueryContext
 
 
-class QueryRewriter(AbstractPipe[QueryContext]):
+class QueryRewriter(Pipe[QueryContext]):
 
     def rewrite_query(self, input: QueryContext):
         message = f"""You are in a conversation with a user, answering questions about {self.prompt_context.user_context_short}.
@@ -21,6 +21,6 @@ IMPORTANT: Respond ONLY with the knowledgebase query, nothing else.
 """
         return self.llm.invoke(input=[{"role": "system", "content": message}])
 
-    def pipe(self, input):
+    def run(self, input):
         input.question = self.rewrite_query(input)
         return input

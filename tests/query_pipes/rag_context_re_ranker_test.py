@@ -1,14 +1,14 @@
 from models.query_context import QueryContext
-from pipelines.query_pipeline import QueryPipeline
 from query_pipes.rag_context_re_ranker import RagContextReRanker
 from query_pipes.rag_context_retriever import RagContextRetriever
+from pipelines.pipeline_factory import PipelineFactory
 
 
 def test_rag_context_re_ranker(
-    query_pipeline: QueryPipeline,
+    pipeline_factory: PipelineFactory,
     query_pipe_arg: QueryContext,
 ):
-    query_context: QueryContext = query_pipeline.add(
+    query_context = pipeline_factory.make(
         RagContextRetriever(),
         RagContextReRanker(),
     ).run(query_pipe_arg)

@@ -1,16 +1,16 @@
 from core.prompt_context import PromptContext
 from models.query_context import QueryContext
-from pipelines.query_pipeline import QueryPipeline
 from query_pipes.rag_context_injector import RagContextInjector
 from query_pipes.rag_context_retriever import RagContextRetriever
+from pipelines.pipeline_factory import PipelineFactory
 
 
 def test_rag_context_injector(
-    query_pipeline: QueryPipeline,
+    pipeline_factory: PipelineFactory,
     query_pipe_arg: QueryContext,
     prompt_context: PromptContext,
 ):
-    query_pipeline.add(
+    pipeline_factory.make(
         RagContextRetriever(),
         RagContextInjector(),
     ).run(query_pipe_arg)

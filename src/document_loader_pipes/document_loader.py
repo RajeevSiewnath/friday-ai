@@ -2,11 +2,11 @@ from itertools import islice
 import json
 from pathlib import Path
 from tqdm import tqdm
-from pipelines.abstract_pipeline import AbstractPipe
+from pipelines.pipeline import Pipe
 from models.document import Document, DocumentCollection
 
 
-class DocumentLoader(AbstractPipe[DocumentCollection]):
+class DocumentLoader(Pipe[DocumentCollection]):
     path: str
     max: int
 
@@ -15,7 +15,7 @@ class DocumentLoader(AbstractPipe[DocumentCollection]):
         self.path = path
         self.max = max
 
-    def pipe(self, _):
+    def run(self, _):
         files = []
         folder_path = Path(self.path)
         all_files = (f for f in folder_path.rglob("*") if f.is_file())

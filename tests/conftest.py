@@ -2,6 +2,7 @@ import pytest
 from core.llm import LLM
 from core.prompt_context import PromptContext
 from core.vector_db import VectorDB
+from pipelines.pipeline_factory import PipelineFactory
 
 
 @pytest.fixture
@@ -28,3 +29,8 @@ def llm():
 @pytest.fixture
 def vector_db(llm):
     return VectorDB(llm, "cv-rajeev-siewnath")
+
+
+@pytest.fixture
+def pipeline_factory(prompt_context: PromptContext, llm: LLM, vector_db: VectorDB):
+    return PipelineFactory(llm, prompt_context, vector_db)

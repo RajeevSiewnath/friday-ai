@@ -1,14 +1,14 @@
 import json
 import tempfile
 from openai.types.file_object import FileObject
-from pipelines.abstract_pipeline import AbstractPipe
+from pipelines.pipeline import Pipe
 from models.training_program import (
     TrainingQuestion,
     TrainingProgram,
 )
 
 
-class FineTuneFrontier(AbstractPipe[TrainingProgram]):
+class FineTuneFrontier(Pipe[TrainingProgram]):
     def __init__(
         self,
         suffix=None,
@@ -32,7 +32,7 @@ class FineTuneFrontier(AbstractPipe[TrainingProgram]):
         message_object = {"messages": self.prompt_context.history}
         return json.dumps(message_object)
 
-    async def pipe(self, input):
+    async def run(self, input):
         test_file: FileObject = None
         validation_file: FileObject = None
 

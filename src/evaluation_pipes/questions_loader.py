@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
 from tqdm import tqdm
-from pipelines.abstract_pipeline import AbstractPipe
+from pipelines.pipeline import Pipe
 from models.evaluation_score import (
     EvalQuestion,
     EvalQuestionCollection,
@@ -9,13 +9,13 @@ from models.evaluation_score import (
 )
 
 
-class QuestionsLoader(AbstractPipe[EvaluationScore]):
+class QuestionsLoader(Pipe[EvaluationScore]):
     def __init__(self, path: str, max=None):
         super().__init__()
         self.path = path
         self.max = max
 
-    def pipe(self, input):
+    def run(self, input):
         file_path = Path(self.path)
         tests = []
         with open(file_path, "r", encoding="utf-8") as f:

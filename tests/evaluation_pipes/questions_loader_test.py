@@ -1,13 +1,14 @@
 from evaluation_pipes.questions_loader import QuestionsLoader
-from pipelines.evaluation_pipeline import EvaluationPipeline, EvaluationScore
+from models.evaluation_score import EvaluationScore
+from pipelines.pipeline_factory import PipelineFactory
 
 
 def test_questions_loader(
-    evaluation_pipeline: EvaluationPipeline,
+    pipeline_factory: PipelineFactory,
     evaluation_loader_pipe_full: QuestionsLoader,
     evaluation_pipe_arg: EvaluationScore,
 ):
-    evaluation_score: EvaluationScore = evaluation_pipeline.add(
+    evaluation_score = pipeline_factory.make(
         evaluation_loader_pipe_full,
     ).run(evaluation_pipe_arg)
     assert len(evaluation_score.questions.questions) > 0

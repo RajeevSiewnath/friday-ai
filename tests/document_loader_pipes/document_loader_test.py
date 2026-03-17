@@ -1,16 +1,14 @@
 from document_loader_pipes.document_loader import DocumentLoader
-from pipelines.document_loader_pipeline import (
-    DocumentCollection,
-    DocumentLoaderPipeline,
-)
+from models.document import DocumentCollection
+from pipelines.pipeline_factory import PipelineFactory
 
 
 def test_document_loader(
-    document_loader_pipeline: DocumentLoaderPipeline,
+    pipeline_factory: PipelineFactory,
     document_loader_pipe_full: DocumentLoader,
     document_loader_pipe_arg: DocumentCollection,
 ):
-    document_collection: DocumentCollection = document_loader_pipeline.add(
+    document_collection = pipeline_factory.make(
         document_loader_pipe_full,
     ).run(document_loader_pipe_arg)
     assert len(document_collection.documents) > 0

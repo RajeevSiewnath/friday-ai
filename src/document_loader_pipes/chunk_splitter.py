@@ -1,7 +1,7 @@
 from copy import deepcopy
 from pydantic import BaseModel, Field
 from tqdm import tqdm
-from pipelines.abstract_pipeline import AbstractPipe
+from pipelines.pipeline import Pipe
 from models.document import Document, DocumentCollection
 
 
@@ -25,7 +25,7 @@ class Chunks(BaseModel):
     chunks: list[Chunk] = Field(description="Collection of chunks")
 
 
-class ChunkSplitter(AbstractPipe[DocumentCollection]):
+class ChunkSplitter(Pipe[DocumentCollection]):
     average_chunk_size: int
 
     def __init__(self, average_chunk_size: int = 100):
@@ -71,7 +71,7 @@ class ChunkSplitter(AbstractPipe[DocumentCollection]):
             ]
         )
 
-    def pipe(self, input):
+    def run(self, input):
         chunks: DocumentCollection = DocumentCollection.from_docs([])
         for doc in tqdm(input.documents):
             chunks += self.process_document(doc)

@@ -1,12 +1,12 @@
-from pipelines.abstract_pipeline import AbstractPipe
+from pipelines.pipeline import Pipe
 from models.training_program import (
     TrainingProgram,
 )
 from rapidfuzz import fuzz
 
 
-class FineTuneFrontier(AbstractPipe[TrainingProgram]):
-    def pipe(self, input):
+class FineTuneFrontier(Pipe[TrainingProgram]):
+    def run(self, input):
         fuzziness = 0
         for question in input.testing.questions:
             self.prompt_context.reset()

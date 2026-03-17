@@ -1,10 +1,6 @@
 from pydantic import BaseModel, Field
-from pipelines.abstract_pipeline import AbstractPipe
-from pipelines.query_pipeline import QueryContext
-from pipelines.abstract_pipeline import AbstractPipe
-from pipelines.query_pipeline import (
-    QueryContext,
-)
+from pipelines.pipeline import Pipe
+from models.query_context import QueryContext
 
 
 class RankOrder(BaseModel):
@@ -13,8 +9,8 @@ class RankOrder(BaseModel):
     )
 
 
-class RagContextReRanker(AbstractPipe[QueryContext]):
-    def pipe(self, input):
+class RagContextReRanker(Pipe[QueryContext]):
+    def run(self, input):
         system_prompt = """
 You are a document re-ranker.
 You are provided with a question and a list of relevant chunks of text from a query of a knowledge base.

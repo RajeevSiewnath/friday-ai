@@ -1,13 +1,11 @@
 from models.query_context import QueryContext
-from pipelines.query_pipeline import QueryPipeline
 from query_pipes.query_rewriter import QueryRewriter
+from pipelines.pipeline_factory import PipelineFactory
 
 
 def test_query_rewriter(
-    query_pipeline: QueryPipeline,
+    pipeline_factory: PipelineFactory,
     query_pipe_arg: QueryContext,
 ):
-    query_context: QueryContext = query_pipeline.add(QueryRewriter()).run(
-        query_pipe_arg
-    )
+    query_context = pipeline_factory.make(QueryRewriter()).run(query_pipe_arg)
     assert len(query_context.question_history) == 2

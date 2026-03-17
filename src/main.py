@@ -3,10 +3,9 @@ from core.chat_loop import ChatLoop
 from core.llm import LLM
 from core.prompt_context import PromptContext
 import gradio as gr
-
 from core.vector_db import VectorDB
 from models.query_context import QueryContext
-from pipelines.query_pipeline import QueryPipeline
+from pipelines.pipeline_factory import PipelineFactory
 from query_pipes.rag_context_injector import RagContextInjector
 from query_pipes.rag_context_retriever import RagContextRetriever
 from query_pipes.rag_tsne_vis_updater import RagTSNEVisUpdater
@@ -27,13 +26,16 @@ vector_db_tsne_visualization = VectorDBTSNEVisualization(
     title="tSNE", collection=vector_db.collection
 )
 
-query_pipeline = QueryPipeline(
-    RagContextRetriever(n_results=5),
-    RagContextInjector(),
-    RagTSNEVisUpdater(vector_db_tsne_visualization),
+pipeline_factory = PipelineFactory(
     llm=llm,
     prompt_context=prompt_context,
     vector_db=vector_db,
+)
+
+query_pipeline = pipeline_factory.make(
+    RagContextRetriever(n_results=5),
+    RagContextInjector(),
+    RagTSNEVisUpdater(vector_db_tsne_visualization),
 )
 
 vector_db_tsne_figure = vector_db_tsne_visualization.get()

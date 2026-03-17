@@ -4,7 +4,7 @@ import math
 from pathlib import Path
 import random
 from tqdm import tqdm
-from pipelines.abstract_pipeline import AbstractPipe
+from pipelines.pipeline import Pipe
 from models.training_program import (
     TrainingQuestion,
     TrainingQuestionCollection,
@@ -12,7 +12,7 @@ from models.training_program import (
 )
 
 
-class DataSetsLoader(AbstractPipe[TrainingProgram]):
+class DataSetsLoader(Pipe[TrainingProgram]):
     def __init__(
         self, path: str, max=None, training_ratio=8, validating_ratio=1, testing_ratio=1
     ):
@@ -23,7 +23,7 @@ class DataSetsLoader(AbstractPipe[TrainingProgram]):
         self.validating_ratio = validating_ratio
         self.testing_ratio = testing_ratio
 
-    def pipe(self, input):
+    def run(self, input):
         file_path = Path(self.path)
         tests = []
         with open(file_path, "r", encoding="utf-8") as f:
