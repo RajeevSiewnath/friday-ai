@@ -5,6 +5,8 @@ from dotenv import load_dotenv
 from openai import OpenAI
 from openai.types.file_object import FileObject
 
+from core.tool_shed import ToolShed
+
 
 load_dotenv()
 
@@ -18,9 +20,11 @@ class LLM:
         openai_api_key=None,
         model="gpt-4.1-nano",
         embedding_model="text-embedding-3-small",
+        tool_shed: ToolShed = ToolShed(),
     ):
         self.model = model
         self.embedding_model = embedding_model
+        self.tool_shed = tool_shed
         self.client = OpenAI(
             api_key=(
                 openai_api_key if openai_api_key else os.environ.get("OPENAI_API_KEY")
@@ -29,18 +33,25 @@ class LLM:
 
     def invoke(self, input: list[Any], response_format: Type[T] = str) -> T:
         if response_format == str:
-            response = self.client.responses.create(model=self.model, input=input)
+            response = self.client.responses.create(
+                model=self.model,
+                tools=self.tool_shed.definitions if self.tool_shed else [],
+                input=input,
+            )
             return response.output_text
         else:
             response = self.client.responses.parse(
-                model=self.model, input=input, text_format=response_format
+                model=self.model,
+                tools=self.tool_shed.definitions if self.tool_shed else [],
+                input=input,
+                text_format=response_format,
             )
             return response.output_parsed
 
-    def stream(self, input: list[Any], tools: list[Any]):
+    def stream(self, input: list[Any]):
         return self.client.responses.stream(
             model=self.model,
-            tools=tools,
+            tools=self.tool_shed.definitions if self.tool_shed else [],
             input=input,
         )
 

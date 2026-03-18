@@ -1,4 +1,5 @@
 from core.llm import LLM
+from core.prompt_context import PromptContext
 
 
 def test_llm_init_with_default_model():
@@ -22,7 +23,7 @@ def test_llm_init_has_openai_client():
     assert llm.client is not None
 
 
-def test_embedding_returns_vector(llm):
+def test_embedding_returns_vector(llm: LLM):
     """Test that embedding() returns a vector (list of floats)."""
     result = llm.embedding("test text")
 
@@ -31,7 +32,7 @@ def test_embedding_returns_vector(llm):
     assert all(isinstance(x, float) for x in result)
 
 
-def test_embeddings_returns_multiple_vectors(llm):
+def test_embeddings_returns_multiple_vectors(llm: LLM):
     """Test that embeddings() returns multiple vectors."""
     texts = ["hello", "world", "test"]
     results = llm.embeddings(texts)
@@ -42,7 +43,7 @@ def test_embeddings_returns_multiple_vectors(llm):
     assert all(all(isinstance(x, float) for x in v) for v in results)
 
 
-def test_embeddings_vectors_have_consistent_dimension(llm):
+def test_embeddings_vectors_have_consistent_dimension(llm: LLM):
     """Test that all embedding vectors have the same dimension."""
     texts = ["hello", "world", "test"]
     results = llm.embeddings(texts)
@@ -51,15 +52,15 @@ def test_embeddings_vectors_have_consistent_dimension(llm):
     assert len(set(dimensions)) == 1  # All dimensions should be the same
 
 
-def test_stream_returns_context_manager(llm, prompt_context):
+def test_stream_returns_context_manager(llm: LLM, prompt_context: PromptContext):
     """Test that stream() returns a context manager for streaming responses."""
-    stream = llm.stream(input=prompt_context.history, tools=[])
+    stream = llm.stream(input=prompt_context.history)
 
     assert hasattr(stream, "__enter__")
     assert hasattr(stream, "__exit__")
 
 
-def test_invoke_returns_string(llm, prompt_context):
+def test_invoke_returns_string(llm: LLM, prompt_context: PromptContext):
     """Test that invoke() returns a string response."""
     prompt_context.push({"role": "user", "content": "Say hello"})
 

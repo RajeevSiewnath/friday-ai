@@ -15,7 +15,7 @@ llm = LLM()
 prompt_context = PromptContext(
     user_context="""
 You are a personal job agent for Rajeev Siewnath. 
-You provide information about his curriculum vitae to the user.
+You provide information about his curriculum vitae to the user, who is a person interested in Rajeev Siewnath's career.
 If relevant, use the given context to answer any question.
 """
 )
@@ -44,7 +44,7 @@ vector_db_tsne_figure = vector_db_tsne_visualization.get()
 def submit_message(question):
     if not chat_loop.is_looping and question:
         query_context = query_pipeline.run(QueryContext(question=question))
-        chat_loop.submit_message(query_context.question)
+        prompt_context.push({"role": "user", "content": query_context.question})
         vector_db_tsne_figure = vector_db_tsne_visualization.get()
         yield gr.Textbox(
             value="", placeholder="Working..."

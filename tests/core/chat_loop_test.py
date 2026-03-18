@@ -1,12 +1,14 @@
 from core.chat_loop import ChatLoop
+from core.llm import LLM
+from core.prompt_context import PromptContext
 
 
-def test_invoke_with_message(llm, prompt_context):
+def test_invoke_with_message(llm: LLM, prompt_context: PromptContext):
     """Test that invoke() processes streaming events and updates history."""
-    chat_loop = ChatLoop(llm, prompt_context, tools=[])
+    chat_loop = ChatLoop(llm, prompt_context)
 
     # Submit a message
-    chat_loop.submit_message("Hello, what's on my CV?")
+    prompt_context.push({"role": "user", "content": "Hello, what's on my CV?"})
 
     # History should include system message + user message
     assert len(prompt_context.history) == 2
@@ -26,16 +28,3 @@ def test_invoke_with_message(llm, prompt_context):
     # History should be updated with assistant response
     assert len(prompt_context.history) > 2
     assert prompt_context.history[-1]["role"] == "assistant"
-
-
-def test_reset_clears_history(llm, prompt_context):
-    """Test that reset() clears the conversation history."""
-    chat_loop = ChatLoop(llm, prompt_context, tools=[])
-
-    # Submit a message
-    chat_loop.submit_message("Test message")
-    assert len(prompt_context._history) == 1
-
-    # Reset should clear history
-    chat_loop.reset()
-    assert len(prompt_context._history) == 0

@@ -1,83 +1,23 @@
-from typing import Any
 from dotenv import load_dotenv
-import json
-from typing import Callable, Generator, Iterable, Self, TypedDict, Any
-from enum import Enum
-from openai import Omit
+from typing import Generator
 import warnings
 from core.llm import LLM
 from core.prompt_context import PromptContext
+from core.tool_shed import ToolShed
 
 warnings.filterwarnings("ignore", message="Pydantic serializer warnings")
 load_dotenv()
 
 
-class HistoryEntry(TypedDict):
-    role: Omit | str
-    content: Omit | str
-    type: Omit | str
-    call_id: Omit | str
-    output: str
-
-
-class Tool(TypedDict):
-    call_id: str
-    name: str
-    args: str
-
-
-class ToolDefinition(TypedDict):
-    name: str
-    callable: Callable
-    definition: Any
-
-
 class ChatLoop:
-    def __init__(
-        self,
-        llm: LLM,
-        prompt_context: PromptContext,
-        tools: Iterable[ToolDefinition] = [],
-    ):
+    def __init__(self, llm: LLM, prompt_context: PromptContext):
         self.llm = llm
         self.prompt_context = prompt_context
-        self.register_tools(tools)
         self._is_looping = False
 
     @property
     def is_looping(self):
         return self._is_looping
-
-    def register_tools(self, tools: Iterable[Any]) -> Self:
-        self.tools = tools
-        return self
-
-    def call_tool(self, callable: Tool) -> Any:
-        name = callable["name"]
-        args = json.loads(callable["args"])
-        tool = next((tool for tool in self.tools if tool["name"] == name))
-        if tool:
-            value = str(tool["callable"](**args))
-            return value
-        else:
-            raise f"illegal tool name '{name}'"
-
-    def submit_message(self, message: str) -> Self:
-        self.prompt_context.push({"role": "user", "content": message})
-        return self
-
-    def get_item_from_history(self, item_id: str) -> Any | None:
-        return next(
-            (
-                entry
-                for entry in self.prompt_context.history
-                if entry.get("id") == item_id
-            )
-        )
-
-    def reset(self) -> Self:
-        self.prompt_context.reset()
-        return self
 
     def invoke(self) -> Generator[bool, None, None]:
         self._is_looping = True
@@ -86,10 +26,7 @@ class ChatLoop:
 
     def _invoke(self) -> Generator[bool, None, None]:
         try:
-            with self.llm.stream(
-                tools=[tool["definition"] for tool in self.tools],
-                input=self.prompt_context.history,
-            ) as stream:
+            with self.llm.stream(input=self.prompt_context.history) as stream:
                 for event in stream:
                     if event.type == "response.created":
                         pass
@@ -109,7 +46,7 @@ class ChatLoop:
                     elif event.type == "response.content_part.done":
                         pass
                     elif event.type == "response.output_text.delta":
-                        item = self.get_item_from_history(event.item_id)
+                        item = self.prompt_context.get_item_from_history(event.item_id)
                         if item:
                             if isinstance(item["content"], list):
                                 item["content"] = ""
@@ -122,18 +59,14 @@ class ChatLoop:
                     elif event.type == "response.text.done":
                         pass
                     elif event.type == "response.function_call_arguments.delta":
-                        item = self.get_item_from_history(event.item_id)
+                        item = self.prompt_context.get_item_from_history(event.item_id)
                         if item:
                             item["arguments"] += event.delta
                     elif event.type == "response.function_call_arguments.done":
-                        item = self.get_item_from_history(event.item_id)
+                        item = self.prompt_context.get_item_from_history(event.item_id)
                         if item:
-                            result = self.call_tool(
-                                {
-                                    "call_id": item["call_id"],
-                                    "name": item["name"],
-                                    "args": item["arguments"],
-                                }
+                            result = self.llm.tool_shed.call(
+                                item["name"], item["arguments"]
                             )
                             self.prompt_context.push(
                                 {
