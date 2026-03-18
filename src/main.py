@@ -4,11 +4,14 @@ from core.llm import LLM
 from core.prompt_context import PromptContext
 import gradio as gr
 from core.vector_db import VectorDB
+from core_pipes.invoke_chat_loop import InvokeChatLoop
 from models.query_context import QueryContext
 from pipelines.pipeline_factory import PipelineFactory
+from query_pipes.query_writer import QueryWriter
 from query_pipes.rag_context_injector import RagContextInjector
 from query_pipes.rag_context_retriever import RagContextRetriever
 from query_pipes.rag_tsne_vis_updater import RagTSNEVisUpdater
+from query_pipes.update_prompt_context_history import UpdatePromptContextHistory
 from visualizations.vector_db_tsne_visualization import VectorDBTSNEVisualization
 
 llm = LLM()
@@ -20,7 +23,7 @@ If relevant, use the given context to answer any question.
 """
 )
 vector_db = VectorDB(llm=llm, name="cv-rajeev-siewnath")
-chat_loop = ChatLoop(llm=llm, prompt_context=prompt_context)
+chat_loop = ChatLoop(llm=llm)
 
 vector_db_tsne_visualization = VectorDBTSNEVisualization(
     title="tSNE", collection=vector_db.collection
@@ -32,10 +35,15 @@ pipeline_factory = PipelineFactory(
     vector_db=vector_db,
 )
 
-query_pipeline = pipeline_factory.make(
-    RagContextRetriever(n_results=5),
-    RagContextInjector(),
-    RagTSNEVisUpdater(vector_db_tsne_visualization),
+query_pipeline = (
+    pipeline_factory.make(QueryWriter())
+    .pipe(
+        RagContextRetriever(n_results=5),
+        RagContextInjector(),
+        RagTSNEVisUpdater(vector_db_tsne_visualization),
+        UpdatePromptContextHistory(),
+    )
+    .pipe(InvokeChatLoop(chat_loop=chat_loop))
 )
 
 vector_db_tsne_figure = vector_db_tsne_visualization.get()
@@ -43,16 +51,14 @@ vector_db_tsne_figure = vector_db_tsne_visualization.get()
 
 def submit_message(question):
     if not chat_loop.is_looping and question:
-        query_context = query_pipeline.run(QueryContext(question=question))
-        prompt_context.push({"role": "user", "content": query_context.question})
-        vector_db_tsne_figure = vector_db_tsne_visualization.get()
-        yield gr.Textbox(
-            value="", placeholder="Working..."
-        ), prompt_context.conversation, vector_db_tsne_figure
-        for done in chat_loop.invoke():
+        for done in query_pipeline.run(question):
             yield gr.Textbox(
                 value="", placeholder="Working..." if not done else "Chat with the bot!"
-            ), prompt_context.conversation, vector_db_tsne_figure
+            ), prompt_context.conversation, (
+                vector_db_tsne_figure
+                if not done
+                else vector_db_tsne_visualization.get()
+            )
     else:
         yield gr.Textbox(
             value="", placeholder="Chat with the bot!"

@@ -24,4 +24,6 @@ class Pipeline(Pipe[I, O], Generic[I, O]):
         return current  # type: ignore
 
     def pipe(self, *next_pipes: Pipe[O, Next]) -> "Pipeline[I, Next]":
-        return Pipeline(*self.pipes, *next_pipes)
+        pipeline = Pipeline(*self.pipes, *next_pipes)
+        pipeline.set_environment(self.llm, self.prompt_context, self.vector_db)
+        return pipeline

@@ -10,7 +10,7 @@ class FineTuneFrontier(Pipe[TrainingProgram]):
         fuzziness = 0
         for question in input.testing.questions:
             self.prompt_context.reset()
-            self.prompt_context.push({"role": "user", "content": question.question})
+            self.prompt_context.push_user(question.question)
             response = self.llm.invoke(self.prompt_context.history)
             fuzziness += fuzz.ratio(response, question.answer) / 100
         input.statistics["test"] = fuzziness / len(input.testing.questions)

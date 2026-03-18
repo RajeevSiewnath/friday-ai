@@ -36,6 +36,14 @@ class PromptContext:
         self._history.extend(entry)
         return self
 
+    def push_user(self, content: str):
+        self._history.append({"role": "user", "content": content})
+        return self
+
+    def push_assistant(self, content: str):
+        self._history.append({"role": "assistant", "content": content})
+        return self
+
     def get_item_from_history(self, item_id: str) -> Any | None:
         return next((entry for entry in self._history if entry.get("id") == item_id))
 

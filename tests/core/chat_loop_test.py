@@ -5,7 +5,7 @@ from core.prompt_context import PromptContext
 
 def test_invoke_with_message(llm: LLM, prompt_context: PromptContext):
     """Test that invoke() processes streaming events and updates history."""
-    chat_loop = ChatLoop(llm, prompt_context)
+    chat_loop = ChatLoop(llm)
 
     # Submit a message
     prompt_context.push({"role": "user", "content": "Hello, what's on my CV?"})
@@ -17,7 +17,7 @@ def test_invoke_with_message(llm: LLM, prompt_context: PromptContext):
     assert prompt_context.history[1]["content"] == "Hello, what's on my CV?"
 
     # Invoke and collect results
-    results = list(chat_loop.invoke())
+    results = list(chat_loop.invoke(prompt_context=prompt_context))
 
     # Should have yielded at least one value
     assert len(results) > 0

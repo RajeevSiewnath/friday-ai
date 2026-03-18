@@ -1,32 +1,28 @@
-from dotenv import load_dotenv
 from typing import Generator
 import warnings
 from core.llm import LLM
 from core.prompt_context import PromptContext
-from core.tool_shed import ToolShed
 
 warnings.filterwarnings("ignore", message="Pydantic serializer warnings")
-load_dotenv()
 
 
 class ChatLoop:
-    def __init__(self, llm: LLM, prompt_context: PromptContext):
+    def __init__(self, llm: LLM):
         self.llm = llm
-        self.prompt_context = prompt_context
         self._is_looping = False
 
     @property
     def is_looping(self):
         return self._is_looping
 
-    def invoke(self) -> Generator[bool, None, None]:
+    def invoke(self, prompt_context: PromptContext) -> Generator[bool, None, None]:
         self._is_looping = True
-        yield from self._invoke()
+        yield from self._invoke(prompt_context)
         self._is_looping = False
 
-    def _invoke(self) -> Generator[bool, None, None]:
+    def _invoke(self, prompt_context: PromptContext) -> Generator[bool, None, None]:
         try:
-            with self.llm.stream(input=self.prompt_context.history) as stream:
+            with self.llm.stream(input=prompt_context.history) as stream:
                 for event in stream:
                     if event.type == "response.created":
                         pass
@@ -37,7 +33,7 @@ class ChatLoop:
                     elif event.type == "response.failed":
                         pass
                     elif event.type == "response.output_item.added":
-                        self.prompt_context.push(event.item.model_dump())
+                        prompt_context.push(event.item.model_dump())
                         yield False
                     elif event.type == "response.output_item.done":
                         pass
@@ -46,7 +42,7 @@ class ChatLoop:
                     elif event.type == "response.content_part.done":
                         pass
                     elif event.type == "response.output_text.delta":
-                        item = self.prompt_context.get_item_from_history(event.item_id)
+                        item = prompt_context.get_item_from_history(event.item_id)
                         if item:
                             if isinstance(item["content"], list):
                                 item["content"] = ""
@@ -59,16 +55,16 @@ class ChatLoop:
                     elif event.type == "response.text.done":
                         pass
                     elif event.type == "response.function_call_arguments.delta":
-                        item = self.prompt_context.get_item_from_history(event.item_id)
+                        item = prompt_context.get_item_from_history(event.item_id)
                         if item:
                             item["arguments"] += event.delta
                     elif event.type == "response.function_call_arguments.done":
-                        item = self.prompt_context.get_item_from_history(event.item_id)
+                        item = prompt_context.get_item_from_history(event.item_id)
                         if item:
                             result = self.llm.tool_shed.call(
                                 item["name"], item["arguments"]
                             )
-                            self.prompt_context.push(
+                            prompt_context.push(
                                 {
                                     "type": "function_call_output",
                                     "call_id": item["call_id"],
@@ -92,7 +88,7 @@ class ChatLoop:
                     else:
                         raise Exception(f"unsupported type {event.type}")
         except Exception as e:
-            self.prompt_context.push(
+            prompt_context.push(
                 {"role": "assistant", "content": "Something went wrong, try again"}
             )
             print(e)
