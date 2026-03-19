@@ -2,5 +2,5 @@ import pytest
 
 
 @pytest.mark.skip("Not implemented yet")
-def test_agent():
+def test_capabilities_injector():
     pass

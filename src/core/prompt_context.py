@@ -6,12 +6,14 @@ from typing import Any
 class PromptContext:
     message: str = """
 {user_context}
+{capabilities}
 {context}
 """
     user_context: str = ""
     user_context_short: str = ""
     user: str = ""
     context: str = ""
+    capabilities: str = ""
     _history: list[dict] = field(default_factory=list)
 
     @property

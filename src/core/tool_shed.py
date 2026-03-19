@@ -1,19 +1,36 @@
+from dataclasses import dataclass
 import json
-from typing import Any, Callable, Self, TypedDict
+from typing import Any, Callable, Self, TYPE_CHECKING
+from utils.function_definition_creator import function_definition_creator
+
+if TYPE_CHECKING:
+    from pipelines.pipeline import Pipeline
 
 
-class ToolDefinition(TypedDict):
+@dataclass
+class ToolDefinition:
     name: str
-    callable: Callable
+    callable: Callable | "Pipeline"
     definition: Any
 
 
 class ToolShed:
-    def __init__(self, *tools: ToolDefinition):
-        self.tools: list[ToolDefinition] = tools
+    def __init__(self, *tools: Any):
+        self.tools: list[ToolDefinition] = []
+        self.add(*tools)
 
-    def add(self, *tools: ToolDefinition) -> Self:
-        self.tools.extend(*tools)
+    def add(self, *tools: Any) -> Self:
+        tool_defs = []
+        for t in tools:
+            definition = function_definition_creator(t)
+            tool_defs.append(
+                ToolDefinition(
+                    name=definition["name"],
+                    definition=definition,
+                    callable=t,
+                )
+            )
+        self.tools.extend(tool_defs)
         return self
 
     def remove(self, *tools: ToolDefinition) -> Self:
@@ -21,12 +38,17 @@ class ToolShed:
         return self
 
     def call(self, name: str, args: str) -> Any:
-        tool = next([t for t in self.tools if t.name == name])
+        from pipelines.pipeline import Pipeline
+
+        tool = next((t for t in self.tools if t.name == name), None)
         if tool:
-            return tool(**json.loads(args))
+            if isinstance(tool.callable, Pipeline):
+                return tool.callable.run(**json.loads(args))
+            else:
+                return tool.callable(**json.loads(args))
         else:
             raise f"tool not defined: '{name}'"
 
     @property
     def definitions(self) -> list[Any]:
-        return [t["definition"] for t in self.tools]
+        return [t.definition for t in self.tools]

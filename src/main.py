@@ -1,4 +1,6 @@
 import os
+from agent_pipes.send_push_notification import SendPushNotification
+from agent_pipelines.send_contact_request import SendContactRequest
 from core.chat_loop import ChatLoop
 from core.llm import LLM
 from core.prompt_context import PromptContext
@@ -7,6 +9,7 @@ from core.vector_db import VectorDB
 from core_pipes.invoke_chat_loop import InvokeChatLoop
 from models.query_context import QueryContext
 from pipelines.pipeline_factory import PipelineFactory
+from query_pipes.capabilities_injector import CapabilitiesInjector
 from query_pipes.query_writer import QueryWriter
 from query_pipes.rag_context_injector import RagContextInjector
 from query_pipes.rag_context_retriever import RagContextRetriever
@@ -19,8 +22,7 @@ prompt_context = PromptContext(
     user_context="""
 You are a personal job agent for Rajeev Siewnath. 
 You provide information about his curriculum vitae to the user, who is a person interested in Rajeev Siewnath's career.
-If relevant, use the given context to answer any question.
-"""
+If relevant, use the given context to answer any question."""
 )
 vector_db = VectorDB(llm=llm, name="cv-rajeev-siewnath")
 chat_loop = ChatLoop(llm=llm)
@@ -41,10 +43,16 @@ query_pipeline = (
         RagContextRetriever(n_results=5),
         RagContextInjector(),
         RagTSNEVisUpdater(vector_db_tsne_visualization),
+        CapabilitiesInjector(),
         UpdatePromptContextHistory(),
     )
     .pipe(InvokeChatLoop(chat_loop=chat_loop))
 )
+
+send_push_notification_pipeline = pipeline_factory.make(
+    SendPushNotification(), pipeline_cls=SendContactRequest
+)
+llm.tool_shed.add(send_push_notification_pipeline)
 
 vector_db_tsne_figure = vector_db_tsne_visualization.get()
 

@@ -71,7 +71,7 @@ class ChatLoop:
                                     "output": str(result),
                                 }
                             )
-                            for done in self._invoke():
+                            for done in self._invoke(prompt_context=prompt_context):
                                 yield done
                     elif event.type == "response.refusal.delta":
                         pass
