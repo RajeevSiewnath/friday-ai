@@ -1,6 +1,6 @@
-.PHONY: dev
-dev:
-	uv run watchfiles "python src/main.py" src
+.PHONY: dev-legacy
+dev-legacy:
+	uv run watchfiles "python legacy/src/main.py" legacy/src
 
 .PHONY: eval-one
 eval-one:

@@ -1,4 +1,6 @@
 import os
+
+import modal
 from agent_pipes.send_push_notification import SendPushNotification
 from agent_pipelines.send_contact_request import SendContactRequest
 from core.chat_loop import ChatLoop
@@ -8,6 +10,8 @@ import gradio as gr
 from core.vector_db import VectorDB
 from core_pipes.invoke_chat_loop import InvokeChatLoop
 from models.query_context import QueryContext
+
+# from pipelines.modal_pipeline import ModalPipeline
 from pipelines.pipeline_factory import PipelineFactory
 from query_pipes.capabilities_injector import CapabilitiesInjector
 from query_pipes.query_writer import QueryWriter
