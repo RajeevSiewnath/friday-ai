@@ -1,20 +1,39 @@
-.PHONY: dev-legacy
-dev-legacy:
-	uv run watchfiles "python legacy/src/main.py" legacy/src
+# Makefile
 
-.PHONY: eval-one
-eval-one:
-	uv run evaluation/evaluator.py ${N}
+# ========================================
+# Config
+# ========================================
+PACKAGE := friday
+SRC_DIR := src
+TEST_DIR := tests
+PYTHON := python
+UV := uv
 
-.PHONY: eval
-eval:
-	uv run evaluation/browser_evaluator.py
+# ========================================
+# Dev: Run your main app with file watcher
+# ========================================
+.PHONY: dev
+dev:
+	$(UV) run watchfiles "$(PYTHON) -m $(PACKAGE).main"
 
+# ========================================
+# Build: Install the package (editable)
+# ========================================
+.PHONY: build
+build:
+	$(UV) sync
+
+# ========================================
+# Lint: Check code style with flake8
+# ========================================
 .PHONY: lint
 lint:
-	flake8 .
+	flake8 $(SRC_DIR) $(TEST_DIR)
 
+# ========================================
+# Test: Run pytest (optional ARGS)
+# ========================================
 .PHONY: test
 test:
 	@echo "Running pytest with extra args: $(ARGS)"
-	PYTHONPATH=src uv run pytest tests $(ARGS)
+	$(UV) run pytest $(TEST_DIR) $(ARGS)

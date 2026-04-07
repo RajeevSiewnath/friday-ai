@@ -1,0 +1,76 @@
+{
+  "messages": [
+    {
+      "id": "msg_507695",
+      "content": "",
+      "role": "assistant",
+      "status": "in_progress",
+      "type": "message",
+      "phase": null
+    },
+    {
+      "id": "msg_507695",
+      "content": "How",
+      "role": "assistant",
+      "status": "in_progress",
+      "type": "message",
+      "phase": null
+    },
+    {
+      "id": "msg_507695",
+      "content": " can",
+      "role": "assistant",
+      "status": "in_progress",
+      "type": "message",
+      "phase": null
+    },
+    {
+      "id": "msg_507695",
+      "content": " I",
+      "role": "assistant",
+      "status": "in_progress",
+      "type": "message",
+      "phase": null
+    },
+    {
+      "id": "msg_507695",
+      "content": " help",
+      "role": "assistant",
+      "status": "in_progress",
+      "type": "message",
+      "phase": null
+    },
+    {
+      "id": "msg_507695",
+      "content": " you",
+      "role": "assistant",
+      "status": "in_progress",
+      "type": "message",
+      "phase": null
+    },
+    {
+      "id": "msg_507695",
+      "content": " today",
+      "role": "assistant",
+      "status": "in_progress",
+      "type": "message",
+      "phase": null
+    },
+    {
+      "id": "msg_507695",
+      "content": "?",
+      "role": "assistant",
+      "status": "in_progress",
+      "type": "message",
+      "phase": null
+    },
+    {
+      "id": "msg_507695",
+      "content": "",
+      "role": "assistant",
+      "status": "completed",
+      "type": "message",
+      "phase": null
+    }
+  ]
+}
