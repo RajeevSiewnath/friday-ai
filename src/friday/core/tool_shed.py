@@ -12,11 +12,11 @@ class ToolDefinition:
 
 
 class ToolShed:
-    def __init__(self, *tools: Any):
+    def __init__(self, *tools: Callable):
         self.tools: list[ToolDefinition] = []
         self.add(*tools)
 
-    def add(self, *tools: Any) -> Self:
+    def add(self, *tools: Callable) -> Self:
         tool_defs = []
         for t in tools:
             definition = function_definition_creator(t)
@@ -35,7 +35,6 @@ class ToolShed:
         return self
 
     def call(self, name: str, args: str) -> Any:
-
         tool = next((t for t in self.tools if t.name == name), None)
         if tool:
             return tool.callable(**json.loads(args))

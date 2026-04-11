@@ -105,7 +105,11 @@ class LLM:
                     elif event.type == "response.failed":
                         pass
                     elif event.type == "response.output_item.added":
-                        message = {**event.item.model_dump(), "content": ""}
+                        entry = event.item.model_dump()
+                        if "content" in entry:
+                            message = {**entry, "content": ""}
+                        else:
+                            message = {**entry}
                         yield message
                     elif event.type == "response.output_item.done":
                         pass
@@ -123,9 +127,12 @@ class LLM:
                     elif event.type == "response.text.done":
                         pass
                     elif event.type == "response.function_call_arguments.delta":
-                        yield event
+                        message = {
+                            **message,
+                            "arguments": message["arguments"] + event.delta,
+                        }
                     elif event.type == "response.function_call_arguments.done":
-                        yield event
+                        pass
                     elif event.type == "response.refusal.delta":
                         pass
                     elif event.type == "response.refusal.done":

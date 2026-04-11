@@ -1,7 +1,6 @@
 from copy import deepcopy
-from typing import AsyncGenerator, Callable, Generic, Optional, Type
+from typing import AsyncGenerator, Callable, Generic, Optional, Type, get_type_hints
 from langgraph.graph.state import CompiledStateGraph, ContextT, InputT, OutputT, StateT
-from typing import get_type_hints
 
 
 class GraphInvoker(Generic[StateT, ContextT, InputT, OutputT]):

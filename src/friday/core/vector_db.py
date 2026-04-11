@@ -1,7 +1,7 @@
 from chromadb.config import Settings
 from chromadb import Client, Collection
-from core.llm import LLM
-from models.document import Document, DocumentCollection
+from .llm import LLM
+from ..models.document import Document, DocumentCollection
 
 
 class VectorDB:

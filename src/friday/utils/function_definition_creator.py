@@ -3,7 +3,7 @@ import typing
 from typing import get_type_hints, get_origin, get_args, Literal, Union
 
 
-def _parse_google_docstring_with_returns(docstring: str):
+def __parse_google_docstring_with_returns(docstring: str):
     if not docstring:
         return {}, "", None
 
@@ -43,22 +43,22 @@ def _parse_google_docstring_with_returns(docstring: str):
     return param_docs, description, return_desc
 
 
-def _python_type_to_schema(py_type):
+def __python_type_to_schema(py_type):
     origin = get_origin(py_type)
     args = get_args(py_type)
 
     if origin is Union:
         non_none = [a for a in args if a is not type(None)]
         if len(non_none) == 1:
-            return _python_type_to_schema(non_none[0])
-        return {"anyOf": [_python_type_to_schema(a) for a in non_none]}
+            return __python_type_to_schema(non_none[0])
+        return {"anyOf": [__python_type_to_schema(a) for a in non_none]}
 
     if origin is Literal:
         return {"type": "string", "enum": list(args)}
 
     if origin in (list, typing.List):
         item_type = args[0] if args else str
-        return {"type": "array", "items": _python_type_to_schema(item_type)}
+        return {"type": "array", "items": __python_type_to_schema(item_type)}
 
     if origin in (dict, typing.Dict):
         return {"type": "object", "additionalProperties": True}
@@ -77,7 +77,7 @@ def function_definition_creator(func_or_instance):
     sig = inspect.signature(func)
     type_hints = get_type_hints(func)
     docstring = inspect.getdoc(func) or ""
-    param_docs, description, return_desc = _parse_google_docstring_with_returns(
+    param_docs, description, return_desc = __parse_google_docstring_with_returns(
         docstring
     )
 
@@ -86,7 +86,7 @@ def function_definition_creator(func_or_instance):
 
     for param in sig.parameters.values():
         param_type = type_hints.get(param.name, str)
-        schema = _python_type_to_schema(param_type)
+        schema = __python_type_to_schema(param_type)
         if param.name in param_docs:
             schema["description"] = param_docs[param.name]
         properties[param.name] = schema
@@ -96,7 +96,7 @@ def function_definition_creator(func_or_instance):
     # Handle return type
     return_type = type_hints.get("return", None)
     return_schema = (
-        _python_type_to_schema(return_type) if return_type else {"type": "string"}
+        __python_type_to_schema(return_type) if return_type else {"type": "string"}
     )
     if return_desc:
         return_schema["description"] = return_desc
@@ -110,7 +110,7 @@ def function_definition_creator(func_or_instance):
             "properties": properties,
             "required": required,
         },
-        # "returns": return_schema,
+        "returns": return_schema,
     }
 
     return tool_spec
