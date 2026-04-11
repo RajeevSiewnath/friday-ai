@@ -1,12 +1,8 @@
 import asyncio
-from copy import deepcopy
-import json
 import os
 from typing import (
     Any,
     AsyncGenerator,
-    Callable,
-    Generator,
     Mapping,
     Type,
     TypeVar,
@@ -27,8 +23,6 @@ from openai import (
     AsyncOpenAI,
 )
 from openai.types.file_object import FileObject
-
-from friday.reducers.stream_reducer import stream_reducer
 from .tool_shed import ToolShed
 
 
@@ -66,19 +60,7 @@ class LLM:
             api_key=(api_key if api_key else os.environ.get("OPENAI_API_KEY")), **kwargs
         )
 
-    async def invoke(self, input: list[dict], response_format: Type[T] = str) -> T:
-        if response_format == str:
-            response = await self.invoke_raw(
-                input=input, response_format=response_format
-            )
-            return response.output_text
-        else:
-            response = await self.invoke_raw(
-                input=input, response_format=response_format
-            )
-            return response.output_parsed
-
-    async def invoke_raw(
+    async def invoke(
         self, input: list[dict], response_format: Type[T] = str
     ) -> Union[Response, ParsedResponse[Type[T]]]:
         if response_format == str:
@@ -100,10 +82,7 @@ class LLM:
     async def stream(
         self, input: list[dict]
     ) -> AsyncGenerator[tuple[dict, list[dict]]]:
-        local_input = deepcopy(input)
-
-        def get_message_by_id(id: str):
-            return next((i for i in local_input if i.get("id", None) == id), None)
+        message: dict = None
 
         async with self.client.responses.stream(
             model=self.model,
@@ -117,20 +96,17 @@ class LLM:
                     elif event.type == "response.in_progress":
                         pass
                     elif event.type == "response.completed":
-                        message = get_message_by_id(event.response.output[0].id)
-                        if message:
-                            msg_copy = deepcopy(message)
-                            msg_copy["content"] = ""
-                            msg_copy["status"] = event.response.output[0].status
-                            local_input = stream_reducer(local_input, [msg_copy])
-                            yield msg_copy, local_input
+                        message = {
+                            **message,
+                            "status": event.response.output[0].status,
+                            "content": "",
+                        }
+                        yield message
                     elif event.type == "response.failed":
                         pass
                     elif event.type == "response.output_item.added":
-                        msg_copy = event.item.model_dump()
-                        msg_copy["content"] = ""
-                        local_input = stream_reducer(local_input, [msg_copy])
-                        yield msg_copy, local_input
+                        message = {**event.item.model_dump(), "content": ""}
+                        yield message
                     elif event.type == "response.output_item.done":
                         pass
                     elif event.type == "response.content_part.added":
@@ -138,12 +114,8 @@ class LLM:
                     elif event.type == "response.content_part.done":
                         pass
                     elif event.type == "response.output_text.delta":
-                        message = get_message_by_id(event.item_id)
-                        if message:
-                            msg_copy = deepcopy(message)
-                            msg_copy["content"] = event.delta
-                            local_input = stream_reducer(local_input, [msg_copy])
-                            yield msg_copy, local_input
+                        message = {**message, "content": event.delta}
+                        yield message
                     elif event.type == "response.output_text.done":
                         pass
                     elif event.type == "response.output_text.annotation_added":

@@ -1,9 +1,16 @@
-import math
 import os
-import shutil
-import sys
-
 from colorama import Cursor, Fore, Back, Style
+
+
+def __print_content(content):
+    if isinstance(content, list):
+        return "\n".join([__print_content(c) for c in content])
+    elif isinstance(content, dict):
+        return content["text"]
+    elif isinstance(content, str):
+        return content
+    else:
+        return ""
 
 
 def debug_chat(messages: list[dict]):
@@ -20,6 +27,6 @@ def debug_chat(messages: list[dict]):
                         } {
                             Fore.YELLOW if message.get("status", None) == "in_progress" else getattr(Fore, color_map[message["role"]])
                             }{
-                                message["content"]
+                                __print_content(message["content"])
                                 }"
         )
