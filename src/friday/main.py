@@ -1,18 +1,16 @@
 import asyncio
-import json
-from typing import Annotated, TypedDict
 from dotenv import load_dotenv
+from langgraph.graph import END, StateGraph
+from colorama import init
 from friday.core.llm import LLM
 from friday.core.graph_invoker import GraphInvoker
 from friday.core.prompt_context import PromptContext
 from friday.core.vector_db import VectorDB
 from friday.debuggers.chat_debuggers import debug_chat
-from langgraph.runtime import Runtime
+from friday.query_nodes.execute_tool import execute_tool
+from friday.query_nodes.llm_invoke import llm_invoke
+from friday.query_nodes.messages_state import MessagesState
 from friday.query_nodes.query_context import QueryContext
-from friday.reducers.stream_reducer import stream_reducer
-from colorama import init
-from langgraph.config import get_stream_writer
-from langgraph.graph import END, StateGraph
 
 init(autoreset=True)
 
@@ -33,8 +31,8 @@ def send_contact_request(message: str) -> bool:
     return True
 
 
-class State(TypedDict):
-    messages: Annotated[list[dict], stream_reducer]
+class State(MessagesState):
+    pass
 
 
 llm = LLM(
@@ -55,47 +53,16 @@ query_context = QueryContext(
 )
 
 
-async def chat_node_stream(state: State, runtime: Runtime[QueryContext]):
-    writer = get_stream_writer()
-    events = []
-    async for event in runtime.context.llm.stream(state["messages"]):
-        writer({"messages": [event]})
-        events.append(event)
-
-    return {"messages": events}
-
-
-async def chat_node(state: State, runtime: Runtime[QueryContext]):
-    response = await runtime.context.llm.invoke(state["messages"])
-    return {"messages": [m.model_dump() for m in response.output]}
-
-
-async def execute_tool(state: State, runtime: Runtime[QueryContext]):
-    tool_call = state["messages"][-1]
-    result = runtime.context.llm.tool_shed.call(
-        tool_call["name"], tool_call["arguments"]
-    )
-    return {
-        "messages": [
-            {
-                "type": "function_call_output",
-                "call_id": tool_call["call_id"],
-                "output": str(result),
-            }
-        ]
-    }
-
-
 def build_graph() -> StateGraph:
     builder = StateGraph(State, context_schema=QueryContext)
-    builder.add_node("chat", chat_node)
-    builder.add_node("tool", execute_tool)
-    builder.set_entry_point("chat")
-    builder.add_edge("tool", "chat")
+    builder.add_node("llm_invoke", llm_invoke)
+    builder.add_node("execute_tool", execute_tool)
+    builder.set_entry_point("llm_invoke")
+    builder.add_edge("execute_tool", "llm_invoke")
     builder.add_conditional_edges(
-        "chat",
+        "llm_invoke",
         lambda state: (
-            "tool" if state["messages"][-1]["type"] == "function_call" else END
+            "execute_tool" if state["messages"][-1]["type"] == "function_call" else END
         ),
     )
     return builder.compile()
