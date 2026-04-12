@@ -14,7 +14,7 @@ UV := uv
 # ========================================
 .PHONY: dev
 dev:
-	$(UV) run watchfiles "$(PYTHON) -m $(PACKAGE).main"
+	$(UV) run watchfiles "$(PYTHON) -m $(PACKAGE).main" src
 
 # ========================================
 # Build: Install the package (editable)

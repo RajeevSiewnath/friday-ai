@@ -10,11 +10,13 @@ class GraphInvoker(Generic[StateT, ContextT, InputT, OutputT]):
         graph: CompiledStateGraph[StateT, ContextT, InputT, OutputT],
         on_effect: Optional[Callable[[OutputT], None]] = None,
         on_node_change: Optional[Callable[[str], None]] = None,
+        context: ContextT | None = None,
         update_state_with_effect: bool = True,
     ):
         self.graph: CompiledStateGraph[StateT, ContextT, InputT, OutputT] = graph
         self.on_effect: Optional[Callable[[OutputT], None]] = on_effect
         self.on_node_change: Optional[Callable[[str], None]] = on_node_change
+        self.context = context
         self.update_state_with_effect: bool = update_state_with_effect
 
     def __get_reducers(self, state_type: Type[StateT]):
@@ -41,14 +43,14 @@ class GraphInvoker(Generic[StateT, ContextT, InputT, OutputT]):
 
         return new_state
 
-    async def stream(
-        self,
-        state: InputT,
-    ) -> AsyncGenerator[OutputT, None]:
+    async def stream(self, state: InputT) -> AsyncGenerator[OutputT, None]:
         reducers = self.__get_reducers(self.graph.builder.state_schema)
         s = deepcopy(state)
         async for chunk in self.graph.astream(
-            state, stream_mode=["custom", "updates", "values"], version="v2"
+            state,
+            context=self.context,
+            stream_mode=["custom", "updates", "values"],
+            version="v2",
         ):
             if chunk["type"] == "values":
                 s = deepcopy(state)
