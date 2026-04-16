@@ -4,20 +4,20 @@ from chromadb import Client, Collection
 from pydantic import BaseModel, Field
 
 
-class VectorizableInstanceQuery(BaseModel):
+class VectorQueryOutput(BaseModel):
     id: str = Field(description="The ID for the entry")
     metadata: dict = Field(description="The metadata for the entry")
     document: str = Field(description="The document for the entry")
 
 
-class VectorizableInstanceInput(VectorizableInstanceQuery):
+class VectorQueryInput(VectorQueryOutput):
     embedding: list[float] = Field(description="The embeddings for the entry")
 
 
 class VectorDB:
     def __init__(self, settings: Settings = Settings(is_persistent=True)):
         self.chroma: ClientAPI = Client(settings)
-        self.__collections: list[Collection] = []
+        self.__collections: list[VectorDBCollection] = []
 
     # def __enter__(self):
     #     return self
@@ -29,18 +29,19 @@ class VectorDB:
 
     def __getitem__(self, key):
         collection = next(
-            (collection for collection in self.__collections if collection.name == key),
+            (c for c in self.__collections if c.collection.name == key),
             None,
         )
         if not collection:
-            collection = self.chroma.get_or_create_collection(name=key)
+            c = self.chroma.get_or_create_collection(name=key)
+            collection = VectorDBCollection(self, c)
             self.__collections.append(collection)
-
         return collection
 
-    def delete(self, collection: Collection):
+    def delete(self, collection: "VectorDBCollection"):
+        c = collection
         self.__collections.remove(collection)
-        self.chroma.delete_collection(collection)
+        self.chroma.delete_collection(c)
 
 
 class VectorDBCollection:
@@ -48,9 +49,7 @@ class VectorDBCollection:
         self.vector_db: VectorDB = vector_db
         self.collection: Collection = collection
 
-    def populate(
-        self, vectorizable: list[VectorizableInstanceInput], force=False, clear=False
-    ):
+    def populate(self, vectorizable: list[VectorQueryInput], force=False, clear=False):
         if len(self.collection.get()["ids"]) == 0 or force:
             if clear:
                 name = self.collection.name
@@ -70,14 +69,10 @@ class VectorDBCollection:
             )
         return self
 
-    def query(
-        self, embedding: list[float], n_results=10
-    ) -> list[VectorizableInstanceQuery]:
+    def query(self, embedding: list[float], n_results=10) -> list[VectorQueryOutput]:
         results = self.collection.query(query_embeddings=embedding, n_results=n_results)
         return [
-            VectorizableInstanceQuery(
-                id=result[0], metadata=result[1], document=[result[2]]
-            )
+            VectorQueryOutput(id=result[0], metadata=result[1], document=[result[2]])
             for result in zip(
                 results["ids"][0], results["metadatas"][0], results["documents"][0]
             )

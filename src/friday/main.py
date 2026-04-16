@@ -9,8 +9,10 @@ from friday.core.vector_db import VectorDB
 from friday.debuggers.chat_debuggers import debug_chat
 from friday.query_nodes.execute_tool import execute_tool
 from friday.query_nodes.llm_invoke import llm_invoke
-from friday.query_nodes.messages_state import MessagesState
-from friday.query_nodes.query_context import QueryContext
+from friday.query_nodes.states.messages_state import MessagesState
+from friday.query_nodes.contexts.llm_context import QueryContext
+from friday.query_nodes.states.rag_state import RagState
+from friday.query_nodes.states.system_prompt_state import SystemPromptState
 
 init(autoreset=True)
 
@@ -31,26 +33,16 @@ def send_contact_request(message: str) -> bool:
     return True
 
 
-class State(MessagesState):
-    pass
-
-
 llm = LLM(
     # api_key="ollama",
     # model="llama3.2",
     # base_url="http://localhost:11434/v1/",
 )
 llm.tool_shed.add(send_contact_request)
-prompt_context = PromptContext(
-    user_context="""
-You are a personal job agent for Rajeev Siewnath. 
-You provide information about his curriculum vitae to the user, who is a person interested in Rajeev Siewnath's career.
-If relevant, use the given context to answer any question."""
-)
 vector_db = VectorDB()
-query_context = QueryContext(
-    llm=llm, prompt_context=prompt_context, vector_db=vector_db
-)
+
+class State(MessagesState, RagState, SystemPromptState):
+    pass
 
 
 def build_graph() -> StateGraph:

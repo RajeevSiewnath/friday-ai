@@ -1,4 +1,10 @@
 from copy import deepcopy
+import uuid
+
+
+class StreamReducerReplaceAction:
+    def __init__(self, content: str):
+        self.content = content
 
 
 def stream_reducer(left: list[dict], right: list[dict]):
@@ -18,12 +24,20 @@ def stream_reducer(left: list[dict], right: list[dict]):
                 message_in_left.update(
                     {k: v for k, v in entry.items() if k != "content"}
                 )
-                message_in_left["content"] = f"{left_content}{right_content}"
+                if isinstance(right_content, StreamReducerReplaceAction):
+                    message_in_left["content"] = right_content.content
+                else:
+                    message_in_left["content"] = f"{left_content}{right_content}"
             else:
                 message_in_left.update(
                     {k: v for k, v in entry.items() if k != "content"}
                 )
         else:
-            content.append(deepcopy(entry))
+            copy = deepcopy(entry)
+            if "id" not in copy:
+                copy["id"] = str(uuid.uuid4())
+            if isinstance(copy["content"], StreamReducerReplaceAction):
+                copy["content"] = copy["content"].content
+            content.append(copy)
 
     return content

@@ -1,6 +1,6 @@
 from langgraph.runtime import Runtime
-from friday.query_nodes.messages_state import MessagesState
-from friday.query_nodes.query_context import QueryContext
+from friday.query_nodes.states.messages_state import MessagesState
+from friday.query_nodes.contexts.llm_context import QueryContext
 
 
 async def llm_invoke(state: MessagesState, runtime: Runtime[QueryContext]):

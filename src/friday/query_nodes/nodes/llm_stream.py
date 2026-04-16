@@ -1,7 +1,7 @@
 from langgraph.runtime import Runtime
 from langgraph.config import get_stream_writer
-from friday.query_nodes.messages_state import MessagesState
-from friday.query_nodes.query_context import QueryContext
+from friday.query_nodes.states.messages_state import MessagesState
+from friday.query_nodes.contexts.llm_context import QueryContext
 
 
 async def llm_stream(state: MessagesState, runtime: Runtime[QueryContext]):
