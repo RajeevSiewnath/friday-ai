@@ -1,4 +1,3 @@
-from typing import Protocol
 from langgraph.runtime import Runtime
 from friday.query_nodes.contexts.llm_context import LLMContext
 from friday.query_nodes.states.messages_state import MessagesState
@@ -6,7 +5,7 @@ from friday.query_nodes.states.rag_state import RagState
 from friday.visualizations.vector_db_tsne_visualization import VectorDBTSNEVisualization
 
 
-class RagTNSEVisUpdatedState(MessagesState, RagState, Protocol):
+class RagTNSEVisUpdatedState(MessagesState, RagState):
     pass
 
 

@@ -1,11 +1,10 @@
-from typing import Protocol
 from langgraph.runtime import Runtime
 from friday.query_nodes.contexts.vector_db_context import VectorDBContext
 from friday.query_nodes.states.messages_state import MessagesState
 from friday.query_nodes.states.rag_state import RagState
 
 
-class RagFromQueryState(RagState, MessagesState, Protocol):
+class RagFromQueryState(RagState, MessagesState):
     pass
 
 

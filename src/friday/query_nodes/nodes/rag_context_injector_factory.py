@@ -1,9 +1,8 @@
-from typing import Protocol
 from friday.query_nodes.states.rag_state import RagState
 from friday.query_nodes.states.system_prompt_state import SystemPromptState
 
 
-class RagContextInjectorState(SystemPromptState, RagState, Protocol):
+class RagContextInjectorState(SystemPromptState, RagState):
     pass
 
 

@@ -1,16 +1,16 @@
 import asyncio
+from typing import Protocol
 from dotenv import load_dotenv
 from langgraph.graph import END, StateGraph
 from colorama import init
 from friday.core.llm import LLM
 from friday.core.graph_invoker import GraphInvoker
-from friday.core.prompt_context import PromptContext
 from friday.core.vector_db import VectorDB
 from friday.debuggers.chat_debuggers import debug_chat
-from friday.query_nodes.execute_tool import execute_tool
-from friday.query_nodes.llm_invoke import llm_invoke
+from friday.query_nodes.nodes.execute_tool import execute_tool
+from friday.query_nodes.nodes.llm_invoke import llm_invoke
 from friday.query_nodes.states.messages_state import MessagesState
-from friday.query_nodes.contexts.llm_context import QueryContext
+from friday.query_nodes.contexts.llm_context import LLMContext
 from friday.query_nodes.states.rag_state import RagState
 from friday.query_nodes.states.system_prompt_state import SystemPromptState
 
@@ -41,12 +41,18 @@ llm = LLM(
 llm.tool_shed.add(send_contact_request)
 vector_db = VectorDB()
 
-class State(MessagesState, RagState, SystemPromptState):
+
+# class State(MessagesState, RagState, SystemPromptState):
+class State(MessagesState):
+    pass
+
+
+class Context(LLMContext):
     pass
 
 
 def build_graph() -> StateGraph:
-    builder = StateGraph(State, context_schema=QueryContext)
+    builder = StateGraph(State, context_schema=Context)
     builder.add_node("llm_invoke", llm_invoke)
     builder.add_node("execute_tool", execute_tool)
     builder.set_entry_point("llm_invoke")
@@ -61,9 +67,7 @@ def build_graph() -> StateGraph:
 
 
 async def main():
-    graph = build_graph()
-    graph_invoker = GraphInvoker(graph, context=query_context)
-
+    context: Context = Context(llm=llm)
     state: State = {
         "messages": [
             {
@@ -73,6 +77,8 @@ async def main():
             {"role": "user", "content": "send a message to rajeev: hey bro"},
         ]
     }
+    graph = build_graph()
+    graph_invoker = GraphInvoker(graph, context=context)
 
     while True:
         # async for s in graph_invoker.stream(state):

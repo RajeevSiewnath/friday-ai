@@ -23,7 +23,7 @@ from openai import (
     AsyncOpenAI,
 )
 from openai.types.file_object import FileObject
-from .tool_shed import ToolShed
+from friday.core.tool_shed import ToolShed
 
 
 load_dotenv()

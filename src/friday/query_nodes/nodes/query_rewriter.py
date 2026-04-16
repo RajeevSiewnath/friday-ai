@@ -1,11 +1,10 @@
-from typing import Protocol
 from langgraph.runtime import Runtime
 from friday.query_nodes.contexts.llm_context import LLMContext
 from friday.query_nodes.contexts.user_context import UserContext
 from friday.query_nodes.states.messages_state import MessagesState
 
 
-class QueryRewriterContext(LLMContext, UserContext, Protocol):
+class QueryRewriterContext(LLMContext, UserContext):
     pass
 
 

@@ -1,10 +1,8 @@
-from typing import Protocol
 from pydantic import BaseModel, Field
 from langgraph.runtime import Runtime
 from friday.query_nodes.contexts.llm_context import LLMContext
 from friday.query_nodes.states.messages_state import MessagesState
 from friday.query_nodes.states.rag_state import RagState
-from friday.query_nodes.states.system_prompt_state import SystemPromptState
 from friday.reducers.rag_reducer import RagReducerReplaceAction
 
 
@@ -14,7 +12,7 @@ class RankOrder(BaseModel):
     )
 
 
-class RagReRankerState(MessagesState, RagState, Protocol):
+class RagReRankerState(MessagesState, RagState):
     pass
 
 

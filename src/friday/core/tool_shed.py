@@ -1,7 +1,8 @@
 from dataclasses import dataclass
+import inspect
 import json
 from typing import Any, Callable, Self
-from ..utils.function_definition_creator import function_definition_creator
+from friday.utils.function_definition_creator import function_definition_creator
 
 
 @dataclass
@@ -34,10 +35,14 @@ class ToolShed:
         self.tools = [t for t in self.tools if t not in tools]
         return self
 
-    def call(self, name: str, args: str) -> Any:
+    async def call(self, name: str, args: str) -> Any:
         tool = next((t for t in self.tools if t.name == name), None)
         if tool:
-            return tool.callable(**json.loads(args))
+            result = tool.callable(**json.loads(args))
+            if inspect.isawaitable(result):
+                return await result
+            else:
+                return result
         else:
             raise f"tool not defined: '{name}'"
 
