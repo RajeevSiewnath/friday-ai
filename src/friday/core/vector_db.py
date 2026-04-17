@@ -72,7 +72,7 @@ class VectorDBCollection:
     def query(self, embedding: list[float], n_results=10) -> list[VectorQueryOutput]:
         results = self.collection.query(query_embeddings=embedding, n_results=n_results)
         return [
-            VectorQueryOutput(id=result[0], metadata=result[1], document=[result[2]])
+            VectorQueryOutput(id=result[0], metadata=result[1], document=result[2])
             for result in zip(
                 results["ids"][0], results["metadatas"][0], results["documents"][0]
             )

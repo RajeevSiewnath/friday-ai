@@ -24,13 +24,14 @@ Don't mention {runtime.context.user} unless it's a general question about {runti
 IMPORTANT: Respond ONLY with the knowledgebase query, nothing else."""
     return {
         "messages": [
+            *state["messages"][-1:],
             {
-                **state["messages"][-1:],
-                "message": (
+                "role": "user",
+                "content": (
                     await runtime.context.llm.invoke(
-                        {"role": "system", "content": message}
+                        [{"role": "system", "content": message}]
                     )
                 ).output_text,
-            }
+            },
         ]
     }

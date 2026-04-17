@@ -1,4 +1,6 @@
 import pytest
+import pytest_asyncio
+from chromadb.config import Settings
 from friday.core.llm import LLM
 from friday.core.tool_shed import ToolShed
 from friday.core.vector_db import VectorDB
@@ -26,3 +28,9 @@ def llm():
 @pytest.fixture
 def vector_db():
     return VectorDB()
+
+
+@pytest_asyncio.fixture
+async def vector_db_documents(vector_db: VectorDB, llm: LLM):
+    vector = await llm.embedding("anything")
+    return vector_db["cv-rajeev-siewnath"].query(embedding=vector)

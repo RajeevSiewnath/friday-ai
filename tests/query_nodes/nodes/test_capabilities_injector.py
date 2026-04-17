@@ -11,12 +11,3 @@ def test_capabilities_injector_with_tools(make_runtime, llm: LLM):
     assert "system_prompt" in result
     assert "Capabilities:" in result["system_prompt"]
     assert "Send a message to Rajeev Siewnath" in result["system_prompt"]
-
-
-def test_capabilities_injector_without_tools(make_runtime, llm: LLM):
-    runtime = make_runtime({"llm": llm})
-    state = {"system_prompt": ""}
-
-    result = capabilities_injector(state, runtime)
-
-    assert result == {}

@@ -11,7 +11,7 @@ async def test_execute_tool_returns_function_output(make_runtime, llm: LLM):
         "messages": [
             {
                 "name": "send_contact_request",
-                "arguments": {"message": "hi"},
+                "arguments": '{"message": "hi"}',
                 "call_id": "call_123",
             }
         ]
