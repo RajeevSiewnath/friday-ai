@@ -1,5 +1,5 @@
 import os
-from colorama import Cursor, Fore, Back, Style
+from colorama import Fore, Back, Style
 
 
 def __print_content(content):

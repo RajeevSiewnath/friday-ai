@@ -1,6 +1,6 @@
 from typing import Annotated, TypedDict
 from friday.core.vector_db import VectorQueryOutput
-from friday.reducers.rag_reducer import rag_reducer
+from friday.query_nodes.reducers.rag_reducer import rag_reducer
 
 
 class RagState(TypedDict):

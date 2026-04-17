@@ -3,7 +3,7 @@ from langgraph.runtime import Runtime
 from friday.query_nodes.contexts.llm_context import LLMContext
 from friday.query_nodes.states.messages_state import MessagesState
 from friday.query_nodes.states.rag_state import RagState
-from friday.reducers.rag_reducer import RagReducerReplaceAction
+from friday.query_nodes.reducers.rag_reducer import RagReducerReplaceAction
 
 
 class RankOrder(BaseModel):

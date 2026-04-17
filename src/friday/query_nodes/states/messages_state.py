@@ -1,5 +1,5 @@
 from typing import Annotated, TypedDict
-from friday.reducers.stream_reducer import stream_reducer
+from friday.query_nodes.reducers.stream_reducer import stream_reducer
 
 
 class MessagesState(TypedDict):
