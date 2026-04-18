@@ -1,4 +1,4 @@
-from evaluation_pipes.answer_eval import AnswerEvalResult
+from friday.graph.evaluation.answer_eval_factory import AnswerEvalResult
 from friday.models.evaluation_score import EvaluationScore
 from friday.visualizations.abstract_visualization import AbstractVisualization
 import plotly.graph_objects as go

@@ -1,4 +1,4 @@
-from evaluation_pipes.retrieval_eval import RetrievalEvalResult
+from friday.graph.evaluation.retrieval_eval_factory import RetrievalEvalResult
 from friday.models.evaluation_score import EvaluationScore
 from friday.visualizations.abstract_visualization import AbstractVisualization
 import plotly.graph_objects as go
