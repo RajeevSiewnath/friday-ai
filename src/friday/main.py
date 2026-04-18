@@ -7,12 +7,12 @@ from friday.core.llm import LLM
 from friday.core.graph_invoker import GraphInvoker
 from friday.core.vector_db import VectorDB
 from friday.debuggers.chat_debuggers import debug_chat
-from friday.query_nodes.nodes.execute_tool import execute_tool
-from friday.query_nodes.nodes.llm_invoke import llm_invoke
-from friday.query_nodes.states.messages_state import MessagesState
-from friday.query_nodes.contexts.llm_context import LLMContext
-from friday.query_nodes.states.rag_state import RagState
-from friday.query_nodes.states.system_prompt_state import SystemPromptState
+from friday.graph.query.nodes.execute_tool import execute_tool
+from friday.graph.query.nodes.llm_invoke import llm_invoke
+from friday.graph.query.states.messages_state import MessagesState
+from friday.graph.query.contexts.llm_context import LLMContext
+from friday.graph.query.states.rag_state import RagState
+from friday.graph.query.states.system_prompt_state import SystemPromptState
 
 init(autoreset=True)
 

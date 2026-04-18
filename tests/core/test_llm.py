@@ -1,6 +1,6 @@
 import pytest
 from unittest.mock import AsyncMock, MagicMock, patch, mock_open
-from friday.core.llm import LLM, LLMOpenAISDKConstructorArgs
+from friday.core.llm import LLM
 from friday.core.tool_shed import ToolShed
 from openai.types.responses import Response
 from openai.types.file_object import FileObject
@@ -35,7 +35,9 @@ class TestLLMInitialization:
 
     @patch("friday.core.llm.AsyncOpenAI")
     def test_initialization_custom_models(self, mock_openai):
-        llm = LLM(api_key="test", model="gpt-4", embedding_model="text-embedding-3-large")
+        llm = LLM(
+            api_key="test", model="gpt-4", embedding_model="text-embedding-3-large"
+        )
 
         assert llm.model == "gpt-4"
         assert llm.embedding_model == "text-embedding-3-large"
@@ -111,7 +113,9 @@ class TestLLMInvoke:
             pass
 
         llm = LLM(api_key="test")
-        result = await llm.invoke([{"role": "user", "content": "test"}], response_format=CustomFormat)
+        result = await llm.invoke(
+            [{"role": "user", "content": "test"}], response_format=CustomFormat
+        )
 
         assert result == mock_response
         mock_client.responses.parse.assert_called_once()
@@ -125,9 +129,17 @@ class TestLLMStream:
         mock_openai_class.return_value = mock_client
 
         async def async_event_generator():
-            yield MagicMock(type="response.output_item.added", item=MagicMock(model_dump=lambda: {"type": "text", "text": "", "content": ""}))
+            yield MagicMock(
+                type="response.output_item.added",
+                item=MagicMock(
+                    model_dump=lambda: {"type": "text", "text": "", "content": ""}
+                ),
+            )
             yield MagicMock(type="response.output_text.delta", delta="Hello")
-            yield MagicMock(type="response.completed", response=MagicMock(output=[MagicMock(status="completed")]))
+            yield MagicMock(
+                type="response.completed",
+                response=MagicMock(output=[MagicMock(status="completed")]),
+            )
 
         mock_stream = MagicMock()
         mock_stream.__aenter__ = AsyncMock(return_value=mock_stream)
@@ -160,7 +172,7 @@ class TestLLMStream:
             yield event2
 
             event3 = MagicMock(type="response.function_call_arguments.delta")
-            event3.delta = '0}'
+            event3.delta = "0}"
             yield event3
 
             yield MagicMock(type="response.function_call_arguments.done")

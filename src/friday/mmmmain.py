@@ -11,7 +11,7 @@ from langgraph.config import get_stream_writer
 from typing_extensions import TypedDict
 from friday.core.llm import LLM
 from friday.debuggers.chat_debuggers import debug_chat
-from friday.query_nodes.reducers.stream_reducer import stream_reducer
+from friday.graph.query.reducers.stream_reducer import stream_reducer
 from colorama import init
 
 init(autoreset=True)
