@@ -1,17 +1,6 @@
 import os
-from time import sleep
 from colorama import Fore, Back, Style
-
-
-def __print_content(content):
-    if isinstance(content, list):
-        return "\n".join([__print_content(c) for c in content])
-    elif isinstance(content, dict):
-        return content["text"]
-    elif isinstance(content, str):
-        return content
-    else:
-        return ""
+from friday.utils.print_content import print_content
 
 
 def debug_chat(messages: list[dict]):
@@ -39,7 +28,7 @@ def debug_chat(messages: list[dict]):
         )
 
     def get_content(message):
-        return __print_content(message.get("content") or message.get("name"))
+        return print_content(message.get("content") or message.get("name"))
 
     for m in messages:
         print(

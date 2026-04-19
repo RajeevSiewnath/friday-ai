@@ -1,5 +1,6 @@
 from typing import Annotated, TypedDict
 from friday.graph.query.reducers.stream_reducer import stream_reducer
+from friday.utils.print_content import print_content
 
 
 class MessagesState(TypedDict):
@@ -7,4 +8,11 @@ class MessagesState(TypedDict):
 
 
 def messages_filter(messages: list[dict]):
-    return [m for m in messages if "role" in m and "content" in m]
+    return [
+        {
+            **m,
+            "content": print_content(m["content"]),
+        }
+        for m in messages
+        if "role" in m and "content" in m
+    ]

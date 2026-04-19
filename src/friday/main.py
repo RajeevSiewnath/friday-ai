@@ -11,6 +11,7 @@ from friday.debuggers.debug_chat import debug_chat
 from friday.graph.query.contexts.llm_context import LLMContext
 from friday.graph.query.contexts.vector_db_context import VectorDBContext
 from friday.graph.query.edge_checks.is_function_call import is_function_call
+from friday.graph.query.nodes import llm_invoke
 from friday.graph.query.nodes.execute_tool import execute_tool
 from friday.graph.query.nodes.llm_stream import llm_stream
 from friday.graph.query.states.messages_state import MessagesState, messages_filter
@@ -40,7 +41,7 @@ vector_db = VectorDB()
 
 def chatbot_graph_invoker():
     graph = StateGraph(State, context_schema=Context)
-    graph.add_node("llm_stream", llm_stream)
+    graph.add_node("llm_stream", llm_invoke.llm_invoke)
     graph.add_node("execute_tool", execute_tool)
     graph.set_entry_point("llm_stream")
     graph.add_edge("execute_tool", "llm_stream")
