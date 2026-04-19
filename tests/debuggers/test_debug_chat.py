@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import patch, MagicMock, call
 from colorama import Fore, Back, Style
-from friday.debuggers.chat_debuggers import debug_chat
+from friday.debuggers.debug_chat import debug_chat
 
 
 class TestDebugChat:

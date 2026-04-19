@@ -1,4 +1,5 @@
 import os
+from time import sleep
 from colorama import Fore, Back, Style
 
 
@@ -14,6 +15,7 @@ def __print_content(content):
 
 
 def debug_chat(messages: list[dict]):
+    os.system("cls" if os.name == "nt" else "clear")
     os.system("cls" if os.name == "nt" else "clear")
     color_map = {
         "assistant": "RED",

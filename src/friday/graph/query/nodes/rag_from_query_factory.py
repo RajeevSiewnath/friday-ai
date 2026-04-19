@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from langgraph.runtime import Runtime
 from friday.graph.query.contexts.llm_context import LLMContext
 from friday.graph.query.contexts.vector_db_context import VectorDBContext
@@ -9,6 +10,7 @@ class RagFromQueryState(RagState, MessagesState):
     pass
 
 
+@dataclass
 class RagFromQueryContext(LLMContext, VectorDBContext):
     pass
 

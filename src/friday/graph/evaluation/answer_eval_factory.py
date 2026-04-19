@@ -1,10 +1,10 @@
+from dataclasses import dataclass
 from tqdm import tqdm
 from langgraph.runtime import Runtime
 from friday.core.evaluation import Evaluation
 from friday.graph.evaluation.states.questions_state import QuestionsState
 from friday.graph.evaluation.states.scores_state import ScoresState
 from friday.graph.query.contexts.llm_context import LLMContext
-from friday.graph.query.contexts.rag_context import RagContext
 from friday.graph.query.contexts.vector_db_context import VectorDBContext
 from pydantic import BaseModel, Field
 
@@ -40,6 +40,7 @@ class AnswerEvalState(QuestionsState, ScoresState):
     pass
 
 
+@dataclass
 class AnswerEvalContext(VectorDBContext, LLMContext):
     pass
 

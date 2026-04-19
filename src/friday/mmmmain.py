@@ -10,7 +10,7 @@ from langgraph.graph.message import add_messages
 from langgraph.config import get_stream_writer
 from typing_extensions import TypedDict
 from friday.core.llm import LLM
-from friday.debuggers.chat_debuggers import debug_chat
+from friday.debuggers.debug_chat import debug_chat
 from friday.graph.query.reducers.stream_reducer import stream_reducer
 from colorama import init
 

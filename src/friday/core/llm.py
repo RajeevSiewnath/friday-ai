@@ -82,8 +82,7 @@ class LLM:
     async def stream(
         self, input: list[dict]
     ) -> AsyncGenerator[tuple[dict, list[dict]]]:
-        message: dict = None
-
+        message: dict = {}
         async with self.client.responses.stream(
             model=self.model,
             tools=self.tool_shed.definitions if self.tool_shed else [],
@@ -107,9 +106,9 @@ class LLM:
                     elif event.type == "response.output_item.added":
                         entry = event.item.model_dump()
                         if "content" in entry:
-                            message = {**entry, "content": ""}
+                            message = {**message, **entry, "content": ""}
                         else:
-                            message = {**entry}
+                            message = {**message, **entry}
                         yield message
                     elif event.type == "response.output_item.done":
                         pass

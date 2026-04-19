@@ -53,8 +53,8 @@ class GraphInvoker(Generic[StateT, ContextT, InputT, OutputT]):
             version="v2",
         ):
             if chunk["type"] == "values":
-                s = deepcopy(state)
-                yield chunk["data"]
+                s = deepcopy(chunk["data"])
+                yield s
             elif chunk["type"] == "updates":
                 if self.on_node_change:
                     self.on_node_change(

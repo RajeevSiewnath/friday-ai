@@ -13,10 +13,11 @@ def rag_reducer(
     right: dict[str, list[VectorQueryOutput | RagReducerReplaceAction]],
 ):
     output = deepcopy(left)
-    for key, vector_data in right.items():
-        if key not in output:
-            output[key] = []
-        if isinstance(vector_data, RagReducerReplaceAction):
-            output[key] = []
-        output[key].extend(vector_data)
+    if right is None:
+        for key, vector_data in right.items():
+            if key not in output:
+                output[key] = []
+            if isinstance(vector_data, RagReducerReplaceAction):
+                output[key] = []
+            output[key].extend(vector_data)
     return output

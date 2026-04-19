@@ -1,98 +1,98 @@
-import asyncio
-from typing import Protocol
+import os
+import gradio as gr
+from dataclasses import dataclass
 from dotenv import load_dotenv
 from langgraph.graph import END, StateGraph
 from colorama import init
-from friday.core.llm import LLM
 from friday.core.graph_invoker import GraphInvoker
+from friday.core.llm import LLM
 from friday.core.vector_db import VectorDB
-from friday.debuggers.chat_debuggers import debug_chat
-from friday.graph.query.nodes.execute_tool import execute_tool
-from friday.graph.query.nodes.llm_invoke import llm_invoke
-from friday.graph.query.states.messages_state import MessagesState
+from friday.debuggers.debug_chat import debug_chat
 from friday.graph.query.contexts.llm_context import LLMContext
+from friday.graph.query.contexts.vector_db_context import VectorDBContext
+from friday.graph.query.edge_checks.is_function_call import is_function_call
+from friday.graph.query.nodes.execute_tool import execute_tool
+from friday.graph.query.nodes.llm_stream import llm_stream
+from friday.graph.query.states.messages_state import MessagesState, messages_filter
 from friday.graph.query.states.rag_state import RagState
 from friday.graph.query.states.system_prompt_state import SystemPromptState
+from friday.tools.send_push_notification import send_push_notification
+
 
 init(autoreset=True)
 
 load_dotenv()
 
 
-def send_contact_request(message: str) -> bool:
-    """
-    Send a message to Rajeev Siewnath.
-
-    Args:
-        message: The message to send
-
-    Returns:
-        Whether the message was sent successfully
-    """
-    # print("Sending:", message)
-    return True
+class State(MessagesState, RagState, SystemPromptState):
+    pass
 
 
-llm = LLM(
-    # api_key="ollama",
-    # model="llama3.2",
-    # base_url="http://localhost:11434/v1/",
-)
-llm.tool_shed.add(send_contact_request)
+@dataclass
+class Context(LLMContext, VectorDBContext):
+    pass
+
+
+llm = LLM()
+llm.tool_shed.add(send_push_notification)
 vector_db = VectorDB()
 
 
-# class State(MessagesState, RagState, SystemPromptState):
-class State(MessagesState):
-    pass
+def chatbot_graph_invoker():
+    graph = StateGraph(State, context_schema=Context)
+    graph.add_node("llm_stream", llm_stream)
+    graph.add_node("execute_tool", execute_tool)
+    graph.set_entry_point("llm_stream")
+    graph.add_edge("execute_tool", "llm_stream")
+    graph.add_conditional_edges("llm_stream", is_function_call("execute_tool", END))
+    compiled_graph = graph.compile()
+    context: Context = Context(llm=llm, vector_db=vector_db)
+    return GraphInvoker(compiled_graph, context=context)
 
 
-class Context(LLMContext):
-    pass
+async def submit(message: str, state: State):
+    state["messages"].append({"role": "user", "content": message})
+    async for new_state in chatbot_graph_invoker().stream(state):
+        debug_chat(new_state["messages"])
+        yield "", new_state, messages_filter(new_state["messages"]), None
 
 
-def build_graph() -> StateGraph:
-    builder = StateGraph(State, context_schema=Context)
-    builder.add_node("llm_invoke", llm_invoke)
-    builder.add_node("execute_tool", execute_tool)
-    builder.set_entry_point("llm_invoke")
-    builder.add_edge("execute_tool", "llm_invoke")
-    builder.add_conditional_edges(
-        "llm_invoke",
-        lambda state: (
-            "execute_tool" if state["messages"][-1]["type"] == "function_call" else END
-        ),
-    )
-    return builder.compile()
+def main():
+    with gr.Blocks() as app:
+        state: State = {
+            "messages": [
+                {
+                    "role": "system",
+                    "content": "You're the personal career agent of Rajeev Siewnath. Help the user with any career-related queries they have about Rajeev Siewnath.",
+                },
+                {"role": "assistant", "content": "Hi, how can I help you?"},
+            ],
+            "rag_data": {},
+            "system_prompt": "",
+        }
+        gr_state = gr.State(state)
+        with gr.Row():
+            gr.Markdown("# Friday - AI")
+        with gr.Row():
+            with gr.Column():
+                chatbot = gr.Chatbot(messages_filter(gr_state.value["messages"]))
+                textfield = gr.Textbox(
+                    autofocus=True,
+                    placeholder="Chat with the bot!",
+                    interactive=True,
+                )
+            with gr.Column():
+                plot = gr.Plot(None)
 
+        textfield.submit(
+            fn=submit,
+            inputs=[textfield, gr_state],
+            outputs=[textfield, gr_state, chatbot, plot],
+        )
 
-async def main():
-    context: Context = Context(llm=llm)
-    state: State = {
-        "messages": [
-            {
-                "role": "system",
-                "content": "you are a helpful assistant. greet the user. you have the the capability to send messages to rajeev",
-            },
-            {"role": "user", "content": "send a message to rajeev: hey bro"},
-        ]
-    }
-    graph = build_graph()
-    graph_invoker = GraphInvoker(graph, context=context)
-
-    while True:
-        # async for s in graph_invoker.stream(state):
-        #     debug_chat(s["messages"])
-        #     news = s
-        # state = news
-        # newq = input(">")
-        # state["messages"].append({"role": "user", "content": newq})
-        news = await graph_invoker.invoke(state)
-        debug_chat(news["messages"])
-        state = news
-        newq = input(">")
-        state["messages"].append({"role": "user", "content": newq})
+    os.system("cls" if os.name == "nt" else "clear")
+    app.launch()
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    main()

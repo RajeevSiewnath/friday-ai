@@ -1,7 +1,9 @@
+from dataclasses import dataclass
 from friday.graph.query.states.rag_state import RagState
 from friday.graph.query.states.system_prompt_state import SystemPromptState
 
 
+@dataclass
 class RagContextInjectorState(SystemPromptState, RagState):
     pass
 
