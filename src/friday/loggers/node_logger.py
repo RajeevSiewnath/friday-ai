@@ -6,7 +6,7 @@ from friday.loggers.custom_logger_adapter import CustomLoggerAdapter
 
 
 class NodeLoggerFormatter(logging.Formatter):
-    NODE_STR_LEN = 24
+    NODE_STR_LEN = 18
     COLOR_CYCLE = [
         "RED",
         "GREEN",
@@ -30,7 +30,7 @@ class NodeLoggerFormatter(logging.Formatter):
     def format(self, record):
         time = f"{Style.DIM}{self.formatTime(record, '%H:%M:%S')}{Style.RESET_ALL}"
 
-        node = getattr(record, "name", None)
+        node = getattr(record, "name", "node.?")[5:]
         color = getattr(record, "color", None)
 
         if color in NodeLoggerFormatter.COLOR_CYCLE:
