@@ -15,10 +15,6 @@ class AbstractLoggerConfig(ABC):
     def get_formatter(self) -> logging.Formatter:
         raise NotImplementedError
 
-    # @abstractmethod
-    # def get_filter(self) -> logging.Filter:
-    #     raise NotImplementedError
-
     @abstractmethod
     def get_adapter(
         self,

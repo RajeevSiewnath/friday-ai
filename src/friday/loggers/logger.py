@@ -37,21 +37,6 @@ class DefaultFormatter(logging.Formatter):
         return " | ".join(parts)
 
 
-# class DefaultFilter(logging.Filter):
-#     def __init__(self, name=""):
-#         super().__init__(name)
-#         self.filters: list[logging.Filter] = []
-
-#     def add_filters(self, filters: list[logging.Filter]):
-#         self.filters.extend(filters)
-
-#     def filter(self, record):
-#         for f in self.filters:
-#             if f.filter(record):
-#                 return False
-#         return True
-
-
 class Logger:
     __instance: "Logger" = None
 
@@ -63,30 +48,21 @@ class Logger:
         root.setLevel(get_actual_level(level))
 
         self.__loggers: dict[str, Callable[..., logging.LoggerAdapter]] = {}
-        filters = []
         for key, logger in loggers.items():
             formatter = logger.get_formatter()
-            # filter = logger.get_filter()
             adapter = logger.get_adapter()
             lvl = logger.get_level()
             self.__loggers[key] = adapter
 
             handler = logging.StreamHandler(sys.stdout)
-            # handler.setLevel(get_actual_level(lvl))
             handler.setFormatter(formatter)
-            # handler.addFilter(filter)
-            filters.append(filter)
             logger_instance = logging.getLogger(key)
             logger_instance.addHandler(handler)
             logger_instance.setLevel(get_actual_level(lvl))
             logger_instance.propagate = False
 
-        # default_filter = DefaultFilter()
-        # default_filter.add_filters(filters)
         app_handler = logging.StreamHandler(sys.stdout)
-        # app_handler.setLevel(level)
         app_handler.setFormatter(DefaultFormatter())
-        # app_handler.addFilter(default_filter)
         root.addHandler(app_handler)
         Logger.__instance = self
 
@@ -112,14 +88,3 @@ class Logger:
 log_level = os.getenv("LOG_LEVEL", "WARNING").upper()
 node_log_level = os.getenv("NODE_LOG_LEVEL", log_level).upper()
 Logger(loggers={"node": NodeLoggerConfig(level=node_log_level)}, level=log_level)
-
-Logger.get_logger(__name__).debug("debug")
-Logger.get_logger(__name__).info("info")
-Logger.get_logger(__name__).warning("warning")
-Logger.get_logger(__name__).error("error")
-Logger.get_logger(__name__).critical("critical")
-Logger.get_logger("node.debug", level="debug").debug("debug")
-Logger.get_logger("node.info").info("info")
-Logger.get_logger("node.warning").warning("warning")
-Logger.get_logger("node.error").error("error")
-Logger.get_logger("node.critical").critical("critical")

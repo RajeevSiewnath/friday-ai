@@ -2,10 +2,11 @@ import logging
 from typing import Callable
 from colorama import Fore, Back, Style
 from friday.loggers.abstract_logger_config import AbstractLoggerConfig
-from friday.loggers.get_actual_level import get_actual_level
+from friday.loggers.custom_logger_adapter import CustomLoggerAdapter
 
 
 class NodeLoggerFormatter(logging.Formatter):
+    NODE_STR_LEN = 24
     COLOR_CYCLE = [
         "RED",
         "GREEN",
@@ -38,7 +39,12 @@ class NodeLoggerFormatter(logging.Formatter):
             color = self.get_next_color()
 
         back, front = color
-        node_part = f"{back}{node:^12}{Style.RESET_ALL}" if node else ""
+        str_len = NodeLoggerFormatter.NODE_STR_LEN
+        node_part = (
+            f"{back}{(node[:str_len-3]+"..."if len(node) > str_len else node):^{str_len}}{Style.RESET_ALL}"
+            if node
+            else ""
+        )
 
         msg = f"{front}{record.getMessage()}{Style.RESET_ALL}"
 
@@ -46,32 +52,15 @@ class NodeLoggerFormatter(logging.Formatter):
         return " | ".join(p for p in parts if p)
 
 
-class NodeLoggerAdapter(logging.LoggerAdapter):
-    def process(self, msg, kwargs):
-        extra = kwargs.get("extra", {}).copy()
-        local_extra = self.extra.copy() if self.extra else {}
-        extra["color"] = local_extra.get("color", None)
-        kwargs["extra"] = extra
-        return msg, kwargs
-
-
-# class NodeLoggerFilter(logging.Filter):
-#     def filter(self, record):
-#         return hasattr(record, "node")
-
-
 class NodeLoggerConfig(AbstractLoggerConfig):
     def get_formatter(self) -> logging.Formatter:
         return NodeLoggerFormatter()
-
-    # def get_filter(self) -> logging.Filter:
-    #     return NodeLoggerFilter()
 
     def get_adapter(
         self,
     ) -> Callable[[str], logging.LoggerAdapter]:
         def adapter(name: str) -> logging.LoggerAdapter:
             logger = logging.getLogger(name)
-            return NodeLoggerAdapter(logger)
+            return CustomLoggerAdapter(logger, "color")
 
         return adapter
