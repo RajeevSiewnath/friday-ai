@@ -7,6 +7,7 @@ from friday.core.vector_db import VectorQueryOutput
 from friday.graph.evaluation.states.questions_state import QuestionsState
 from friday.graph.evaluation.states.scores_state import ScoresState
 from friday.graph.query.contexts.vector_db_context import VectorDBContext
+from friday.loggers.logger import Logger
 
 
 class RetrievalEvalResult(BaseModel):
@@ -102,10 +103,16 @@ def retrieval_eval_factory(score_key: str, collection_key: str, retrieval_k: int
         )
 
     def retrieval_eval(state: RetrievalEvalState, runtime: Runtime[VectorDBContext]):
+        logger = Logger.get_logger("node.retrieval_eval")
+        logger.info("evaluating retrieval performance for questions")
+        logger.debug("questions: %s", lambda: state["questions"])
+
         responses = [
             evaluate_retrieval(question, runtime.context)
             for question in tqdm(state["questions"])
         ]
+
+        logger.debug("retrieval evaluation results: %s", lambda: responses)
         return {"evaluation_scores": {score_key: responses}}
 
     return retrieval_eval

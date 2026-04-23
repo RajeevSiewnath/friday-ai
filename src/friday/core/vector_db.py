@@ -15,7 +15,10 @@ class VectorQueryInput(VectorQueryOutput):
 
 
 class VectorDB:
-    def __init__(self, settings: Settings = Settings(is_persistent=True)):
+    def __init__(
+        self,
+        settings: Settings = Settings(is_persistent=True, anonymized_telemetry=False),
+    ):
         self.chroma: ClientAPI = Client(settings)
         self.__collections: list[VectorDBCollection] = []
 

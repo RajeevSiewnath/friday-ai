@@ -4,6 +4,7 @@ from friday.graph.query.contexts.llm_context import LLMContext
 from friday.graph.query.states.messages_state import MessagesState
 from friday.graph.query.states.rag_state import RagState
 from friday.graph.query.reducers.rag_reducer import RagReducerReplaceAction
+from friday.loggers.logger import Logger
 
 
 class RankOrder(BaseModel):
@@ -18,6 +19,10 @@ class RagReRankerState(MessagesState, RagState):
 
 def rag_re_ranker_factory(state_key: str):
     async def rag_re_ranker(state: RagReRankerState, runtime: Runtime[LLMContext]):
+        logger = Logger.get_logger("node.rag_re_ranker")
+        logger.info("re-ranking rag context based on query")
+        logger.debug("query: %s", lambda: state["messages"][-1]["content"])
+
         system_prompt = """
 You are a document re-ranker.
 You are provided with a question and a list of relevant chunks of text from a query of a knowledge base.
@@ -36,9 +41,13 @@ Reply only with the list of ranked chunk ids, nothing else. Include all the chun
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_prompt},
         ]
+        logger.debug("input: %s", lambda: messages)
+
         response = await runtime.context.llm.invoke(
             input=messages, response_format=RankOrder
         )
+        logger.debug("response: %s", lambda: response)
+
         return {
             "rag_data": {
                 state_key: [

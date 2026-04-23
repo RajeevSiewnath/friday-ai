@@ -4,10 +4,14 @@ from pathlib import Path
 from tqdm import tqdm
 from friday.core.document import Document
 from friday.graph.document.states.document_state import DocumentState
+from friday.loggers.logger import Logger
 
 
 def document_loader_factory(path: str, max=None):
     def document_loader(state: DocumentState):
+        logger = Logger.get_logger("node.document_loader")
+        logger.info("loading documents from path: %s", path)
+
         files = []
         folder_path = Path(path)
         all_files = (f for f in folder_path.rglob("*") if f.is_file())
@@ -25,6 +29,9 @@ def document_loader_factory(path: str, max=None):
                     "id": document["id"],
                 }
             )
+
+        logger.debug("documents: %s", lambda: [Document(**file) for file in files])
+
         return [Document(**file) for file in files]
 
     return document_loader

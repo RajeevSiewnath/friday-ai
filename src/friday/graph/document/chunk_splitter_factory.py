@@ -1,12 +1,15 @@
 from copy import deepcopy
+from logging import LoggerAdapter
 from pydantic import BaseModel, Field
 from tqdm import tqdm
 from langgraph.runtime import Runtime
+from openai.types.responses import ParsedResponse
 from friday.core.document import Document
 from friday.core.llm import LLM
 from friday.graph.document.reducers.document_reducer import DocumentReducerClearAction
 from friday.graph.document.states.document_state import DocumentState
 from friday.graph.query.contexts.llm_context import LLMContext
+from friday.loggers.logger import Logger
 
 
 class Chunk(BaseModel):
@@ -54,9 +57,17 @@ Here is the document:
 Respond with the chunks.
     """
 
-    async def process_document(document: Document, llm: LLM):
+    async def process_document(
+        document: Document, llm: LLM, logger: LoggerAdapter
+    ) -> list[Document]:
         messages = [{"role": "user", "content": make_prompt(document)}]
-        chunks: Chunks = await llm.invoke(input=messages, response_format=Chunks)
+        logger.debug("query: %s", lambda: messages)
+
+        response: ParsedResponse[Chunks] = await llm.invoke(
+            input=messages, response_format=Chunks
+        )
+        logger.debug("response: %s", lambda: response)
+
         doc_copy = deepcopy(document)
         return [
             Document(
@@ -64,13 +75,19 @@ Respond with the chunks.
                 content=chunk.get_chunked_content,
                 **doc_copy.model_dump(exclude={"content", "id"}),
             )
-            for index, chunk in enumerate(chunks.chunks)
+            for index, chunk in enumerate(response.output_parsed.chunks)
         ]
 
     async def chunk_splitter(state: DocumentState, runtime: Runtime[LLMContext]):
+        logger = Logger.get_logger("node.chunk_splitter")
+        logger.info("splitting document into chunks")
+        logger.debug("documents: %s", lambda: state["documents"])
+
         chunks: list[Document] = []
         for doc in tqdm(state["documents"]):
-            chunks += await process_document(doc, runtime.context.llm)
+            chunks += await process_document(doc, runtime.context.llm, logger)
+        logger.debug("chunks: %s", lambda: chunks)
+
         return {"documents": DocumentReducerClearAction(chunks)}
 
     return chunk_splitter

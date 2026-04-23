@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from logging import LoggerAdapter
 from tqdm import tqdm
 from langgraph.runtime import Runtime
 from friday.core.evaluation import Evaluation
@@ -7,6 +8,8 @@ from friday.graph.evaluation.states.scores_state import ScoresState
 from friday.graph.query.contexts.llm_context import LLMContext
 from friday.graph.query.contexts.vector_db_context import VectorDBContext
 from pydantic import BaseModel, Field
+
+from friday.loggers.logger import Logger
 
 
 class AnswerEvalResult(BaseModel):
@@ -48,7 +51,9 @@ class AnswerEvalContext(VectorDBContext, LLMContext):
 def answer_eval_factory(
     score_key: str, collection_key: str, user_context: str, retrieval_k: int = 10
 ):
-    async def answer_question(question: str, context: AnswerEvalContext):
+    async def answer_question(
+        question: str, context: AnswerEvalContext, logger: LoggerAdapter
+    ):
         system_prompt = """
 {user_context}
 If relevant, use the given context to answer any question.
@@ -67,11 +72,17 @@ Context:
                 ),
             }
         ] + [{"role": "user", "content": question}]
-        response = await context.llm.invoke(input)
-        return response
+        logger.debug("input (answer): %s", lambda: input)
 
-    async def evaluate_answer(test: Evaluation, context: AnswerEvalContext):
-        generated_answer = await answer_question(test.question, context)
+        response = await context.llm.invoke(input)
+        logger.debug("response (answer): %s", lambda: response)
+
+        return response.output_text
+
+    async def evaluate_answer(
+        test: Evaluation, context: AnswerEvalContext, logger: LoggerAdapter
+    ) -> AnswerEvalResult:
+        generated_answer = await answer_question(test.question, context, logger)
 
         judge_messages = [
             {
@@ -97,13 +108,20 @@ Please evaluate the generated answer on three dimensions:
 Provide detailed feedback and scores from 1 (very poor) to 5 (ideal) for each dimension. If the answer is wrong, then the accuracy score must be 1.""",
             },
         ]
+        logger.debug("input (judge): %s", lambda: judge_messages)
 
         judge_response = await context.llm.invoke(judge_messages, AnswerEvalResult)
-        return judge_response
+        logger.debug("response (judge): %s", lambda: judge_response)
+
+        return judge_response.output_parsed
 
     async def answer_eval(state: AnswerEvalState, runtime: Runtime[AnswerEvalContext]):
+        logger = Logger.get_logger("node.answer_eval")
+        logger.info("evaluating answers to questions")
+        logger.debug("questions: %s", lambda: state["questions"])
+
         responses = [
-            await evaluate_answer(question, runtime.context)
+            await evaluate_answer(question, runtime.context, logger)
             for question in tqdm(state["questions"])
         ]
         return {"evaluation_scores": {score_key: responses}}

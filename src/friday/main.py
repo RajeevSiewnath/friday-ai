@@ -7,17 +7,16 @@ from colorama import init
 from friday.core.graph_invoker import GraphInvoker
 from friday.core.llm import LLM
 from friday.core.vector_db import VectorDB
-from friday.debuggers.debug_chat import debug_chat
 from friday.graph.query.contexts.llm_context import LLMContext
 from friday.graph.query.contexts.vector_db_context import VectorDBContext
 from friday.graph.query.edge_checks.is_function_call import is_function_call
-from friday.graph.query.nodes import llm_invoke
 from friday.graph.query.nodes.execute_tool import execute_tool
 from friday.graph.query.nodes.llm_stream import llm_stream
 from friday.graph.query.states.messages_state import MessagesState, messages_filter
 from friday.graph.query.states.rag_state import RagState
 from friday.graph.query.states.system_prompt_state import SystemPromptState
 from friday.tools.send_push_notification import send_push_notification
+# from friday.debuggers.debug_chat import debug_chat
 
 
 init(autoreset=True)
@@ -41,7 +40,7 @@ vector_db = VectorDB()
 
 def chatbot_graph_invoker():
     graph = StateGraph(State, context_schema=Context)
-    graph.add_node("llm_stream", llm_invoke.llm_invoke)
+    graph.add_node("llm_stream", llm_stream)
     graph.add_node("execute_tool", execute_tool)
     graph.set_entry_point("llm_stream")
     graph.add_edge("execute_tool", "llm_stream")
@@ -54,7 +53,7 @@ def chatbot_graph_invoker():
 async def submit(message: str, state: State):
     state["messages"].append({"role": "user", "content": message})
     async for new_state in chatbot_graph_invoker().stream(state):
-        debug_chat(new_state["messages"])
+        # debug_chat(new_state["messages"])
         yield "", new_state, messages_filter(new_state["messages"]), None
 
 

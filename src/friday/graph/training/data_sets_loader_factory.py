@@ -5,12 +5,16 @@ from pathlib import Path
 import random
 from tqdm import tqdm
 from friday.core.evaluation import Evaluation
+from friday.loggers.logger import Logger
 
 
 def data_sets_loader_factory(
     path: str, max=None, training_ratio=8, validating_ratio=1, testing_ratio=1
 ):
     def data_sets_loader():
+        logger = Logger.get_logger("node.data_sets_loader")
+        logger.info("loading data sets from path %s", path)
+
         file_path = Path(path)
         with open(file_path, "r", encoding="utf-8") as f:
             questions = (
@@ -30,6 +34,10 @@ def data_sets_loader_factory(
         validating = questions[training_set : training_set + validating_set]
         testing = questions[training_set + validating_set :]
 
+        logger.debug("full data set: %s", lambda: full)
+        logger.debug("training data set: %s", lambda: training)
+        logger.debug("validating data set: %s", lambda: validating)
+        logger.debug("testing data set: %s", lambda: testing)
         return {
             "full_data_set": full,
             "training_data_set": training,

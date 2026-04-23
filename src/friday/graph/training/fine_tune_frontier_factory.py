@@ -5,10 +5,11 @@ from openai.types.file_object import FileObject
 from friday.core.evaluation import Evaluation
 from friday.graph.query.contexts.llm_context import LLMContext
 from friday.graph.training.states.training_state import TrainingState
+from friday.loggers.logger import Logger
 
 
 def fine_tune_frontier_factory(
-    suffix=None,
+    suffix: str = None,
     model: str = None,
     n_epochs: int = 1,
     batch_size: int = 1,
@@ -27,6 +28,9 @@ def fine_tune_frontier_factory(
         return json.dumps(message_object)
 
     async def fine_tune_frontier(state: TrainingState, runtime: Runtime[LLMContext]):
+        logger = Logger.get_logger("node.fine_tune_frontier")
+        logger.info("fine tuning frontier model")
+
         test_file: FileObject = None
         validation_file: FileObject = None
 
@@ -49,6 +53,9 @@ def fine_tune_frontier_factory(
                     tmp_validation.file, "fine-tune"
                 )
 
+        logger.debug("test file: %s", lambda: test_file)
+        logger.debug("validation file: %s", lambda: validation_file)
+
         ft_job = await runtime.context.llm.fine_tune(
             train_file_object=test_file,
             validate_file_object=validation_file,
@@ -58,6 +65,7 @@ def fine_tune_frontier_factory(
             batch_size=batch_size,
             learning_rate_multiplier=learning_rate_multiplier,
         )
+        logger.debug("fine-tune job: %s", lambda: ft_job)
 
         if wait_for_fine_tune_to_complete:
             await runtime.context.llm.wait_for_fine_tune(ft_job.id)

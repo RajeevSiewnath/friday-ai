@@ -10,7 +10,6 @@ from typing import (
     Union,
     Unpack,
 )
-from dotenv import load_dotenv
 import httpx
 from openai.types.responses import (
     Response,
@@ -24,9 +23,6 @@ from openai import (
 )
 from openai.types.file_object import FileObject
 from friday.core.tool_shed import ToolShed
-
-
-load_dotenv()
 
 
 T = TypeVar("T")
