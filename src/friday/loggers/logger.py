@@ -14,9 +14,12 @@ class BaseLogger(logging.Logger):
     def _log(self, level, msg, args, **kwargs):
         if self.isEnabledFor(level):
             args = tuple(a() if callable(a) else a for a in args)
-            args = tuple(
-                a if isinstance(a, str) else json.dumps(a, indent=2) for a in args
-            )
+            try:
+                args = tuple(
+                    a if isinstance(a, str) else json.dumps(a, indent=2) for a in args
+                )
+            except:
+                args = [a for a in args]
         super()._log(level, msg, args, **kwargs)
 
 

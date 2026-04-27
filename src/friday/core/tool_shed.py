@@ -1,15 +1,9 @@
-from dataclasses import dataclass
 import inspect
 import json
 from typing import Any, Callable, Self
+from friday.core.mcp_tool_box import MCPToolBox
+from friday.core.tool_definition import ToolDefinition
 from friday.utils.function_definition_creator import function_definition_creator
-
-
-@dataclass
-class ToolDefinition:
-    name: str
-    callable: Callable
-    definition: Any
 
 
 class ToolShed:
@@ -29,6 +23,16 @@ class ToolShed:
                 )
             )
         self.tools.extend(tool_defs)
+        return self
+
+    async def mcp_tool_box(self, toolbox: MCPToolBox) -> Self:
+        for tool_def in await toolbox.list_tools():
+            self.tools.extend(tool_def)
+        return self
+
+    async def mcp_tool_box_isolated(self, toolbox: MCPToolBox) -> Self:
+        for tool_def in await toolbox.list_tools_isolated():
+            self.tools.extend(tool_def)
         return self
 
     def remove(self, *tools: ToolDefinition) -> Self:
