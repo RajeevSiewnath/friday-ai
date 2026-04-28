@@ -1,4 +1,7 @@
-def is_function_call(true: str, false: str):
+from typing import Literal
+
+
+def is_function_call(true: str, false: str) -> Literal["execute_tool", "mcp_close"]:
     def check(state):
         return (
             true

@@ -61,6 +61,7 @@ def chatbot_graph_invoker():
     graph.add_conditional_edges(
         "llm_stream",
         is_function_call("execute_tool", "mcp_close"),
+        {"execute_tool": "execute_tool", "mcp_close": "mcp_close"},
     )
     graph.add_edge("execute_tool", "llm_stream")
     graph.add_edge("mcp_close", END)
