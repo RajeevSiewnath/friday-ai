@@ -22,6 +22,7 @@ from openai import (
     AsyncOpenAI,
 )
 from openai.types.file_object import FileObject
+from friday.core.mcp_tool_box import MCPToolBox
 from friday.core.tool_shed import ToolShed
 
 
