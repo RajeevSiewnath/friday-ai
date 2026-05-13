@@ -3,12 +3,13 @@ from langgraph.graph import END, START, StateGraph
 from langgraph.runtime import Runtime
 from friday.core.llm import LLM
 from friday.graph.query.contexts.llm_context import LLMContext
+from friday.graph.query.reducers.stream_reducer import StreamReducerClearAction
 from friday.graph.query.states.messages_state import MessagesState
 from friday.loggers.logger import Logger
 
 
 class FunctionBaseState(TypedDict):
-    call_id: str
+    id: str
 
 
 class FunctionDefinitionState(FunctionBaseState):
@@ -25,8 +26,11 @@ def tool_call_graph(llm: LLM) -> StateGraph:
         state: MessagesState, runtime: Runtime[LLMContext]
     ) -> FunctionDefinitionState:
         logger = Logger.get_logger("node.tool_call_graph.get")
-        logger.info(f"searching for function for call id {state["call_id"]}...")
+        tool_call = state["messages"][-1]
         logger.debug(
+            'searching for function for call id "%s"...', lambda: tool_call["call_id"]
+        )
+        logger.trace(
             "functions: %s",
             lambda: [
                 t
@@ -35,7 +39,6 @@ def tool_call_graph(llm: LLM) -> StateGraph:
             ],
         )
 
-        tool_call = state["messages"][-1]
         tool = next(
             (
                 t
@@ -45,19 +48,29 @@ def tool_call_graph(llm: LLM) -> StateGraph:
             None,
         )
         if tool:
-            return {"name": tool_call["name"], "args": tool_call["args"]}
+            return {
+                "id": tool_call["call_id"],
+                "name": tool_call["name"],
+                "args": tool_call["arguments"],
+            }
         else:
             raise f"tool not defined: '{tool_call["name"]}'"
 
     def call_factory(name: str):
-        def call(
+        async def call(
             state: FunctionDefinitionState, runtime: Runtime[LLMContext]
         ) -> FunctionResultState:
             logger = Logger.get_logger("node.tool_call_graph.call")
-            logger.info(f"calling {name} for call id {state["call_id"]}...")
+            logger.debug(
+                'calling "%s" for call id "%s"...',
+                lambda: name,
+                lambda: state["id"],
+            )
             return {
                 "results": str(
-                    runtime.context.llm.tool_shed.call(state["name"], state["args"])
+                    await runtime.context.llm.tool_shed.call(
+                        state["name"], state["args"]
+                    )
                 )
             }
 
@@ -65,16 +78,18 @@ def tool_call_graph(llm: LLM) -> StateGraph:
 
     def _return(state: FunctionResultState) -> MessagesState:
         logger = Logger.get_logger("node.tool_call_graph.return")
-        logger.info(f"returning function value for call id {state["call_id"]}")
-        logger.debug("return value: %s", state["results"])
+        logger.debug('returning function value for call id "%s"', lambda: state["id"])
+        logger.trace("return value: %s", state["results"])
 
         return {
             "messages": [
-                {
-                    "type": "function_call_output",
-                    "call_id": state["call_id"],
-                    "output": state["results"],
-                }
+                StreamReducerClearAction(
+                    {
+                        "type": "function_call_output",
+                        "call_id": state["id"],
+                        "output": state["results"],
+                    }
+                )
             ]
         }
 

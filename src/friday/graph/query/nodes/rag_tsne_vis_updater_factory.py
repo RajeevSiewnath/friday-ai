@@ -11,21 +11,29 @@ class RagTNSEVisUpdatedState(MessagesState, RagState):
 
 
 def rag_tsne_vis_updater_factory(
-    state_key: str, vector_db_tsne_vis_updater: VectorDBTSNEVisualization
+    vector_db_tsne_vis_updater: VectorDBTSNEVisualization, state_key: str = None
 ):
     async def rag_tsne_vis_updater(
         state: RagTNSEVisUpdatedState, runtime: Runtime[LLMContext]
     ):
         logger = Logger.get_logger("node.rag_tsne_vis_updater")
-        logger.info("updating t-SNE visualization for rag context")
-        logger.debug("query: %s", lambda: state["messages"][-1]["content"])
+        logger.debug("updating t-SNE visualization for rag context")
+        logger.trace("query: %s", lambda: state["messages"][-1]["content"])
 
-        logger.debug(
+        logger.trace(
             "highlights: %s",
-            lambda: [context.id for context in state["rag_data"][state_key]],
+            lambda: [
+                context.id
+                for context in state["rag_data"][
+                    state_key or vector_db_tsne_vis_updater.collection.name
+                ]
+            ],
         )
         vector_db_tsne_vis_updater.highlight_ids = [
-            context.id for context in state["rag_data"][state_key]
+            context.id
+            for context in state["rag_data"][
+                state_key or vector_db_tsne_vis_updater.collection.name
+            ]
         ]
 
         vector_db_tsne_vis_updater.question = (

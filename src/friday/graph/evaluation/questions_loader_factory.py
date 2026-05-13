@@ -8,7 +8,7 @@ from friday.loggers.logger import Logger
 def questions_loader_factory(path: str, max=None):
     def questions_loader(state: QuestionsState) -> QuestionsState:
         logger = Logger.get_logger("node.questions_loader")
-        logger.info("loading questions from path %s", path)
+        logger.debug("loading questions from path %s", path)
 
         file_path = Path(path)
         with open(file_path, "r", encoding="utf-8") as f:
@@ -16,7 +16,7 @@ def questions_loader_factory(path: str, max=None):
                 json.loads(f.read()) if max is None else json.loads(f.read())[:max]
             )
 
-        logger.debug(
+        logger.trace(
             "questions: %s", lambda: [Evaluation(**question) for question in questions]
         )
         return {

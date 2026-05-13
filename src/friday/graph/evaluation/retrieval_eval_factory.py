@@ -104,15 +104,15 @@ def retrieval_eval_factory(score_key: str, collection_key: str, retrieval_k: int
 
     def retrieval_eval(state: RetrievalEvalState, runtime: Runtime[VectorDBContext]):
         logger = Logger.get_logger("node.retrieval_eval")
-        logger.info("evaluating retrieval performance for questions")
-        logger.debug("questions: %s", lambda: state["questions"])
+        logger.debug("evaluating retrieval performance for questions")
+        logger.trace("questions: %s", lambda: state["questions"])
 
         responses = [
             evaluate_retrieval(question, runtime.context)
             for question in tqdm(state["questions"])
         ]
 
-        logger.debug("retrieval evaluation results: %s", lambda: responses)
+        logger.trace("retrieval evaluation results: %s", lambda: responses)
         return {"evaluation_scores": {score_key: responses}}
 
     return retrieval_eval

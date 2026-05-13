@@ -2,7 +2,7 @@ import pytest
 from unittest.mock import AsyncMock, MagicMock
 from friday.core.llm import LLM
 from friday.core.vector_db import VectorQueryOutput
-from friday.graph.query.nodes.rag_tsne_vis_updater import rag_tsne_vis_updater_factory
+from friday.graph.query.nodes.rag_tsne_vis_updater_factory import rag_tsne_vis_updater_factory
 
 
 def test_rag_tsne_vis_updater_factory_creates_function():

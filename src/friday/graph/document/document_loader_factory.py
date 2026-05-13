@@ -10,7 +10,7 @@ from friday.loggers.logger import Logger
 def document_loader_factory(path: str, max=None):
     def document_loader(state: DocumentState):
         logger = Logger.get_logger("node.document_loader")
-        logger.info("loading documents from path: %s", path)
+        logger.debug("loading documents from path: %s", path)
 
         files = []
         folder_path = Path(path)
@@ -30,7 +30,7 @@ def document_loader_factory(path: str, max=None):
                 }
             )
 
-        logger.debug("documents: %s", lambda: [Document(**file) for file in files])
+        logger.trace("documents: %s", lambda: [Document(**file) for file in files])
 
         return [Document(**file) for file in files]
 

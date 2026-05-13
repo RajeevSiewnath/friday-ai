@@ -7,8 +7,8 @@ from friday.loggers.logger import Logger
 def capabilities_injector(state: MessagesState, runtime: Runtime[LLMContext]):
     if len(runtime.context.llm.tool_shed.tools) > 0:
         logger = Logger.get_logger("node.capabilities_injector")
-        logger.info("injecting capabilities into system prompt")
-        logger.debug("tools: %s", lambda: runtime.context.llm.tool_shed.tools)
+        logger.debug("injecting capabilities into system prompt")
+        logger.trace("tools: %s", lambda: runtime.context.llm.tool_shed.tools)
         return {
             "messages": [
                 {

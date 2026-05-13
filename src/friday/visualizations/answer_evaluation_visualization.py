@@ -1,5 +1,4 @@
 from friday.graph.evaluation.answer_eval_factory import AnswerEvalResult
-from friday.models.evaluation_score import EvaluationScore
 from friday.visualizations.abstract_visualization import AbstractVisualization
 import plotly.graph_objects as go
 import random
@@ -7,9 +6,9 @@ import random
 
 class AnswerEvaluationVisualization(AbstractVisualization):
 
-    def __init__(self, title: str, evaluation_score: EvaluationScore, keys: list[str]):
+    def __init__(self, title: str, scores: list[AnswerEvalResult], keys: list[str]):
         super().__init__(title)
-        self.evaluation_score = evaluation_score
+        self.scores = scores
         self.keys = keys
 
     def draw(self):
@@ -19,7 +18,7 @@ class AnswerEvaluationVisualization(AbstractVisualization):
         comp = []
         for key in self.keys:
             sets.append(key)
-            data: list[AnswerEvalResult] = self.evaluation_score.scores.get(key, [])
+            data = self.scores
             acc.append(sum(score.accuracy_percentage for score in data) / len(data))
             rel.append(sum(score.relevance_percentage for score in data) / len(data))
             comp.append(

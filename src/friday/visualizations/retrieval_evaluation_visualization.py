@@ -1,5 +1,4 @@
 from friday.graph.evaluation.retrieval_eval_factory import RetrievalEvalResult
-from friday.models.evaluation_score import EvaluationScore
 from friday.visualizations.abstract_visualization import AbstractVisualization
 import plotly.graph_objects as go
 import random
@@ -7,9 +6,9 @@ import random
 
 class RetrievalEvaluationVisualization(AbstractVisualization):
 
-    def __init__(self, title: str, evaluation_score: EvaluationScore, keys: list[str]):
+    def __init__(self, title: str, scores: list[RetrievalEvalResult], keys: list[str]):
         super().__init__(title)
-        self.evaluation_score = evaluation_score
+        self.scores = scores
         self.keys = keys
 
     def draw(self):
@@ -19,7 +18,7 @@ class RetrievalEvaluationVisualization(AbstractVisualization):
         keyword_coverage = []
         for key in self.keys:
             sets.append(key)
-            data: list[RetrievalEvalResult] = self.evaluation_score.scores.get(key, [])
+            data = self.scores
             mrr.append(sum(score.mrr for score in data) / len(data))
             ndcg.append(sum(score.ndcg for score in data) / len(data))
             keyword_coverage.append(

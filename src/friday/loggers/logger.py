@@ -5,22 +5,42 @@ import sys
 from typing import Any, Callable
 from colorama import Fore, Style
 from friday.loggers.abstract_logger_config import AbstractLoggerConfig
+from friday.loggers.custom_logger_adapter import CustomLoggerAdapter
 from friday.loggers.log_level_attributes import LogLevelAttributes
 from friday.loggers.node_logger import NodeLoggerConfig
 from friday.loggers.get_actual_level import get_actual_level
 
 
+logging.addLevelName(LogLevelAttributes.TRACE, "TRACE")
+logging.addLevelName(LogLevelAttributes.NOTICE, "NOTICE")
+
+
 class BaseLogger(logging.Logger):
+    def __init__(self, name, level=0):
+        super().__init__(name, level)
+
     def _log(self, level, msg, args, **kwargs):
         if self.isEnabledFor(level):
-            args = tuple(a() if callable(a) else a for a in args)
-            try:
-                args = tuple(
-                    a if isinstance(a, str) else json.dumps(a, indent=2) for a in args
-                )
-            except:
-                args = [a for a in args]
+            args = [a() if callable(a) else a for a in args]
+
+            def safe(a):
+                if isinstance(a, str):
+                    return a
+                try:
+                    return json.dumps(a, indent=2, default=str)
+                except Exception:
+                    return str(a)
+
+            args = tuple(safe(a) for a in args)
         super()._log(level, msg, args, **kwargs)
+
+    def trace(self, message, *args, **kwargs):
+        if self.isEnabledFor(LogLevelAttributes.TRACE):
+            self._log(LogLevelAttributes.TRACE.level, message, args, **kwargs)
+
+    def notice(self, message, *args, **kwargs):
+        if self.isEnabledFor(LogLevelAttributes.NOTICE):
+            self._log(LogLevelAttributes.NOTICE.level, message, args, **kwargs)
 
 
 logging.setLoggerClass(BaseLogger)
@@ -74,7 +94,7 @@ class Logger:
         name: str,
         *args: Any,
         level: int | str = None,
-    ):
+    ) -> BaseLogger | CustomLoggerAdapter:
         logger_key = name.split(".")[0]
         if logger_key in Logger.__instance.__loggers:
             adapter = Logger.__instance.__loggers[logger_key](name, *args)

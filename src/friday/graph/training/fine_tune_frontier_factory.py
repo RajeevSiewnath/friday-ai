@@ -29,7 +29,7 @@ def fine_tune_frontier_factory(
 
     async def fine_tune_frontier(state: TrainingState, runtime: Runtime[LLMContext]):
         logger = Logger.get_logger("node.fine_tune_frontier")
-        logger.info("fine tuning frontier model")
+        logger.debug("fine tuning frontier model")
 
         test_file: FileObject = None
         validation_file: FileObject = None
@@ -53,8 +53,8 @@ def fine_tune_frontier_factory(
                     tmp_validation.file, "fine-tune"
                 )
 
-        logger.debug("test file: %s", lambda: test_file)
-        logger.debug("validation file: %s", lambda: validation_file)
+        logger.trace("test file: %s", lambda: test_file)
+        logger.trace("validation file: %s", lambda: validation_file)
 
         ft_job = await runtime.context.llm.fine_tune(
             train_file_object=test_file,
@@ -65,7 +65,7 @@ def fine_tune_frontier_factory(
             batch_size=batch_size,
             learning_rate_multiplier=learning_rate_multiplier,
         )
-        logger.debug("fine-tune job: %s", lambda: ft_job)
+        logger.trace("fine-tune job: %s", lambda: ft_job)
 
         if wait_for_fine_tune_to_complete:
             await runtime.context.llm.wait_for_fine_tune(ft_job.id)

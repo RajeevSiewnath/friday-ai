@@ -6,10 +6,10 @@ from friday.loggers.logger import Logger
 
 async def mcp_server_open(state: Any, runtime: Runtime[LLMContext]):
     logger = Logger.get_logger("node.mcp_server_open")
-    logger.info("opening mcp servers")
+    logger.debug("opening mcp servers")
     await runtime.context.llm.tool_shed.mcp_tool_box.open()
 
-    logger.debug(
+    logger.trace(
         "servers: %s",
         lambda: [
             mcp_server.name

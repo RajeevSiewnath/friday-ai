@@ -61,12 +61,12 @@ Respond with the chunks.
         document: Document, llm: LLM, logger: LoggerAdapter
     ) -> list[Document]:
         messages = [{"role": "user", "content": make_prompt(document)}]
-        logger.debug("query: %s", lambda: messages)
+        logger.trace("query: %s", lambda: messages)
 
         response: ParsedResponse[Chunks] = await llm.invoke(
             input=messages, response_format=Chunks
         )
-        logger.debug("response: %s", lambda: response)
+        logger.trace("response: %s", lambda: response)
 
         doc_copy = deepcopy(document)
         return [
@@ -80,13 +80,13 @@ Respond with the chunks.
 
     async def chunk_splitter(state: DocumentState, runtime: Runtime[LLMContext]):
         logger = Logger.get_logger("node.chunk_splitter")
-        logger.info("splitting document into chunks")
-        logger.debug("documents: %s", lambda: state["documents"])
+        logger.debug("splitting document into chunks")
+        logger.trace("documents: %s", lambda: state["documents"])
 
         chunks: list[Document] = []
         for doc in tqdm(state["documents"]):
             chunks += await process_document(doc, runtime.context.llm, logger)
-        logger.debug("chunks: %s", lambda: chunks)
+        logger.trace("chunks: %s", lambda: chunks)
 
         return {"documents": DocumentReducerClearAction(chunks)}
 

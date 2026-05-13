@@ -7,15 +7,15 @@ from friday.loggers.logger import Logger
 
 async def llm_stream(state: MessagesState, runtime: Runtime[LLMContext]):
     logger = Logger.get_logger("node.llm_stream")
-    logger.info("streaming llm")
-    logger.debug("messages: %s", lambda: state["messages"])
+    logger.debug("streaming llm")
+    logger.trace("messages: %s", lambda: state["messages"])
 
     writer = get_stream_writer()
     events = []
     async for event in runtime.context.llm.stream(state["messages"]):
-        logger.debug("write: %s", lambda: event)
+        logger.trace("write: %s", lambda: event)
         writer({"messages": [event]})
         events.append(event)
 
-    logger.debug("events: %s", lambda: events)
+    logger.trace("events: %s", lambda: events)
     return {"messages": events}

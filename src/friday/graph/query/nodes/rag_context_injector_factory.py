@@ -12,8 +12,8 @@ class RagContextInjectorState(MessagesState, RagState):
 def rag_context_injector_factory(state_key: str, context_label: str = "Context"):
     def rag_context_injector(state: RagContextInjectorState):
         logger = Logger.get_logger("node.rag_context_injector")
-        logger.info("injecting rag context into system prompt")
-        logger.debug("rag data: %s", lambda: state["rag_data"][state_key])
+        logger.debug("injecting rag context into system prompt")
+        logger.trace("rag data: %s", lambda: state["rag_data"][state_key])
         return {
             "messages": [
                 {

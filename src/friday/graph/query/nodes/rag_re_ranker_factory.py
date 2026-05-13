@@ -20,8 +20,9 @@ class RagReRankerState(MessagesState, RagState):
 def rag_re_ranker_factory(state_key: str):
     async def rag_re_ranker(state: RagReRankerState, runtime: Runtime[LLMContext]):
         logger = Logger.get_logger("node.rag_re_ranker")
-        logger.info("re-ranking rag context based on query")
-        logger.debug("query: %s", lambda: state["messages"][-1]["content"])
+        logger.debug("re-ranking rag context based on query")
+        logger.trace("query: %s", lambda: state["messages"][-1]["content"])
+        logger.trace("rag data: %s", lambda: state["rag_data"][state_key])
 
         system_prompt = """
 You are a document re-ranker.
@@ -41,22 +42,21 @@ Reply only with the list of ranked chunk ids, nothing else. Include all the chun
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_prompt},
         ]
-        logger.debug("input: %s", lambda: messages)
+        logger.trace("input: %s", lambda: messages)
 
         response = await runtime.context.llm.invoke(
             input=messages, response_format=RankOrder
         )
-        logger.debug("response: %s", lambda: response)
+        logger.trace("response: %s", lambda: response)
 
         return {
             "rag_data": {
-                state_key: [
-                    RagReducerReplaceAction(),
+                state_key: RagReducerReplaceAction(
                     *[
                         state["rag_data"][state_key][i - 1]
                         for i in response.output_parsed.order
-                    ],
-                ]
+                    ]
+                ),
             }
         }
 

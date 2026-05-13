@@ -21,8 +21,8 @@ def rag_from_query_factory(collection_key: str, state_key: str | None = None):
         state: RagFromQueryState, runtime: Runtime[RagFromQueryContext]
     ):
         logger = Logger.get_logger("node.rag_from_query")
-        logger.info("generating rag context from query")
-        logger.debug("query: %s", lambda: state["messages"][-1]["content"])
+        logger.debug("generating rag context from query")
+        logger.trace("query: %s", lambda: state["messages"][-1]["content"])
 
         embedding = await runtime.context.llm.embedding(
             state["messages"][-1]["content"]
@@ -31,7 +31,7 @@ def rag_from_query_factory(collection_key: str, state_key: str | None = None):
         query_result = runtime.context.vector_db[collection_key].query(
             embedding=embedding
         )
-        logger.debug("query result: %s", lambda: query_result)
+        logger.trace("query result: %s", lambda: query_result)
 
         key = state_key if state_key is not None else collection_key
         return {"rag_data": {key: query_result}}
